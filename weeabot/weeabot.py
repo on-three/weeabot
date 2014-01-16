@@ -34,29 +34,50 @@ import irc
 import re
 
 from twisted.web.client import getPage
-from denshi_jisho import scrape_japanese_definitions
+from denshi_jisho import DenshiJisho
 
 DEFAULT_PORT = 6660
 
-JDICT_LOOKUP = 'jisho'
-EDICT_LOOKUP = 'moon'
-JISHO_USAGE = '\x033USAGE: jisho [japanese word to look up at jisho.org] [max results(default=3]'
+#after http://stackoverflow.com/questions/938870/python-irc-bot-and-encoding-issue
+def irc_decode(bytes):
+  '''
+  IRC character encoding can be arbitrary. python doesn't like this
+  '''
+  try:
+    text = bytes.decode('utf-8')
+  except UnicodeDecodeError:
+    try:
+      text = bytes.decode('iso-8859-1')
+    except UnicodeDecodeError:
+      text = bytes.decode('cp1252')
+  return text
+
+
+def irc_encode(bytes):
+  '''
+  IRC character encoding can be arbitrary. python doesn't like this
+  '''
+  try:
+    text = bytes.encode('utf-8')
+  except UnicodeEncodeError:
+    try:
+      text = bytes.encode('iso-8859-1')
+    except UnicodeEncodeError:
+      text = bytes.encode('cp1252')
+  return text
 
 
 class WeeaBot(twisted_irc.IRCClient):
+  plugins = []
 
   def connectionMade(self):
-    print 'WeeaBot::connectionMade'
     twisted_irc.IRCClient.connectionMade(self)
-    #self.factory.web_frontend.set_irc_socket(self)
+    WeeaBot.plugins.append(DenshiJisho(self))
 
   def connectionLost(self, reason):
-    print 'WeeaBot::connectionLost'
     twisted_irc.IRCClient.connectionLost(self, reason)
-    #self.factory.web_frontend.set_irc_socket(None)
 
   def signedOn(self):
-    print 'WeeaBot::signedOn'
     '''
     Called when we've connected to the IRC server.
     We can use this opportunity to communicate with nickserv
@@ -80,144 +101,55 @@ class WeeaBot(twisted_irc.IRCClient):
     '''
     print 'WeeaBot::joined'
 
-    #joined_message = irc.JoinedMessage(channel)
-    #self.factory.web_frontend.update_clients(joined_message)
-
-  class JishoResponse(object):
-    def __init__(self, callback_handler, channel):
-      self._callback_handler = callback_handler
-      self._channel = channel
-      #self._num_defs = num_defs
-    def __call__(self, response):
-      self._callback_handler(response, self._channel)
-
-  class JishoError(object):
-    def __init__(self, callback_handler):
-      self._callback_handler = callback_handler
-    def __call__(self, response):
-      self._callback_handler(response)
-
-  def on_jisho_response(self, response, channel):
-    results = scrape_japanese_definitions(response)
-    if not results:
-      self.say(channel, '\x034No results found at jisho.org using edict...')
-      return
-    for result in results:
-      response = '\x035{result}'.format(result=result.encode('utf-8'))
-      self.say(channel, response)
-
-  def on_jisho_error(self, error):
-    print error
-
-  def handle_command(self, cmd, channel):
-    args = string.split(cmd, ' ')
-    jword = ''
-    num_definitions = 3
-    if len(args)<2:
-      self.say(channel, JISHO_USAGE)
-      return
-    if len(args)>1:
-      jword = args[1]
-    if len(args)>2:
-      try:
-        num_definitions = int(args[2])
-      except:
-        pass
-    print 'Looking up word {jword}'.format(jword=jword)
-    result = getPage('http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword))
-    result.addCallbacks(
-      callback=WeeaBot.JishoResponse(self.on_jisho_response, channel),
-      errback=WeeaBot.JishoError(self.on_jisho_error)
-    )
-
   def privmsg(self, user, channel, msg):
     '''
     Invoked upon receipt of a message in channel X.
+    Give plugins a chance to handle it until one does
     '''
     msg = re.sub(' +',' ',msg)
-    #1is this a command of interest?
-    if msg.startswith(JDICT_LOOKUP):
-      self.handle_command(msg, channel)
+    #msg = irc_decode(msg)
+    for plugin in WeeaBot.plugins:
+      if plugin.is_msg_of_interest(msg, channel):
+        plugin.handle_msg(msg, channel)
+        break
 
   def left(self, channel):
     pass
-    #left_message = irc.LeftMessage(channel)
-    #self.factory.web_frontend.update_clients(left_message)
 
   def noticed(self, user, channel, message):
     pass
-    #notieced_msg = irc.NoticedMessage(user, channel, message)
-    #self.factory.web_frontend.update_clients(notieced_msg)
 
   def modeChanged(self, user, channel, set, modes, args):
     pass
-    #mode_changed_msg = irc.ModeChangedMessage(user, channel, set, modes, args)
-    #self.factory.web_frontend.update_clients(mode_changed_msg)
     
   def kickedFrom(self, channel, kicker, message):
     pass
-    #kicked_from_msg = irc.KickedFromMessage(channel, kicker, message)
-    #self.factory.web_frontend.update_clients(kicked_from_msg)
 
   def NickChanged(self, nick):
     pass
-    #nick_changed_msg = irc.NickChangedMessage(nick)
-    #self.factory.web_frontend.update_clients(nick_changed_msg)
 
   def userJoined(self, user, channel):
     pass
-    #user_joined_msg = irc.UserJoinedMessage(user, channel)
-    #self.factory.web_frontend.update_clients(user_joined_msg)
 
   def userLeft(self, user, channel):
     pass
-    #user_left_msg = irc.UserLeftMessage(user, channel)
-    #self.factory.web_frontend.update_clients(user_left_msg)
 
   def userQuit(self, user, quit_message):
     pass
-    #user_quit_msg = irc.UserQuitMessage(user, quit_message)
-    #self.factory.web_frontend.update_clients(user_quit_msg)
 
   def userKicked(self, kickee, channel, kicker, message):
     pass
-    #user_kicked_msg = irc.UserKickedMessage(kickee, channel, kicker, message)
-    #self.factory.web_frontend.update_clients(user_kicked_msg)
 
   def action(self, user, channel, data):
     pass
-    #action_msg = irc.ActionMessage(user, channel, data)
-    #self.factory.web_frontend.update_clients(action_msg)
 
   def topicUpdated(self, user, channel, new_topic):
     pass
-    #topic_updated_msg = irc.TopicUpdatedMessage(user, channel, new_topic)
-    #self.factory.web_frontend.update_clients(topic_updated_msg)
 
   def userRenamed(self, oldname, newname):
     pass
-    #user_renamed_msg = irc.UserRenamedMessage(oldname, newname)
-    #self.factory.web_frontend.update_clients(user_renamed_msg)
 
-  '''
-  def irc_RPL_TOPIC(self, prefix, params):
-    """
-    Called when the topic for a channel is initially reported or when it      subsequently changes.
-    params[0] is your nick
-    params[1] is channel joined
-    params[2] is topic for channel
-
-    """
-    print 'WeeaBot::irc_RPL_TOPIC'
-    channel = params[1]
-    topic = params[2]
-    #topic = irc.formatting_to_pango_markup(topic)
-
-    topic_message = irc.TopicMessage(channel, topic)
-    self.factory.web_frontend.update_clients(topic_message)
-'''
   def alterCollidedNick(self, nickname):
-    print 'WeeaBot::alterCollidedNick'
     return nickname+'_'
 
 class WeeaBotFactory(protocol.ClientFactory):
