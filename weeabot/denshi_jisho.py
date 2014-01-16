@@ -70,7 +70,8 @@ class DenshiJisho(object):
       return
     command = m.groupdict()['command']
     if not m.groupdict()['word']:
-      deferToThread(self._parent.say, channel, JISHO_USAGE)
+      #deferToThread(self._parent.say, channel, JISHO_USAGE)
+      self._parent.say(channel, response)
     word = m.groupdict()['word']
     dictionary = 'edict'
     if m.groupdict()['dict']:
@@ -87,17 +88,26 @@ class DenshiJisho(object):
     Return the values as a list of strings.
     If nothing found, return None.
     '''
-    soup = BeautifulSoup(html)
-    kanji = soup.findAll('td', {'class': 'kanji_column'})
-    kana = soup.findAll('td', {'class': 'kana_column'})
-    engrish = soup.findAll('td', {'class': 'meanings_column'})
-    if not kanji or not kana or not engrish:
-      return None
-    kanji = [' '.join(x.stripped_strings) for x in kanji[:max_definitions]]
-    kana = [' '.join(x.stripped_strings) for x in kana[:max_definitions]]
-    romaji = [romkan.to_roma(x) for x in kana] 
-    engrish = [' '.join(x.stripped_strings) for x in engrish[:max_definitions]]
-    results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in zip(kanji, kana, romaji, engrish)]
+    #print html
+    results = []
+    try:
+      soup = BeautifulSoup(html)
+      kanji = soup.findAll('td', {'class': 'kanji_column'})
+      kana = soup.findAll('td', {'class': 'kana_column'})
+      engrish = soup.findAll('td', {'class': 'meanings_column'})
+      if not kanji or not kana or not engrish:
+        return None
+      kanji = [' '.join(x.stripped_strings) for x in kanji[:max_definitions]]
+      print kanji
+      kana = [' '.join(x.stripped_strings) for x in kana[:max_definitions]]
+      print kana
+      romaji = [romkan.to_roma(x) for x in kana]
+      print romaji
+      engrish = [' '.join(x.stripped_strings) for x in engrish[:max_definitions]]
+      print engrish
+      results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in zip(kanji, kana, romaji, engrish)]
+    except e:
+      print str(e)
     return results
   
 
@@ -112,7 +122,7 @@ class DenshiJisho(object):
     Initiate an asynchronous scrape of jisho.org for japanese word lookup.
     '''
     url = 'http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword)
-    result = getPage(url)
+    result = getPage(url, timeout=3)
     result.addCallbacks(
       callback = DenshiJisho.JishoResponse(self.on_jisho_response, channel),
       errback = DenshiJisho.JishoError(self.on_jisho_error))
@@ -132,11 +142,13 @@ class DenshiJisho(object):
     '''
     results = self.scrape_japanese_definitions(response)
     if not results:
-      deferToThread(self._parent.say, channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
+      self._parent.say(channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
+      #deferToThread(self._parent.say, channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
       return
     for result in results:
       response = '\x035{result}'.format(result=result.encode('utf-8'))
-      deferToThread(self._parent.say, channel, response)
+      #deferToThread(self._parent.say, channel, response)
+      self._parent.say(channel, response)
 
   def on_jisho_error(self, error):
     '''
