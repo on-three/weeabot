@@ -98,13 +98,13 @@ class DenshiJisho(object):
       if not kanji or not kana or not engrish:
         return None
       kanji = [' '.join(x.stripped_strings) for x in kanji[:max_definitions]]
-      print kanji
+      #print kanji
       kana = [' '.join(x.stripped_strings) for x in kana[:max_definitions]]
-      print kana
+      #print kana
       romaji = [romkan.to_roma(x) for x in kana]
-      print romaji
+      #print romaji
       engrish = [' '.join(x.stripped_strings) for x in engrish[:max_definitions]]
-      print engrish
+      #print engrish
       results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in zip(kanji, kana, romaji, engrish)]
     except e:
       print str(e)
