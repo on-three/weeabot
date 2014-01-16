@@ -12,10 +12,12 @@ from bs4 import BeautifulSoup
 from twisted.web.client import getPage
 import string
 from twisted.internet.threads import deferToThread
+import re
+import romkan
 
 JDICT_LOOKUP = 'jisho'
 EDICT_LOOKUP = 'moon'
-JISHO_USAGE = '\x033USAGE: jisho [japanese word to look up at jisho.org] [max results(default=3)]'
+JISHO_USAGE = '\x033USAGE: [jisho|moon] [japanese/english word to look up at jisho.org]'
 
 class DenshiJisho(object):
   '''
@@ -52,29 +54,31 @@ class DenshiJisho(object):
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
     '''
-    if msg.startswith(JDICT_LOOKUP):
+    m = re.match(r'^(?P<command>jisho|moon)( (?P<word>[\S]*))?( (?P<dict>[\S]*))?', msg)
+    if m:
       return True
-    return False
+    else:
+      return False
 
   def handle_msg(self, msg, channel):
     '''
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    args = string.split(msg, ' ')
-    jword = ''
-    num_definitions = 3
-    if len(args)<2:
-      self.parent.say(channel, JISHO_USAGE)
+    m = re.match(r'^(?P<command>jisho|moon)( (?P<word>[\S]*))?( (?P<dict>[\S]*))?', msg)
+    if not m:
       return
-    if len(args)>1:
-      jword = args[1]
-    if len(args)>2:
-      try:
-        num_definitions = int(args[2])
-      except:
-        pass
-    self.initiate_japanese_lookup(jword, channel)
+    command = m.groupdict()['command']
+    if not m.groupdict()['word']:
+      deferToThread(self._parent.say, channel, JISHO_USAGE)
+    word = m.groupdict()['word']
+    dictionary = 'edict'
+    if m.groupdict()['dict']:
+      dictionary = m.groupdict()['dict']
+    if command == 'jisho':
+      self.initiate_japanese_lookup(word, channel)
+    else:
+      self.initiate_english_lookup(word, channel)
 
   def scrape_japanese_definitions(self, html, max_definitions=3):
     '''
@@ -91,8 +95,9 @@ class DenshiJisho(object):
       return None
     kanji = [' '.join(x.stripped_strings) for x in kanji[:max_definitions]]
     kana = [' '.join(x.stripped_strings) for x in kana[:max_definitions]]
+    romaji = [romkan.to_roma(x) for x in kana] 
     engrish = [' '.join(x.stripped_strings) for x in engrish[:max_definitions]]
-    results = [u'{kanji} | {kana} | {engrish}'.format(kanji=x[0], kana=x[1], engrish=x[2]) for x in zip(kanji, kana, engrish)]
+    results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in zip(kanji, kana, romaji, engrish)]
     return results
   
 
@@ -100,13 +105,23 @@ class DenshiJisho(object):
     '''
     Primary handler for scraping english definitions from japaese words off jisho.org
     '''
-    pass
+    self.scrape_japanese_definitions(html, max_definitions)
 
   def initiate_japanese_lookup(self, jword, channel):
     '''
     Initiate an asynchronous scrape of jisho.org for japanese word lookup.
     '''
-    result = getPage('http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword))
+    url = 'http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword)
+    result = getPage(url)
+    result.addCallbacks(
+      callback = DenshiJisho.JishoResponse(self.on_jisho_response, channel),
+      errback = DenshiJisho.JishoError(self.on_jisho_error))
+
+  def initiate_english_lookup(self, eword, channel):
+    '''
+    Initiate an asynchronous scrape of jisho.org for english word lookup.
+    '''
+    result = getPage('http://jisho.org/words?jap=&eng={eword}&dict=edict&common=on'.format(eword=eword))
     result.addCallbacks(
       callback = DenshiJisho.JishoResponse(self.on_jisho_response, channel),
       errback = DenshiJisho.JishoError(self.on_jisho_error))
