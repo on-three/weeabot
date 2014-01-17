@@ -35,6 +35,7 @@ import re
 
 from twisted.web.client import getPage
 from denshi_jisho import DenshiJisho
+from jikan import Jikan
 
 DEFAULT_PORT = 6660
 
@@ -73,6 +74,7 @@ class WeeaBot(twisted_irc.IRCClient):
   def connectionMade(self):
     twisted_irc.IRCClient.connectionMade(self)
     WeeaBot.plugins.append(DenshiJisho(self))
+    WeeaBot.plugins.append(Jikan(self))
 
   def connectionLost(self, reason):
     twisted_irc.IRCClient.connectionLost(self, reason)

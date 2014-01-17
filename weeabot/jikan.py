@@ -1,0 +1,61 @@
+# vim: set ts=2 expandtab:
+"""
+
+Module: jikan.py
+Desc: print current time in tokyo
+Author: on_three
+Email: on_three@outlook.com
+DATE: Thursday, Jan 16th 2014
+  
+"""
+import string
+import re
+from pytz import timezone
+from datetime import datetime
+import locale
+import time
+
+class Jikan(object):
+  '''
+  print current japan time
+  '''
+  COMMAND_REGEX = ur'^(?P<command>jikan|\u6642\u9593|\u3058\u304B\u3093)( (?P<data>[\S]*)$)?'
+
+  def __init__(self, parent):
+    '''
+    constructor
+    '''
+    self._parent = parent
+
+  def is_msg_of_interest(self, msg, channel):
+    '''
+    PLUGIN API REQUIRED
+    Is the rx'd irc message of interest to this plugin?
+    '''
+    #print Jikan.COMMAND_REGEX.encode('utf8')
+    amsg = msg.decode('utf8')
+    myre = re.compile(Jikan.COMMAND_REGEX, re.UNICODE)
+    m = myre.match(amsg)
+    if m:
+      return True
+    else:
+      return False
+
+  def handle_msg(self, msg, channel):
+    '''
+    PLUGIN API REQUIRED
+    Handle message and return nothing
+    '''
+    self.say_time(channel)
+
+  def say_time(self, channel):
+    '''
+    say the time in current channel.
+    '''
+    now = datetime.now(timezone('Asia/Tokyo'))
+    locale.setlocale(locale.LC_ALL, 'ja_JP.utf8')
+    fmt = u'\u73FE\u5728\u306E\u6771\u4EAC\u6642\u9593 \u0002%c\u0002 %a'
+    current_time = now.strftime(fmt.encode('utf-8'))
+    self._parent.say(channel, current_time)
+
+
