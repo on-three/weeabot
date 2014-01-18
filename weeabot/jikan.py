@@ -14,6 +14,7 @@ from pytz import timezone
 from datetime import datetime
 import locale
 import time
+from twisted.python import log
 
 class Jikan(object):
   '''
@@ -46,6 +47,7 @@ class Jikan(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
+    log.msg('{channel} : {msg}'.format(channel=channel, msg=msg))
     self.say_time(channel)
 
   def say_time(self, channel):
@@ -56,6 +58,7 @@ class Jikan(object):
     locale.setlocale(locale.LC_ALL, 'ja_JP.utf8')
     fmt = u'\u73FE\u5728\u306E\u6771\u4EAC\u6642\u9593 \u0002%c\u0002 %a'
     current_time = now.strftime(fmt.encode('utf-8'))
+    log.msg('{channel}-->{msg}'.format(channel=channel, msg=current_time))
     self._parent.say(channel, current_time)
 
 

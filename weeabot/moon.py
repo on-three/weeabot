@@ -15,6 +15,7 @@ from twisted.internet.threads import deferToThread
 import re
 import romkan
 import denshi_jisho
+from twisted.python import log
 
 
 class Moon(object):
@@ -73,6 +74,7 @@ class Moon(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
+    log.msg('{channel} : {msg}'.format(channel=channel, msg=msg))
     m = re.match(Moon.COMMAND_REGEX, msg)
     if not m:
       return
@@ -103,6 +105,7 @@ class Moon(object):
       return
     for result in results:
       response = '\x035{result}'.format(result=result.encode('utf-8'))
+      log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
       self._parent.say(channel, response)
 
   def on_jisho_error(self, error):

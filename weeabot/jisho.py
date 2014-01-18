@@ -15,6 +15,7 @@ from twisted.internet.threads import deferToThread
 import re
 import romkan
 from denshi_jisho import scrape_japanese_definitions
+from twisted.python import log
 
 
 class Jisho(object):
@@ -73,6 +74,7 @@ class Jisho(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
+    log.msg('{channel} : {msg}'.format(channel=channel, msg=msg))
     m = re.match(Jisho.COMMAND_REGEX, msg)
     if not m:
       return
@@ -104,6 +106,7 @@ class Jisho(object):
       return
     for result in results:
       response = '\x035{result}'.format(result=result.encode('utf-8'))
+      log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
       self._parent.say(channel, response)
 
   def on_jisho_error(self, error):

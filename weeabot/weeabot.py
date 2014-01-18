@@ -16,11 +16,14 @@ english to japanese lookup.
   
 """ 
 
+import os
 import os.path
+from os.path import expanduser
+import re
 import uuid
 import sys
 import time
-from collections import defaultdict
+#from collections import defaultdict
 import argparse
 import string
 
@@ -29,9 +32,10 @@ from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.internet import ssl
 from twisted.python import log
+from twisted.python.logfile import DailyLogFile
 from twisted.words.protocols import irc as twisted_irc
-import irc
-import re
+#import irc
+
 
 from twisted.web.client import getPage
 
@@ -42,6 +46,8 @@ from jikan import Jikan
 from moon import Moon
 
 DEFAULT_PORT = 6660
+LOG_FILENAME = 'weeabot.log'
+LOG_DIRECTORY = '/.weeabot'
 
 #after http://stackoverflow.com/questions/938870/python-irc-bot-and-encoding-issue
 def irc_decode(bytes):
@@ -98,7 +104,7 @@ class WeeaBot(twisted_irc.IRCClient):
             'IDENTIFY %s' % network['identity']['nickserv_password'])
 
     for channel in network['autojoin']:
-      print('join channel %s' % channel)
+      log.msg('join channel %s' % channel)
       self.join(channel)
 
   def joined(self, channel):
@@ -107,7 +113,7 @@ class WeeaBot(twisted_irc.IRCClient):
     Initialize a chat dialog on the screen that will later
     be updated with posts as the chat progresses.
     '''
-    print 'WeeaBot::joined'
+    log.msg('WeeaBot::joined')
 
   def privmsg(self, user, channel, msg):
     '''
@@ -220,6 +226,19 @@ def main():
   parser.add_argument('-s', '--ssl', help='Connect to server via SSL.', action="store_true")
   args = parser.parse_args()
 
+
+  #always log to daily file in ~/.weeabot unlesss we have verbose option
+  if args.verbose:
+    log.startLogging(sys.stdout)
+  else:
+    HOME = expanduser("~")
+    log_directory = HOME+LOG_DIRECTORY
+    if not os.path.exists(log_directory):
+      os.makedirs(log_directory)
+    log_file = DailyLogFile(LOG_FILENAME, log_directory)
+    log.startLogging(log_file)
+    
+
   hostname, port = split_server_port(args.hostname)
   if args.verbose:
     print 'Connecting to ' + hostname + ' on port ' + str(port) +'.'
@@ -258,5 +277,4 @@ def main():
 
 
 if __name__ == "__main__":
-  log.startLogging(sys.stdout)
   main()
