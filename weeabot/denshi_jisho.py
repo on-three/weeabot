@@ -15,8 +15,16 @@ from twisted.internet.threads import deferToThread
 import re
 import romkan
 
+def elipsize(string, max_length=128, elipsis='...'):
+  '''
+  cap string at max X characters.
+  If they exceed X, truncate with elipsis '...'
+  '''
+  if len(string)>max_length:
+    string = string[:max_length-len(elipsis)]+elipsis
+  return string
 
-def scrape_japanese_definitions(html, max_definitions=3):
+def scrape_japanese_definitions(html, max_results=3):
   '''
   Extract japanese kanji, kana, english definitions and parts of speech
   from html off jisho.org.
@@ -31,11 +39,25 @@ def scrape_japanese_definitions(html, max_definitions=3):
     engrish = soup.findAll('td', {'class': 'meanings_column'})
     if not kanji or not kana or not engrish:
       return None
-    kanji = [' '.join(x.stripped_strings) for x in kanji[:max_definitions]]
-    kana = [' '.join(x.stripped_strings) for x in kana[:max_definitions]]
+    kanji = [' '.join(x.stripped_strings) for x in kanji]
+    kana = [' '.join(x.stripped_strings) for x in kana]
     romaji = [romkan.to_roma(x) for x in kana]
-    engrish = [' '.join(x.stripped_strings) for x in engrish[:max_definitions]]
-    results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in zip(kanji, kana, romaji, engrish)]
+    engrish = [elipsize(' '.join(x.stripped_strings)) for x in engrish]
+    results = zip(kanji, kana, romaji, engrish)
+
+    '''
+    #before forming final definitions string list from these sublists
+    #we'll remove definitions which have identical english meanings???
+    results = []
+    for i,definition in enumerate(definitions):
+      if len(results>0) and definition[3] in results[:i-1][3]:
+        pass
+      else:
+        results.append(definition)
+    '''
+
+    #form final results from zipped list and return    
+    results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in results[:max_results]]
   except e:
     print str(e)
   return results

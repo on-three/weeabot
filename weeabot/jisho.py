@@ -16,9 +16,6 @@ import re
 import romkan
 from denshi_jisho import scrape_japanese_definitions
 
-JDICT_LOOKUP = 'jisho'
-EDICT_LOOKUP = 'moon'
-
 
 class Jisho(object):
   '''
