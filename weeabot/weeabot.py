@@ -34,8 +34,12 @@ import irc
 import re
 
 from twisted.web.client import getPage
-from denshi_jisho import DenshiJisho
+
+
+#for now directly import plugins
+from jisho import Jisho
 from jikan import Jikan
+from moon import Moon
 
 DEFAULT_PORT = 6660
 
@@ -70,10 +74,12 @@ def irc_encode(bytes):
 
 class WeeaBot(twisted_irc.IRCClient):
   plugins = []
+  COMMAND_REGEX = r'^(?P<command>weeabot:?)( (?P<help>help))?'
 
   def connectionMade(self):
     twisted_irc.IRCClient.connectionMade(self)
-    WeeaBot.plugins.append(DenshiJisho(self))
+    WeeaBot.plugins.append(Jisho(self))
+    WeeaBot.plugins.append(Moon(self))
     WeeaBot.plugins.append(Jikan(self))
 
   def connectionLost(self, reason):
@@ -108,7 +114,18 @@ class WeeaBot(twisted_irc.IRCClient):
     Invoked upon receipt of a message in channel X.
     Give plugins a chance to handle it until one does
     '''
+    self.handle_msg(user, channel, msg)
+
+  def handle_msg(self, user, channel, msg):
+    '''
+    Generic handler for all msgs in channel.
+    '''
     msg = re.sub(' +',' ',msg)
+    if re.match(WeeaBot.COMMAND_REGEX, msg):
+      help = self.list_loaded_plugins()
+      self.say(channel, help)
+      return
+
     #msg = irc_decode(msg)
     for plugin in WeeaBot.plugins:
       if plugin.is_msg_of_interest(msg, channel):
@@ -153,6 +170,15 @@ class WeeaBot(twisted_irc.IRCClient):
 
   def alterCollidedNick(self, nickname):
     return nickname+'_'
+
+  def list_loaded_plugins(self):
+    '''
+    Return a string with a list of all the currently loaded plugins
+    '''
+    plugins = 'currently loaded plugins: '
+    for plugin in WeeaBot.plugins:
+      plugins += '{plugin} '.format(plugin=plugin.__class__.__name__)
+    return plugins
 
 class WeeaBotFactory(protocol.ClientFactory):
   protocol = WeeaBot
