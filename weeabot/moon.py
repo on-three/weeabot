@@ -8,13 +8,11 @@ Email: on_three@outlook.com
 DATE: Tuesday, Jan 14th 2013
   
 """
-from bs4 import BeautifulSoup
 from twisted.web.client import getPage
 import string
-from twisted.internet.threads import deferToThread
 import re
 import romkan
-import denshi_jisho
+from denshi_jisho import scrape_english_definitions
 from twisted.python import log
 
 
@@ -80,6 +78,7 @@ class Moon(object):
       return
     if not m.groupdict()['word']:
       self._parent.say(channel, Moon.USAGE)
+      return
     word = m.groupdict()['word']
     dictionary = 'edict'
     if m.groupdict()['dict']:
@@ -99,7 +98,7 @@ class Moon(object):
     '''
     Handler for correct rx'd HTML response
     '''
-    results = denshi_jisho.scrape_english_definitions(response)
+    results = scrape_english_definitions(response)
     if not results:
       self._parent.say(channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
       return

@@ -8,12 +8,9 @@ Email: on_three@outlook.com
 DATE: Tuesday, Jan 14th 2013
   
 """
-from bs4 import BeautifulSoup
 from twisted.web.client import getPage
 import string
-from twisted.internet.threads import deferToThread
 import re
-import romkan
 from denshi_jisho import scrape_japanese_definitions
 from twisted.python import log
 
@@ -80,6 +77,7 @@ class Jisho(object):
       return
     if not m.groupdict()['word']:
       self._parent.say(channel, Jisho.USAGE)
+      return
     word = m.groupdict()['word']
     dictionary = 'edict'
     if m.groupdict()['dict']:

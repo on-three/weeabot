@@ -9,9 +9,7 @@ DATE: Tuesday, Jan 14th 2013
   
 """
 from bs4 import BeautifulSoup
-from twisted.web.client import getPage
 import string
-from twisted.internet.threads import deferToThread
 import re
 import romkan
 from twisted.python import log

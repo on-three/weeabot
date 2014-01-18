@@ -23,7 +23,6 @@ import re
 import uuid
 import sys
 import time
-#from collections import defaultdict
 import argparse
 import string
 
@@ -34,7 +33,6 @@ from twisted.internet import ssl
 from twisted.python import log
 from twisted.python.logfile import DailyLogFile
 from twisted.words.protocols import irc as twisted_irc
-#import irc
 
 
 from twisted.web.client import getPage
@@ -265,7 +263,6 @@ def main():
     'identity': credentials,
     'autojoin': channels
   }
-
 
   factory = WeeaBotFactory(hostname, network)
   if args.ssl:
