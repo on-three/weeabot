@@ -1,1 +1,1 @@
-from jishobot import *
+from weeabot import *
