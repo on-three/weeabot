@@ -1,4 +1,77 @@
 weeabot
 =======
 
-Japanese support irc bot
+Python Twisted based Japanese support irc bot.
+
+Weeabot currently provides the following support via a simple plugin architecture:
+
+* Japanese word lookup via Jisho.org
+* English to Japanese word lookup via Jisho.org
+* Display current Tokyo time in Japanese
+
+Installation
+------------
+
+I recommend installing via python pip package manager. The usual caveats of invoking a python virtual environment before installation apply. Use 'sudo' as required by your OS.
+To install, point pip to:
+```
+sudo pip install git+https://github.com/on-three/weeabot.git
+```
+I've tested the above installation on LinuxMint 16 and Debian Squeeze, but no other distributions.
+
+If you wish to install manually, invoke setup.py as usual:
+```
+sudo python setup.py install
+```
+
+Daemon Support
+--------------
+
+Proper installation should install weeabot.conf and weeabot.override scripts to the /etc/init/ directory on Unix-like systems. This is meant as support for Upstart service management, allowing the bot to be run at system boot as a daemon.
+
+In those systems that support Upstart .conf files, edit the /etc/init/weeabot.conf file before starting, specifying your IRC network, desired bot nick and channel to join. Other command line options can be added as needed. Then run the following to start the service:
+```
+sudo initclt reload-configuration
+sudo start weeabot
+```
+
+Delete or rename the /etc/init/weeabot.override file to enable automatic starting of daemon on boot.
+
+Using the Bot
+-------------
+
+Currently the bot supports the current commands:
+
+### weeabot (list plugins)
+Type bot should pick up the weeabot single command (no preceeding words) and display current plugins.
+```
+me: weeabot
+weeabot: currently loaded plugins: Jisho Moon Jikan
+```
+
+### Jisho (Japanese Word Lookup)
+Use the jisho command to look up Japanese words (in romaji, hiragana, katakana or kanji) via jisho.org.
+```
+me: jisho watashi
+weeabot: 私 | わたし | watashi | I; me
+
+me: jisho わたし
+weeabot: 私 | わたし | watashi | I; me
+
+me: jisho 私
+weeabot: 私 | わたし | watashi | I; me
+```
+
+### Moon (English to Japanese Word Lookup)
+Use the moon command (after 'moonrunes') to look up Japanese equivalents of English words.
+```
+me: moon me
+weeabot:  私 | わたし | watashi | I; me
+```
+
+### Jikan (Current Tokyo Time)
+Use the jikan command to display current Tokyo time
+```
+me: jikan
+weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
+```
