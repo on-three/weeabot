@@ -4,7 +4,7 @@
 Module: denshi_jisho.py
 Desc: scrape jisho.org for data
 Author: on_three
-Email: on_three@outlook.com
+Email: on.three.email@gmail.com
 DATE: Tuesday, Jan 14th 2013
   
 """

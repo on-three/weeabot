@@ -4,7 +4,7 @@
 Module: jisho.py
 Desc: japanese word lookup
 Author: on_three
-Email: on_three@outlook.com
+Email: on.three.email@gmail.com
 DATE: Tuesday, Jan 14th 2013
   
 """

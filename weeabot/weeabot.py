@@ -5,7 +5,7 @@
 Module: weeabot.py
 Desc: japanese dictionary IRC bot
 Author: on_three
-Email: on_three@outlook.com
+Email: on.three.email@gmail.com
 DATE: Tuesday, Jan 14th 2013
 
 Monitor IRC chat for posts starting with 'jisho'

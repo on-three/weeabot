@@ -4,7 +4,7 @@
 Module: jikan.py
 Desc: print current time in tokyo
 Author: on_three
-Email: on_three@outlook.com
+Email: on.three.email@gmail.com
 DATE: Thursday, Jan 16th 2014
   
 """

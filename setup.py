@@ -17,7 +17,7 @@ setup(name='weeabot',
     keywords = 'irc bot japan japanese definitions lookup',
     url='https://github.com/on-three/weeabot',
     author='on_three',
-    author_email='on_three@outlook.com',
+    author_email='on.three.email@gmail.com',
     license='MIT',
     packages=[
 	    'weeabot'
