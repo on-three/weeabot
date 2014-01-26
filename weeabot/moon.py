@@ -56,7 +56,7 @@ class Moon(object):
     '''
     self._parent.say(channel, Moon.USAGE)
 
-  def is_msg_of_interest(self, msg, channel):
+  def is_msg_of_interest(self, user, channel, msg):
     '''
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
@@ -67,7 +67,7 @@ class Moon(object):
     else:
       return False
 
-  def handle_msg(self, msg, channel):
+  def handle_msg(self, user, channel, msg):
     '''
     PLUGIN API REQUIRED
     Handle message and return nothing

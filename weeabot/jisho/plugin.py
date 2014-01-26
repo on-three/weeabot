@@ -8,11 +8,20 @@ Email: on.three.email@gmail.com
 DATE: Tuesday, Jan 14th 2013
   
 """
+import os
 from twisted.web.client import getPage
 import string
 import re
 from weeabot.denshi_jisho import scrape_japanese_definitions
 from twisted.python import log
+
+#We want to log in a django sqlite3 database for web display
+try:  
+  os.environ.setdefault("DJANGO_SETTINGS_MODULE", "weeabot.webserver.settings")
+  from .models import Definition                  
+except ImportError:
+  print 'Could not import django settings file to access database.'
+  sys.exit(-1)
 
 
 class Jisho(object):
@@ -27,12 +36,14 @@ class Jisho(object):
     '''
     Functor that wraps a HTML response
     '''
-    def __init__(self, callback_handler, channel):
+    def __init__(self, callback_handler, jword, channel, user, url):
       self._callback_handler = callback_handler
+      self._jword = jword
       self._channel = channel
-      #self._num_defs = num_defs
+      self._user = user
+      self._url = url
     def __call__(self, response):
-      self._callback_handler(response, self._channel)
+      self._callback_handler(response, self._jword, self._channel, self._user, self._url)
 
   class JishoError(object):
     '''
@@ -55,7 +66,7 @@ class Jisho(object):
     '''
     self._parent.say(channel, Jisho.USAGE)
 
-  def is_msg_of_interest(self, msg, channel):
+  def is_msg_of_interest(self, user, channel, msg):
     '''
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
@@ -66,7 +77,7 @@ class Jisho(object):
     else:
       return False
 
-  def handle_msg(self, msg, channel):
+  def handle_msg(self, user, channel, msg):
     '''
     PLUGIN API REQUIRED
     Handle message and return nothing
@@ -82,19 +93,19 @@ class Jisho(object):
     dictionary = 'edict'
     if m.groupdict()['dict']:
       dictionary = m.groupdict()['dict']
-    self.initiate_japanese_lookup(word, channel)
+    self.initiate_japanese_lookup(word, channel, user=user)
 
-  def initiate_japanese_lookup(self, jword, channel):
+  def initiate_japanese_lookup(self, jword, channel, user=''):
     '''
     Initiate an asynchronous scrape of jisho.org for japanese word lookup.
     '''
     url = 'http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword)
     result = getPage(url, timeout=3)
     result.addCallbacks(
-      callback = Jisho.JishoResponse(self.on_jisho_response, channel),
+      callback = Jisho.JishoResponse(self.on_jisho_response, jword, channel, user, url),
       errback = Jisho.JishoError(self.on_jisho_error))
 
-  def on_jisho_response(self, response, channel):
+  def on_jisho_response(self, response, jword, channel, user, url):
     '''
     Handler for correct rx'd HTML response
     '''
@@ -103,8 +114,11 @@ class Jisho(object):
       self._parent.say(channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
       return
     for result in results:
+      db_entry = Definition(channel=channel, nick=user, url=url, text=result, word=jword)
+      db_entry.save()
       response = '\x035{result}'.format(result=result.encode('utf-8'))
       log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
+      print '{channel}:{user} {jword}-->{msg}:{url}'.format(channel=channel, jword=jword, msg=response, user=user, url=url)
       self._parent.say(channel, response)
 
   def on_jisho_error(self, error):

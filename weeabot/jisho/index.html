@@ -9,17 +9,18 @@
 	<table class="urls bordered">
     <thead class='definitions'>
 	    <tr>
-        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class="nick">Nick</th><th class='text'>Definition</th>
+        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class="nick">Nick</th><th class='word'>Lookup</th><th class='text'>Definition</th><th class='url'>URL</th>
       </tr>
     </thead>
     <tbody>
     {% for definition in definitions %}
-	    <tr class="url_entry"><td class="id">{{ urldisplay.id }}</td><td class="url">{{ urldisplay.url }}</td><td class="display_time">{{ urldisplay.display_time }}</td><td class="creation_date">{{ urldisplay.creation_date }}</td><td class="created_by">{{ urldisplay.created_by }}</td></tr>
-    <th class="timestamp">{{ definition.timestamp }}</th><th class="channel">{{ definition.channel }}</th><th class="nick">{{ defintion.nick }}</th><th class='text'>{{ definition.text }}</th>
+      <tr class='definition'>
+              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class="nick">{{ definition.nick }}</td><td class='word'>{{ definition.word }}</td><th class='text'>{{ definition.text }}</td><td class='url'>{{ definition.url }}</td>
+      </tr>
     {% endfor %}
     </tbody>
     <tfoot>
-        <tr><td class="footer" colspan=4><em>To configure table, utilize the django /admin interface.</em></td></tr>
+        <tr><td class="footer" colspan=6><em>To configure table, utilize the django /admin interface.</em></td></tr>
     </tfoot>
     </table>
 {% else %}

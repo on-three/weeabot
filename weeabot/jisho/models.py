@@ -12,6 +12,7 @@ class Definition(models.Model):
   timestamp = models.DateTimeField('date published', auto_now_add=True)
   url = models.CharField(max_length=2048)
   text = models.CharField(max_length=256)
+  word = models.CharField(max_length=128)
   
   #def __unicode__(self):
   #  return '{nick}@{channel}:{text}'.format(nick=self.nick, \

@@ -28,7 +28,7 @@ class Jikan(object):
     '''
     self._parent = parent
 
-  def is_msg_of_interest(self, msg, channel):
+  def is_msg_of_interest(self, user, channel, msg):
     '''
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
@@ -42,7 +42,7 @@ class Jikan(object):
     else:
       return False
 
-  def handle_msg(self, msg, channel):
+  def handle_msg(self, user, channel, msg):
     '''
     PLUGIN API REQUIRED
     Handle message and return nothing

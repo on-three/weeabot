@@ -128,8 +128,8 @@ class WeeaBot(twisted_irc.IRCClient):
 
     #msg = irc_decode(msg)
     for plugin in WeeaBot.plugins:
-      if plugin.is_msg_of_interest(msg, channel):
-        plugin.handle_msg(msg, channel)
+      if plugin.is_msg_of_interest(user, channel, msg):
+        plugin.handle_msg(user, channel, msg)
         break
 
   def left(self, channel):
