@@ -3,11 +3,25 @@
 from django.template import Context, loader
 from weeabot.jisho.models import Definition
 from django.http import HttpResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def home(request):
-  definitions = Definition.objects.all()
+  definitions = Definition.objects.all().order_by('timestamp').reverse()
+  paginator = Paginator(definitions, 30) # Show 30 contacts per page
+
+  page = request.GET.get('page')
+  try:
+    definitions = paginator.page(page)
+  except PageNotAnInteger:
+    # If page is not an integer, deliver first page.
+    definitions = paginator.page(1)
+  except EmptyPage:
+    # If page is out of range (e.g. 9999), deliver last page of results.
+    definitions = paginator.page(paginator.num_pages)
+
   t = loader.get_template('jisho/index.html')
   c = Context({
-    'definitions': definitions
+    'definitions': definitions,
+    'paginator' : paginator
     })
   return HttpResponse(t.render(c))

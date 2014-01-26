@@ -1,12 +1,14 @@
 # vim: set ts=2 expandtab:
 from setuptools import setup
 
+#version 0.2: include basic webserver and jisho database display
+
 def readme():
     with open('README.md') as f:
         return f.read()
 
 setup(name='weeabot',
-  version='0.1',
+  version='0.2',
   description='Japanese support IRC bot.',
   long_description = readme(),
 	classifiers=[

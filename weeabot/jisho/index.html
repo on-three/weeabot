@@ -15,14 +15,30 @@
     <tbody>
     {% for definition in definitions %}
       <tr class='definition'>
-              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class="nick">{{ definition.nick }}</td><td class='word'>{{ definition.word }}</td><th class='text'>{{ definition.text }}</td><td class='url'>{{ definition.url }}</td>
+              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class="nick">{{ definition.nick }}</td><td class='word'>{{ definition.word }}</td><th class='text'>{{ definition.text }}</td><td class='url'><a href="{{ definition.url }}">link</a></td>
       </tr>
     {% endfor %}
     </tbody>
     <tfoot>
-        <tr><td class="footer" colspan=6><em>To configure table, utilize the django /admin interface.</em></td></tr>
+        <tr><td class="footer" colspan=6><em>To edit history use the django /admin interface.</em></td></tr>
     </tfoot>
     </table>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if definitions.has_previous %}
+            <a href="?page={{ definitions.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ definitions.number }} of {{ definitions.paginator.num_pages }}.
+        </span>
+
+        {% if definitions.has_next %}
+            <a href="?page={{ definitions.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
 {% else %}
     <p class="message">No lookups to display.</p>
 {% endif %}
