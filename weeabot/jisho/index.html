@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Jisho Definition Lookups</title>
+</head>
+<h1>Jisho Definition Lookups</h1>
+<body>
+{% if definitions %}
+	<table class="urls bordered">
+    <thead class='definitions'>
+	    <tr>
+        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class="nick">Nick</th><th class='text'>Definition</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for definition in definitions %}
+	    <tr class="url_entry"><td class="id">{{ urldisplay.id }}</td><td class="url">{{ urldisplay.url }}</td><td class="display_time">{{ urldisplay.display_time }}</td><td class="creation_date">{{ urldisplay.creation_date }}</td><td class="created_by">{{ urldisplay.created_by }}</td></tr>
+    <th class="timestamp">{{ definition.timestamp }}</th><th class="channel">{{ definition.channel }}</th><th class="nick">{{ defintion.nick }}</th><th class='text'>{{ definition.text }}</th>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr><td class="footer" colspan=4><em>To configure table, utilize the django /admin interface.</em></td></tr>
+    </tfoot>
+    </table>
+{% else %}
+    <p class="message">No lookups to display.</p>
+{% endif %}
+</body>

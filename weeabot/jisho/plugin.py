@@ -1,7 +1,7 @@
 # vim: set ts=2 expandtab:
 """
 
-Module: jisho.py
+Module: weeabot.jisho.plugin.py
 Desc: japanese word lookup
 Author: on_three
 Email: on.three.email@gmail.com
@@ -11,7 +11,7 @@ DATE: Tuesday, Jan 14th 2013
 from twisted.web.client import getPage
 import string
 import re
-from denshi_jisho import scrape_japanese_definitions
+from weeabot.denshi_jisho import scrape_japanese_definitions
 from twisted.python import log
 
 

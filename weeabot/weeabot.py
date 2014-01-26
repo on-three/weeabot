@@ -8,11 +8,11 @@ Author: on_three
 Email: on.three.email@gmail.com
 DATE: Tuesday, Jan 14th 2013
 
-Monitor IRC chat for posts starting with 'jisho'
-and scrape following terms from jisho.org
-
-Will implement simple japanese to english lookup and 
-english to japanese lookup.
+ Simple Japanese support IRC bot for weeaboos.
+ Primitive plugin architecture provides stuff like:
+ * Japanese word lookup
+ * English to Japanese word lookup
+ * Current Tokyo time
   
 """ 
 
@@ -26,7 +26,6 @@ import time
 import argparse
 import string
 
-from twisted.internet import task
 from twisted.internet import reactor
 from twisted.internet import protocol
 from twisted.internet import ssl
@@ -35,11 +34,8 @@ from twisted.python.logfile import DailyLogFile
 from twisted.words.protocols import irc as twisted_irc
 
 
-from twisted.web.client import getPage
-
-
 #for now directly import plugins
-from jisho import Jisho
+from jisho.plugin import Jisho
 from jikan import Jikan
 from moon import Moon
 
