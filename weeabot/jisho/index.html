@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Jisho Definition Lookups</title>
+<title>Weeabot Jisho Lookups</title>
+{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
 </head>
-<h1>Jisho Definition Lookups</h1>
+<h1>Weeabot Jisho Lookups</h1>
 <body>
 {% if definitions %}
 	<table class="urls bordered">
@@ -15,7 +16,7 @@
     <tbody>
     {% for definition in definitions %}
       <tr class='definition'>
-              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class="nick">{{ definition.nick }}</td><td class='word'>{{ definition.word }}</td><th class='text'>{{ definition.text }}</td><td class='url'><a href="{{ definition.url }}">link</a></td>
+              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class="nick">{{ definition.nick }}</td><td class='word'>{{ definition.word }}</td><td class='text'>{{ definition.text }}</td><td class='url'><a href="{{ definition.url }}" target="_blank">link</a></td>
       </tr>
     {% endfor %}
     </tbody>
