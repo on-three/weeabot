@@ -38,6 +38,7 @@ from twisted.words.protocols import irc as twisted_irc
 from jisho.plugin import Jisho
 from jikan import Jikan
 from moon import Moon
+from youkoso import Youkoso
 
 DEFAULT_PORT = 6660
 LOG_FILENAME = 'weeabot.log'
@@ -81,6 +82,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Jisho(self))
     WeeaBot.plugins.append(Moon(self))
     WeeaBot.plugins.append(Jikan(self))
+    self.youkoso = Youkoso(self)
 
   def connectionLost(self, reason):
     twisted_irc.IRCClient.connectionLost(self, reason)
@@ -148,16 +150,19 @@ class WeeaBot(twisted_irc.IRCClient):
     pass
 
   def userJoined(self, user, channel):
-    pass
+    '''
+    Special handling if user joins channel
+    '''
+    self.youkoso.initiate_welcome(user, channel)
 
   def userLeft(self, user, channel):
-    pass
+    self.youkoso.initiate_farewell(user, channel)
 
   def userQuit(self, user, quit_message):
     pass
 
   def userKicked(self, kickee, channel, kicker, message):
-    pass
+    self.youkoso.initiate_farewell(kickee, channel)
 
   def action(self, user, channel, data):
     pass
@@ -167,7 +172,16 @@ class WeeaBot(twisted_irc.IRCClient):
 
   def userRenamed(self, oldname, newname):
     pass
+  '''
+  def who(self, channel):
+    self.sendLine('WHO %s' % channel)
 
+  def irc_RPL_WHOREPLY(self, *nargs):
+    print 'WHO:', nargs
+
+  def irc_RPL_ENDOFWHO(self, *nargs):
+    print 'WHO COMPLETE'
+  '''
   def alterCollidedNick(self, nickname):
     return nickname+'_'
 

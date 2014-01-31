@@ -1,15 +1,26 @@
 body {
-    width: 800px;
-    margin: 40px auto;
     font-family: 'trebuchet MS', 'Lucida sans', Arial;
     font-size: 14px;
     color: #444;
 }
 
+.sidebar {
+  width: 150px;
+  height: 100%;
+  float: left;
+  background: red;
+  padding: 10px
+}
+
 table {
-    *border-collapse: collapse; /* IE7 and lower */
-    border-spacing: 0;
-    width: 100%;    
+  width: 800px;
+  margin: 20px auto;
+  *border-collapse: collapse; /* IE7 and lower */
+  border-spacing: 0;   
+}
+
+.tablename {
+  margin: 20px auto;
 }
 
 .bordered {
