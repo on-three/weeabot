@@ -101,7 +101,7 @@ class Youkoso(object):
     welcome a user
     '''
     honorific = generate_honorific()
-    welcome = u'\u3044\u3063\u3089\u3057\u3083\u3044\u307E\u305B {nick}{h}!'.format(nick=nick, h=honorific).encode('utf-8')
+    welcome = u'\u3044\u3089\u3063\u3057\u3083\u3044\u307E\u305B {nick}{h}!'.format(nick=nick, h=honorific).encode('utf-8')
     self._parent.say(channel,  welcome)
 
   def initiate_farewell(self, nick, channel):
