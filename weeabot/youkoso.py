@@ -21,6 +21,7 @@ import time
 from twisted.python import log
 from romaji2katakana import GetKatakana
 from random import choice
+from twisted.python import log
 
 #TODO: move to python 3
 #this is really reaching the limit of what python 2.7 can do
@@ -96,27 +97,28 @@ class Youkoso(object):
     '''
     self._initiate_welcome.lookup(nick, channel)
 
-  def welcome(self, nick, channel):
+  def welcome(self, romaji, channel, katakana):
     '''
     welcome a user
     '''
     honorific = generate_honorific()
-    welcome = u'\u3044\u3089\u3063\u3057\u3083\u3044\u307E\u305B {nick}{h}!'.format(nick=nick, h=honorific).encode('utf-8')
+    welcome = u'\u3044\u3089\u3063\u3057\u3083\u3044\u307E\u305B {nick}{h}!'.format(nick=katakana, h=honorific).encode('utf-8')
     self._parent.say(channel,  welcome)
 
   def initiate_farewell(self, nick, channel):
     '''
     initiate a callback to say sayonara when someone departs
     '''
+    log.msg('Initiating a farewell to user {nick}'.format(nick=nick))
     self._initiate_farewell.lookup(nick, channel)
 
-  def farewell(self, nick, channel):
+  def farewell(self, romaji, channel, katakana):
     '''
     say goodbye
     '''
     honorific = generate_honorific()
-    welcome = u'\u3055\u3088\u3046\u306A\u3089 {nick}{h}!'.format(nick=nick, h=honorific).encode('utf-8')
-    self._parent.say(channel,  welcome)
+    farewell = u'\u3055\u3088\u3046\u306A\u3089 {nick}{h}!'.format(nick=katakana, h=honorific).encode('utf-8')
+    self._parent.msg(romaji, farewell)
 
   def error(self, e):
     print e

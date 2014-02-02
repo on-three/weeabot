@@ -26,14 +26,15 @@ class GetKatakana(object):
     '''
     Functor that wraps a HTML response
     '''
-    def __init__(self, callback_handler, channel):
+    def __init__(self, callback_handler, romaji, channel):
       self._callback_handler = callback_handler
+      self._romaji = romaji
       self._channel = channel
     def __call__(self, response):
       #extract katakana from response and invoke callback with stored info
       soup = BeautifulSoup(response)
       katakana = soup.find('td', {'class': 'katakana-string'}).text.strip()
-      self._callback_handler(katakana, self._channel)
+      self._callback_handler(self._romaji, self._channel, katakana)
 
   class HTMLError(object):
     '''
@@ -59,12 +60,12 @@ class GetKatakana(object):
     '''
     if use_romkan:
       katakana = romkan.to_katakana(romaji)
-      self.callback(katakana, channel)
+      self.callback(romaji, channel, katakana)
     else:
       #initiate a network lookup of romaji to katakana
       result = getPage('http://www.sljfaq.org/cgi/e2k.cgi?word={romaji}'.format(romaji=romaji))
       result.addCallbacks(
-        callback = GetKatakana.HTMLResponse(self.callback, channel),
+        callback = GetKatakana.HTMLResponse(self.callback, romaji, channel),
         errback = GetKatakana.HTMLError(self.error_callback))
 
 
