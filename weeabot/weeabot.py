@@ -156,13 +156,15 @@ class WeeaBot(twisted_irc.IRCClient):
     self.youkoso.initiate_welcome(user, channel)
 
   def userLeft(self, user, channel):
-    self.youkoso.initiate_farewell(user, channel=user)
+    self.youkoso.initiate_farewell(user, channel)
 
   def userQuit(self, user, quit_message):
-    self.youkoso.initiate_farewell(user, channel=user)
+    #self.youkoso.initiate_farewell(user, channel=user)
+    pass
 
   def userKicked(self, kickee, channel, kicker, message):
-    self.youkoso.initiate_farewell(kickee, channel=kickee)
+    #self.youkoso.initiate_farewell(kickee, channel=kickee)
+    pass
 
   def action(self, user, channel, data):
     pass

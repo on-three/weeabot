@@ -118,7 +118,7 @@ class Youkoso(object):
     '''
     honorific = generate_honorific()
     farewell = u'\u3055\u3088\u3046\u306A\u3089 {nick}{h}!'.format(nick=katakana, h=honorific).encode('utf-8')
-    self._parent.msg(romaji, farewell)
+    self._parent.say(channel, farewell)
 
   def error(self, e):
     print e
