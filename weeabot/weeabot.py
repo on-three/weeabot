@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#! /usr/bin/env python
 # vim: set ts=2 expandtab:
 """
 
@@ -78,13 +78,15 @@ class WeeaBot(twisted_irc.IRCClient):
   COMMAND_REGEX = r'^(?P<command>weeabot:?)( (?P<help>help))?'
 
   def connectionMade(self):
+    log.msg('connection made')
     twisted_irc.IRCClient.connectionMade(self)
     WeeaBot.plugins.append(Jisho(self))
     WeeaBot.plugins.append(Moon(self))
     WeeaBot.plugins.append(Jikan(self))
-    self.youkoso = Youkoso(self)
+    #self.youkoso = Youkoso(self)
 
   def connectionLost(self, reason):
+    log.msg('connection lost')
     twisted_irc.IRCClient.connectionLost(self, reason)
 
   def signedOn(self):
@@ -93,6 +95,7 @@ class WeeaBot(twisted_irc.IRCClient):
     We can use this opportunity to communicate with nickserv
     if necessary
     '''
+    log.msg('signed on')
     network = self.factory.network
 
     if network['identity']['nickserv_password']:
@@ -116,6 +119,7 @@ class WeeaBot(twisted_irc.IRCClient):
     Invoked upon receipt of a message in channel X.
     Give plugins a chance to handle it until one does
     '''
+    log.msg('privmsg ' + msg)
     self.handle_msg(user, channel, msg)
 
   def handle_msg(self, user, channel, msg):
@@ -138,7 +142,7 @@ class WeeaBot(twisted_irc.IRCClient):
     pass
 
   def noticed(self, user, channel, message):
-    pass
+    log.msg('noticed ' + message)
 
   def modeChanged(self, user, channel, set, modes, args):
     pass
@@ -153,10 +157,12 @@ class WeeaBot(twisted_irc.IRCClient):
     '''
     Special handling if user joins channel
     '''
-    self.youkoso.initiate_welcome(user, channel)
+    #self.youkoso.initiate_welcome(user, channel)
+    pass
 
   def userLeft(self, user, channel):
-    self.youkoso.initiate_farewell(user, channel)
+    #self.youkoso.initiate_farewell(user, channel)
+    pass
 
   def userQuit(self, user, quit_message):
     #self.youkoso.initiate_farewell(user, channel=user)
