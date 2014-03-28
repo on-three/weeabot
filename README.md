@@ -5,9 +5,10 @@ Python Twisted based Japanese support irc bot.
 
 Weeabot currently provides the following support via a simple plugin architecture:
 
-* Japanese word lookup via Jisho.org
-* English to Japanese word lookup via Jisho.org
-* Display current Tokyo time in Japanese
+* Japanese word lookup via Jisho.org.
+* English to Japanese word lookup via Jisho.org.
+* Display current Tokyo time in Japanese.
+* Transliterate words and phrases into katakana via sci.lang.jp web tool.
 
 Installation
 ------------
@@ -74,4 +75,11 @@ Use the jikan command to display current Tokyo time
 ```
 me: jikan
 weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
+```
+
+### Katakanize (transliterate words and phrases to katakana)
+Use the katakanize command to approximate any kind of word or phrase into katakana. This preserves the old "youkousoo" functionality which transliterated nicks into katakana, but which has been removed ;_;.
+```
+me: katakanize on_three
+weeabot:---> オン・スリー
 ```
