@@ -38,7 +38,8 @@ from twisted.words.protocols import irc as twisted_irc
 from jisho.plugin import Jisho
 from jikan import Jikan
 from moon import Moon
-from youkoso import Youkoso
+#from youkoso import Youkoso
+from katakanize import Katakanize
 
 DEFAULT_PORT = 6660
 LOG_FILENAME = 'weeabot.log'
@@ -83,6 +84,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Jisho(self))
     WeeaBot.plugins.append(Moon(self))
     WeeaBot.plugins.append(Jikan(self))
+    WeeaBot.plugins.append(Katakanize(self))
     #self.youkoso = Youkoso(self)
 
   def connectionLost(self, reason):

@@ -2,13 +2,14 @@
 from setuptools import setup
 
 #version 0.2: include basic webserver and jisho database display
+#version 0.3: added katakanize function
 
 def readme():
     with open('README.md') as f:
         return f.read()
 
 setup(name='weeabot',
-  version='0.2',
+  version='0.3',
   description='Japanese support IRC bot.',
   long_description = readme(),
 	classifiers=[
