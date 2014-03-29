@@ -21,7 +21,7 @@ class Katakanize(object):
   '''
   transliterate a post
   '''
-  COMMAND_REGEX = ur'^(?P<command>katakanize) (?P<data>.*)$'
+  COMMAND_REGEX = ur'^(?P<command>katakanize|\.k) (?P<data>.*)$'
   USAGE = u'katakanize <word or phrase to transliterate to katakana>'
 
   def __init__(self, parent):

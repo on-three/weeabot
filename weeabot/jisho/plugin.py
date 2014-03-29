@@ -29,8 +29,8 @@ class Jisho(object):
   Scrape definitions off of jisho.org
   '''
 
-  COMMAND_REGEX = r'^(?P<command>jisho)( (?P<word>[\S]*))?( (?P<dict>[\S]*))?'
-  USAGE = '\x033USAGE: jisho [japanese word to look up at jisho.org]'
+  COMMAND_REGEX = r'^(?P<command>jisho|\.j)( (?P<word>[\S]*))?( (?P<dict>[\S]*))?'
+  USAGE = '\x033USAGE: [jisho|.j] <japanese word to look up at jisho.org>'
 
   class JishoResponse(object):
     '''

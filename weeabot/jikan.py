@@ -20,7 +20,7 @@ class Jikan(object):
   '''
   print current japan time
   '''
-  COMMAND_REGEX = ur'^(?P<command>jikan|\u6642\u9593|\u3058\u304B\u3093)( (?P<data>[\S]*)$)?'
+  COMMAND_REGEX = ur'^(?P<command>jikan|\.t|\u6642\u9593|\u3058\u304B\u3093)( (?P<data>[\S]*)$)?'
 
   def __init__(self, parent):
     '''
