@@ -52,34 +52,48 @@ weeabot: currently loaded plugins: Jisho Moon Jikan
 
 ### Jisho (Japanese Word Lookup)
 Use the jisho command to look up Japanese words (in romaji, hiragana, katakana or kanji) via jisho.org.
+Command available by using the jisho command or simply '.j'.
 ```
 me: jisho watashi
 weeabot: 私 | わたし | watashi | I; me
 
-me: jisho わたし
+me: .j わたし
 weeabot: 私 | わたし | watashi | I; me
 
-me: jisho 私
+me: .j 私
 weeabot: 私 | わたし | watashi | I; me
 ```
 
 ### Moon (English to Japanese Word Lookup)
 Use the moon command (after 'moonrunes') to look up Japanese equivalents of English words.
+Also available via '.m'
 ```
 me: moon me
+weeabot:  私 | わたし | watashi | I; me
+
+me: .m me
 weeabot:  私 | わたし | watashi | I; me
 ```
 
 ### Jikan (Current Tokyo Time)
-Use the jikan command to display current Tokyo time
+Use the jikan command to display current Tokyo time.
+Command also available via '.t'.
 ```
 me: jikan
+weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
+
+me: .t
 weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
 ```
 
 ### Katakanize (transliterate words and phrases to katakana)
 Use the katakanize command to approximate any kind of word or phrase into katakana. This preserves the old "youkousoo" functionality which transliterated nicks into katakana, but which has been removed ;_;.
+Command also available via '.k'.
+It's clear the web serviced used here is very spotty, however.
 ```
 me: katakanize on_three
+weeabot:---> オン・スリー
+
+me: .k on_three
 weeabot:---> オン・スリー
 ```
