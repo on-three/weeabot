@@ -23,9 +23,9 @@ class VocabularyList(models.Model):
   vocab lists have many definitions, and definitions can be in
   many lists.
   '''
-  name = models.CharField(max_length=256)
+  name = models.CharField(max_length=256, unique=True)
   desc = models.CharField(max_length=2048)
-  entries = models.ManyToManyField(Definition)
+  entries = models.ManyToManyField(Definition, related_name='lists')
 
   def __unicode__(self):
     return self.name

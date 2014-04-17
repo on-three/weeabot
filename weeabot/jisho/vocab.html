@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Current Weeabot Vocabulary Lists</title>
+{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
+</head>
+<body>
+<h1 class="tablename">Current Weeabot Vocabulary Lists</h1>
+Currently maintained vocabulary lists.
+	<table class="urls bordered">
+    <thead class='definitions'>
+	    <tr>
+        <th class="timestamp">List</th><th class="channel">Description</th><th class='word'>xxx</th><th class='text'>xxx</th><th class='url'>Link</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for vocablist in lists %}
+      <tr class='definition'>
+              <td class="timestamp">{{ vocablist.name }}</td><td class="channel">{{ vocablist.desc }}</td><td class='word'>xxx</td><td class='text'>xxx</td><td class='url'><a href="{{ vocablist.name }}">{{ vocablist.name }}</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr><td class="footer" colspan=6><em>Editing interface not yet implemented.</em></td></tr>
+    </tfoot>
+    </table>
+</body>

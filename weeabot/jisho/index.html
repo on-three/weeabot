@@ -10,18 +10,23 @@
 	<table class="urls bordered">
     <thead class='definitions'>
 	    <tr>
-        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class="nick">Nick</th><th class='word'>Lookup</th><th class='text'>Definition</th><th class='url'>URL</th>
+        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class="nick">Nick</th><th class='word'>Lookup</th><th class='text'>Definition</th><th class='url'>URL</th><th>Vocabulary Lists</th>
       </tr>
     </thead>
     <tbody>
     {% for definition in definitions %}
       <tr class='definition'>
               <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class="nick">{{ definition.nick }}</td><td class='word'>{{ definition.word }}</td><td class='text'>{{ definition.text }}</td><td class='url'><a href="{{ definition.url }}" target="_blank">link</a></td>
+	<td class='url'>
+		{% for vlist in definition.lists.all %}
+			<a href="vocab/{{ vlist.name }}">{{ vlist.name }}</a>
+		{% endfor %}
+	</td>
       </tr>
     {% endfor %}
     </tbody>
     <tfoot>
-        <tr><td class="footer" colspan=6><em>To edit history use the django /admin interface.</em></td></tr>
+        <tr><td class="footer" colspan=7><em>To edit history use the django /admin interface.</em></td></tr>
     </tfoot>
     </table>
 

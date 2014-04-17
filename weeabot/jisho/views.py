@@ -35,3 +35,11 @@ def VocabularyListView(request, listname):
     'list_object' : list_object,
     })
   return HttpResponse(t.render(c))
+
+def VocabularyListsView(request):
+  lists = VocabularyList.objects.all()
+  t = loader.get_template('jisho/vocab.html')
+  c = Context({
+    'lists' : lists,
+    })
+  return HttpResponse(t.render(c))
