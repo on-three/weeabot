@@ -18,3 +18,14 @@ class Definition(models.Model):
   #  return '{nick}@{channel}:{text}'.format(nick=self.nick, \
   #    channel=self.channel, text=self.text)
 
+class VocabularyList(models.Model):
+  '''Model a vocabulary list to which definition (lookups) can
+  be added and removed.
+  vocab lists have many definitions, and definitions can be in
+  many lists.
+  '''
+  name = models.CharField(max_length=256)
+  desc = models.CharField(max_length=2048)
+  entries = models.ManyToManyField(Definition)
+
+
