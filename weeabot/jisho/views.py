@@ -12,6 +12,8 @@ def home(request):
   #handling post dropdown result
   if request.method == 'POST':
     list_name = request.POST.get('vlist', '')
+    if list_name == '...':
+      return HttpResponseRedirect('')
     definition_pk = request.POST.get('definition', '')
     definition = Definition.objects.get(pk=definition_pk)
     new_list = VocabularyList.objects.get(name=list_name)
@@ -71,6 +73,8 @@ def NickView(request, nick):
   #handling 'add to vocab list' dropdown
   if request.method == 'POST':
     list_name = request.POST.get('vlist', '')
+    if list_name == '...':
+      return HttpResponseRedirect('')
     definition_pk = request.POST.get('definition', '')
     definition = Definition.objects.get(pk=definition_pk)
     new_list = VocabularyList.objects.get(name=list_name)
