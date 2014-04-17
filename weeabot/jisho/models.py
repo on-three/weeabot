@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django import forms
 
 class Definition(models.Model):
   '''
@@ -29,5 +30,17 @@ class VocabularyList(models.Model):
 
   def __unicode__(self):
     return self.name
+
+class VocabularyListSelectionForm(forms.ModelForm):
+  '''Drop down list of vocab lists. Allows quick
+  assigning of definition to list.
+  '''
+  lists = forms.ChoiceField(choices=[l.name for l in VocabularyList.objects.all()])
+  class Meta:
+    model = Definition
+    fields = ('lists', )
+    widgets = {
+      'lists': forms.Select(),
+    }
 
 

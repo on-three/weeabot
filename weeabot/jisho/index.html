@@ -10,7 +10,7 @@
 	<table class="urls bordered">
     <thead class='definitions'>
 	    <tr>
-        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class="nick">Nick</th><th class='word'>Lookup</th><th class='text'>Definition</th><th class='url'>URL</th><th>Vocabulary Lists</th>
+        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class="nick">Nick</th><th class='word'>Lookup</th><th class='text'>Definition</th><th class='url'>URL</th><th>Vocabulary Lists</th><th>Add To:</th>
       </tr>
     </thead>
     <tbody>
@@ -22,11 +22,25 @@
 			<a href="vocab/{{ vlist.name }}">{{ vlist.name }}</a>
 		{% endfor %}
 	</td>
+	<td>
+		<form action="" method="post">
+			{% csrf_token %}
+			<select id="ddVlist" name="vlist">
+			<option  selected="selected">...</option>
+    {% for vlist in lists %}
+			{% if vlist not in definition.lists.all %}
+        <option value="{{ vlist.name }}">{{ vlist.name }}</option>
+			{% endif %}
+    {% endfor %}   
+			</select>
+			<input type="submit" value="Select">
+		</form>
+	</td>
       </tr>
     {% endfor %}
     </tbody>
     <tfoot>
-        <tr><td class="footer" colspan=7><em>To edit history use the django /admin interface.</em></td></tr>
+        <tr><td class="footer" colspan=8><em>To edit history use the django /admin interface.</em></td></tr>
     </tfoot>
     </table>
 

@@ -1,15 +1,26 @@
 # vim: set ts=2 expandtab:
 # Create your views here.
-from django.template import Context, loader
+from django.template import Context, RequestContext, loader
 from weeabot.jisho.models import Definition
 from weeabot.jisho.models import VocabularyList
-from django.http import HttpResponse
+from weeabot.jisho.models import VocabularyListSelectionForm
+from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django import forms
 
 def home(request):
-  definitions = Definition.objects.all().order_by('timestamp').reverse()
-  paginator = Paginator(definitions, 30) # Show 30 contacts per page
+  #handling post dropdown result
+  if request.method == 'POST':
+    #form = VocabularyListForm(request.POST)
+    #
+    #if form.is_valid():
+    #  vlist = form.cleaned_data['value']
+    #  #TODO: add given definition to indicated vocab list.
+    return HttpResponseRedirect('')
 
+  definitions = Definition.objects.all().order_by('timestamp').reverse()
+  lists = VocabularyList.objects.all()
+  paginator = Paginator(definitions, 30) # Show 30 contacts per page
   page = request.GET.get('page')
   try:
     definitions = paginator.page(page)
@@ -21,9 +32,11 @@ def home(request):
     definitions = paginator.page(paginator.num_pages)
 
   t = loader.get_template('jisho/index.html')
-  c = Context({
+  c = RequestContext(request, {
+  #c = Context({
     'definitions': definitions,
-    'paginator' : paginator
+    'paginator' : paginator,
+    'lists' : lists,
     })
   return HttpResponse(t.render(c))
 
