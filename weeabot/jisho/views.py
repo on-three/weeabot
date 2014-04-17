@@ -45,11 +45,7 @@ def VocabularyListView(request, listname):
   #handle delte of single list entry
   if request.method == 'POST':
     definition_pk = request.POST.get('definition', '')
-    print str(definition_pk)
     definition = Definition.objects.get(pk=definition_pk)
-    #list_object.entries.remove(definition)
-    print list_object.name
-    print definition.text
     definition.lists.remove(list_object)
     return HttpResponseRedirect('')
  
@@ -63,6 +59,40 @@ def VocabularyListsView(request):
   lists = VocabularyList.objects.all()
   t = loader.get_template('jisho/vocab.html')
   c = Context({
+    'lists' : lists,
+    })
+  return HttpResponse(t.render(c))
+
+def NickView(request, nick):
+  #handling 'add to vocab list' dropdown
+  if request.method == 'POST':
+    list_name = request.POST.get('vlist', '')
+    definition_pk = request.POST.get('definition', '')
+    definition = Definition.objects.get(pk=definition_pk)
+    new_list = VocabularyList.objects.get(name=list_name)
+    definition.lists.add(new_list)
+    return HttpResponseRedirect('')
+
+  definitions = Definition.objects.all().order_by('timestamp').reverse()
+  #only keep those definitions which contain nick of interest
+  definitions = [d for d in definitions if d.simple_nick() == nick]
+  lists = VocabularyList.objects.all()
+  paginator = Paginator(definitions, 30) # Show 30 contacts per page
+  page = request.GET.get('page')
+  try:
+    definitions = paginator.page(page)
+  except PageNotAnInteger:
+    # If page is not an integer, deliver first page.
+    definitions = paginator.page(1)
+  except EmptyPage:
+    # If page is out of range (e.g. 9999), deliver last page of results.
+    definitions = paginator.page(paginator.num_pages)
+
+  t = loader.get_template('jisho/nick.html')
+  c = RequestContext(request, {
+    'nick' : nick,
+    'definitions': definitions,
+    'paginator' : paginator,
     'lists' : lists,
     })
   return HttpResponse(t.render(c))

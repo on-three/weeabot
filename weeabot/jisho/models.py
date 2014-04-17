@@ -18,6 +18,9 @@ class Definition(models.Model):
   def __unicode__(self):
     return self.text
 
+  def simple_nick(self):
+    return self.nick.split('!')[0]
+
 class VocabularyList(models.Model):
   '''Model a vocabulary list to which definition (lookups) can
   be added and removed.
