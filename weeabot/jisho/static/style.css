@@ -13,10 +13,14 @@ body {
 }
 
 table {
-  width: 800px;
+  width: 90%;
   margin: 20px auto;
   *border-collapse: collapse; /* IE7 and lower */
   border-spacing: 0;   
+}
+
+td.text {
+  width: 50%
 }
 
 .tablename {

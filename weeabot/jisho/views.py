@@ -19,6 +19,8 @@ def home(request):
     return HttpResponseRedirect('')
 
   definitions = Definition.objects.all().order_by('timestamp').reverse()
+  first_date = definitions[len(definitions)-1].timestamp
+  last_date = definitions[0].timestamp
   lists = VocabularyList.objects.all()
   paginator = Paginator(definitions, 30) # Show 30 contacts per page
   page = request.GET.get('page')
@@ -33,6 +35,8 @@ def home(request):
 
   t = loader.get_template('jisho/index.html')
   c = RequestContext(request, {
+    'first_date' : first_date,
+    'last_date' : last_date,
     'definitions': definitions,
     'paginator' : paginator,
     'lists' : lists,

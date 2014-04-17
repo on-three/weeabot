@@ -6,6 +6,7 @@
 </head>
 <body>
 <h1 class="tablename">Weeabot Jisho Lookups</h1>
+Weeabot lookups from most recent to least.
 {% if definitions %}
 	<table class="urls bordered">
     <thead class='definitions'>
@@ -46,7 +47,11 @@
     {% endfor %}
     </tbody>
     <tfoot>
-        <tr><td class="footer" colspan=8><em>To edit history use the django /admin interface.</em></td></tr>
+        <tr><td class="footer" colspan=8>
+        <em>Page generated {% now "jS F Y H:i" %}.<br>
+Database records available from {{ first_date }}.<br>
+Last lookup on {{ last_date }}.
+        </em></td></tr>
     </tfoot>
     </table>
 

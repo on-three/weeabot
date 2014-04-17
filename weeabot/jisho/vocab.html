@@ -10,18 +10,18 @@ Currently maintained vocabulary lists.
 	<table class="urls bordered">
     <thead class='definitions'>
 	    <tr>
-        <th class="timestamp">List</th><th class="channel">Description</th><th class='word'>xxx</th><th class='text'>xxx</th><th class='url'>Link</th>
+        <th class="name">List</th><th class='text'>Description</th><th class='entrycount'>Number of Entries</th><th>Last Updated</th>
       </tr>
     </thead>
     <tbody>
     {% for vocablist in lists %}
       <tr class='definition'>
-              <td class="timestamp">{{ vocablist.name }}</td><td class="channel">{{ vocablist.desc }}</td><td class='word'>xxx</td><td class='text'>xxx</td><td class='url'><a href="{{ vocablist.name }}">{{ vocablist.name }}</a></td>
+              <td class="name"><a href="{{ vocablist.name }}">{{ vocablist.name }}</a></td><td class='text'>{{ vocablist.desc }}</td><td class='entrycount'>{{ vocablist.entries.all|length }}</td><td>xxx</td>
       </tr>
     {% endfor %}
     </tbody>
     <tfoot>
-        <tr><td class="footer" colspan=6><em>Editing interface not yet implemented.</em></td></tr>
+        <tr><td class="footer" colspan=4><em>Page generated {% now "jS F Y H:i" %}.</em></td></tr>
     </tfoot>
     </table>
 </body>
