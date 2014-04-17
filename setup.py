@@ -44,8 +44,9 @@ setup(name='weeabot',
       ])
   ],
 	package_data = {
-    '': ['*.html', '*.rst', '*.css'],
-    'weeabot.jisho': ['static/*.css'],
+    '': ['*.html', '*.rst', '*.css', '*.jpg'],
+    'weeabot.jisho': ['static/*'],
+    'weeabot.webserver': ['static/*'],
 	},
   entry_points = {
     'console_scripts': [

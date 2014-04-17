@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+print BASE_DIR
 import os.path
 from os.path import expanduser
 
@@ -90,7 +91,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+  os.path.join(BASE_DIR, "static"),
+  os.path.join(BASE_DIR, "webserver/static"),
 )
 
 TEMPLATE_DIRS = (
