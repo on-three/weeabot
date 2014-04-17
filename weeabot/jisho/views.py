@@ -33,7 +33,6 @@ def home(request):
 
   t = loader.get_template('jisho/index.html')
   c = RequestContext(request, {
-  #c = Context({
     'definitions': definitions,
     'paginator' : paginator,
     'lists' : lists,
@@ -42,9 +41,20 @@ def home(request):
 
 def VocabularyListView(request, listname):
   list_object = VocabularyList.objects.get(name=listname)
+  
+  #handle delte of single list entry
+  if request.method == 'POST':
+    definition_pk = request.POST.get('definition', '')
+    print str(definition_pk)
+    definition = Definition.objects.get(pk=definition_pk)
+    #list_object.entries.remove(definition)
+    print list_object.name
+    print definition.text
+    definition.lists.remove(list_object)
+    return HttpResponseRedirect('')
  
   t = loader.get_template('jisho/vocabulary_list.html')
-  c = Context({
+  c = RequestContext(request, {
     'list_object' : list_object,
     })
   return HttpResponse(t.render(c))
