@@ -16,27 +16,31 @@
     <tbody>
     {% for definition in definitions %}
       <tr class='definition'>
-              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class='word'>{{ definition.word }}</td><td class='text'>{{ definition.text }}</td><td class='url'><a href="{{ definition.url }}" target="_blank">link</a></td>
-	<td class='url'>
-		{% for vlist in definition.lists.all %}
-			<a href="../vocab/{{ vlist.name }}">{{ vlist.name }}</a>
-		{% endfor %}
-	</td>
-	<td>
-		<form action="" method="post">
-			{% csrf_token %}
-			<select id="ddVlist" name="vlist">
-			<option  selected="selected">...</option>
-    {% for vlist in lists %}
-			{% if vlist not in definition.lists.all %}
-        <option value="{{ vlist.name }}">{{ vlist.name }}</option>
-			{% endif %}
-    {% endfor %}
-			</select>
-			<input type="hidden" name="definition" value="{{ definition.pk }}">  
-			<input type="submit" value="Select">
-		</form>
-	</td>
+        <td class="timestamp">{{ definition.timestamp }}</td>
+				<td class="channel">{{ definition.channel }}</td>
+				<td class='word'>{{ definition.word }}</td>
+				<td class='text'>{{ definition.text }}</td>
+				<td class='url'><a href="{{ definition.url }}" target="_blank">link</a></td>
+				<td class='url'>
+					{% for vlist in definition.lists.all %}
+						<a href="../vocab/{{ vlist.name }}">{{ vlist.name }}</a>
+					{% endfor %}
+				</td>
+				<td>
+					<form action="" method="post">
+						{% csrf_token %}
+						<select id="ddVlist" name="vlist">
+						<option  selected="selected">...</option>
+					{% for vlist in lists %}
+						{% if vlist not in definition.lists.all %}
+						  <option value="{{ vlist.name }}">{{ vlist.name }}</option>
+						{% endif %}
+					{% endfor %}
+						</select>
+						<input type="hidden" name="definition" value="{{ definition.pk }}">  
+						<input type="submit" value="Select">
+					</form>
+				</td>
       </tr>
     {% endfor %}
     </tbody>
