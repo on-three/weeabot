@@ -14,9 +14,8 @@ class Definition(models.Model):
   text = models.CharField(max_length=256)
   word = models.CharField(max_length=128)
   
-  #def __unicode__(self):
-  #  return '{nick}@{channel}:{text}'.format(nick=self.nick, \
-  #    channel=self.channel, text=self.text)
+  def __unicode__(self):
+    return self.text
 
 class VocabularyList(models.Model):
   '''Model a vocabulary list to which definition (lookups) can
@@ -27,5 +26,8 @@ class VocabularyList(models.Model):
   name = models.CharField(max_length=256)
   desc = models.CharField(max_length=2048)
   entries = models.ManyToManyField(Definition)
+
+  def __unicode__(self):
+    return self.name
 
 
