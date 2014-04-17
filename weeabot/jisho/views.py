@@ -11,11 +11,11 @@ from django import forms
 def home(request):
   #handling post dropdown result
   if request.method == 'POST':
-    #form = VocabularyListForm(request.POST)
-    #
-    #if form.is_valid():
-    #  vlist = form.cleaned_data['value']
-    #  #TODO: add given definition to indicated vocab list.
+    list_name = request.POST.get('vlist', '')
+    definition_pk = request.POST.get('definition', '')
+    definition = Definition.objects.get(pk=definition_pk)
+    new_list = VocabularyList.objects.get(name=list_name)
+    definition.lists.add(new_list)
     return HttpResponseRedirect('')
 
   definitions = Definition.objects.all().order_by('timestamp').reverse()

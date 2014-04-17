@@ -31,8 +31,9 @@
 			{% if vlist not in definition.lists.all %}
         <option value="{{ vlist.name }}">{{ vlist.name }}</option>
 			{% endif %}
-    {% endfor %}   
+    {% endfor %}
 			</select>
+			<input type="hidden" name="definition" value="{{ definition.pk }}">  
 			<input type="submit" value="Select">
 		</form>
 	</td>
