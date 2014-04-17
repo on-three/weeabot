@@ -2,6 +2,7 @@
 # Create your views here.
 from django.template import Context, loader
 from weeabot.jisho.models import Definition
+from weeabot.jisho.models import VocabularyList
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -23,5 +24,14 @@ def home(request):
   c = Context({
     'definitions': definitions,
     'paginator' : paginator
+    })
+  return HttpResponse(t.render(c))
+
+def VocabularyListView(request, listname):
+  list_object = VocabularyList.objects.get(name=listname)
+ 
+  t = loader.get_template('jisho/vocabulary_list.html')
+  c = Context({
+    'list_object' : list_object,
     })
   return HttpResponse(t.render(c))

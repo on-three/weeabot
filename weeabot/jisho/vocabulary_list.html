@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{ list_object.name }}</title>
+{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
+</head>
+<body>
+<h1 class="tablename">{{ list_object.name }}</h1>
+{{ list_object.desc }}
+	<table class="urls bordered">
+    <thead class='definitions'>
+	    <tr>
+        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class='word'>Lookup</th><th class='text'>Definition</th><th class='url'>URL</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for definition in list_object.entries.all %}
+      <tr class='definition'>
+              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class='word'>{{ definition.word }}</td><td class='text'>{{ definition.text }}</td><td class='url'><a href="{{ definition.url }}" target="_blank">link</a></td>
+      </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+        <tr><td class="footer" colspan=6><em>Editing interface not yet implemented.</em></td></tr>
+    </tfoot>
+    </table>
+</body>
