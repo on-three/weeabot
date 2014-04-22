@@ -6,6 +6,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 def home(request):
   t = loader.get_template('webserver/index.html')
-  c = RequestContext(request, {
-    })
+  c = RequestContext(request,
+  {
+    'user' : request.user,
+  })
   return HttpResponse(t.render(c))

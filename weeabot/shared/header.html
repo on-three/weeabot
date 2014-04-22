@@ -1,0 +1,11 @@
+<div class=header>
+<div class='authentication'>
+{% if user.is_authenticated and user.is_active %}
+<a href='/logout'>logout</a> {{ user.username }} <br>
+{% else %}
+<a href='/login'>login</a><a href='/accounts/register'>register</a>
+{% endif %}
+</div>
+<div class='navigation_bar'>
+<a href='/'>weeabot</a> | <a href='/jisho'>jisho</a> | <a href='/jisho/vocab/'>vocabulary</a> | <a href='https://github.com/on-three/weeabot' target="_blank">github</a>
+</div>

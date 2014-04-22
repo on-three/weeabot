@@ -30,6 +30,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = '/'
+
 
 # Application definition
 
@@ -41,6 +43,8 @@ INSTALLED_APPS = (
   'django.contrib.messages',
   'django.contrib.staticfiles',
   'weeabot.jisho',
+  'registration',
+  'django.contrib.sites',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -53,8 +57,16 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'weeabot.webserver.urls'
+#registration plugin
+ACCOUNT_ACTIVATION_DAYS = 1 #one day activation window
 
 WSGI_APPLICATION = 'weeabot.webserver.wsgi.application'
+
+SITE_ID = 1
+
+#Dummy email backend for use during development
+#https://docs.djangoproject.com/en/1.6/topics/email/#topic-email-console-backend
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Database

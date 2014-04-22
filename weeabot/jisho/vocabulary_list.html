@@ -5,6 +5,7 @@
 {% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
 </head>
 <body>
+{% include "shared/header.html" %}
 <h1 class="tablename">{{ list_object.name }}</h1>
 {{ list_object.desc }}
 	<table class="urls bordered">

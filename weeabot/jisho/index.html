@@ -5,6 +5,7 @@
 {% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
 </head>
 <body>
+{% include "shared/header.html" %}
 <h1 class="tablename">Weeabot Jisho Lookups</h1>
 Weeabot lookups from most recent to least.
 {% if definitions %}

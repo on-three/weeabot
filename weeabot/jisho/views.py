@@ -37,6 +37,7 @@ def home(request):
 
   t = loader.get_template('jisho/index.html')
   c = RequestContext(request, {
+    'user' : request.user,
     'first_date' : first_date,
     'last_date' : last_date,
     'definitions': definitions,
@@ -65,6 +66,7 @@ def VocabularyListsView(request):
   lists = VocabularyList.objects.all()
   t = loader.get_template('jisho/vocab.html')
   c = Context({
+    'user' : request.user,
     'lists' : lists,
     })
   return HttpResponse(t.render(c))
@@ -98,6 +100,7 @@ def NickView(request, nick):
 
   t = loader.get_template('jisho/nick.html')
   c = RequestContext(request, {
+    'user' : request.user,
     'nick' : nick,
     'definitions': definitions,
     'paginator' : paginator,

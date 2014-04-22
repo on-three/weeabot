@@ -44,7 +44,8 @@ setup(name='weeabot',
       ])
   ],
 	package_data = {
-    '': ['*.html', '*.rst', '*.css', '*.jpg'],
+    '': ['*.html', '*.rst', '*.css', '*.jpg', '*.txt',],
+    'weeabot' : ['shared/*', 'registration/*',],
     'weeabot.jisho': ['static/*'],
     'weeabot.webserver': ['static/*'],
 	},

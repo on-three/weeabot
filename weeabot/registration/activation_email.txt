@@ -1,0 +1,6 @@
+This is your account activation email from {{ site.name }}.
+Please click the link below to activate your account.
+
+http://{{ site.domain }}{% url 'registration_activate' activation_key %}
+
+The activation link above is valid for {{ expiration_days }} day(s).

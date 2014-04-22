@@ -11,6 +11,14 @@ body {
     margin-right: auto;
 }
 
+div.header a:visited {
+  color: blue;
+}
+
+.header {
+  text-align: center;
+}
+
 .sidebar {
   width: 150px;
   height: 100%;

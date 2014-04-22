@@ -1,7 +1,7 @@
 body {
-    font-family: 'trebuchet MS', 'Lucida sans', Arial;
-    font-size: 14px;
-    color: #444;
+  font-family: 'trebuchet MS', 'Lucida sans', Arial;
+  font-size: 14px;
+  color: #444;
 }
 
 .sidebar {
@@ -10,6 +10,14 @@ body {
   float: left;
   background: red;
   padding: 10px
+}
+
+div.header a:visited {
+  color: blue;
+}
+
+.header {
+  text-align: center;
 }
 
 table {
