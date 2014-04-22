@@ -1,11 +1,31 @@
-<div class=header>
-<div class='authentication'>
+<table class='header'>
+  <tr><td>
 {% if user.is_authenticated and user.is_active %}
-<a href='/logout'>logout</a> {{ user.username }} <br>
+    <table class='authentication'>
+      <tr><td>
+Currently logged in as: {{ user.username }}
+      </td></tr>
+      <tr><td>
+        <form action="/logout">
+          <input class='logout' type="submit" value="logout">
+        </form>
+      </td>
+     </tr></table>
 {% else %}
-<a href='/login'>login</a><a href='/accounts/register'>register</a>
+      <table class='authentication'><tr>
+        <td>
+          <form action="/login">
+            <input class='login' type="submit" value="login">
+          </form>
+        </td>
+        <td>
+          <form action='/accounts/register'>
+            <input class='register' type="submit" value="register">
+          </form>
+        </td>
+      </tr></table>
 {% endif %}
-</div>
-<div class='navigation_bar'>
-<a href='/'>weeabot</a> | <a href='/jisho'>jisho</a> | <a href='/jisho/vocab/'>vocabulary</a> | <a href='https://github.com/on-three/weeabot' target="_blank">github</a>
-</div>
+  </td></tr>
+  <tr><td class='navigation_bar'>
+  <a href='/'>weeabot</a> | <a href='/jisho'>jisho</a> | <a href='/jisho/vocab/'>vocabulary</a> | <a href='https://github.com/on-three/weeabot' target="_blank">github</a>
+</td></tr></table>

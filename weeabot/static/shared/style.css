@@ -12,11 +12,44 @@ body {
   padding: 10px
 }
 
-div.header a:visited {
+.authentication {
+  text-align: right;
+  display:inline-table
+  width: 0;
+  margin: none;
+  float: right;
+}
+
+input.login {
+  width: 100px;
+}
+input.logout {
+  width: 100px;
+}
+input.register {
+  width: 100px;
+}
+
+table.authentication {
+  text-align: right;
+  float: right;
+  margin: 0px auto;
+  width : 0;
+  white-space: nowrap;
+}
+table.header {
+  margin: 0px auto;
+}
+
+.splash {
+  text-align: center;
+}
+
+.navigation_bar a:visited {
   color: blue;
 }
 
-.header {
+.navigation_bar {
   text-align: center;
 }
 
@@ -108,5 +141,16 @@ td.text {
     -moz-border-radius: 0 0 6px 0;
     -webkit-border-radius: 0 0 6px 0;
     border-radius: 0 0 6px 0;
+}
+
+table.rounded {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+table.rounded, td.rounded{
+    border: 1px solid black;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    padding: 5px;
 }
 
