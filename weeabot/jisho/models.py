@@ -3,6 +3,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import datetime
 from django import forms
+from django.core.validators import validate_slug
 
 class Definition(models.Model):
   '''
@@ -27,9 +28,11 @@ class VocabularyList(models.Model):
   vocab lists have many definitions, and definitions can be in
   many lists.
   '''
-  name = models.CharField(max_length=256, unique=True)
+  #validate_slug ensures the name can only be alphanumeric with underscores and hyphens
+  #this makes it appropriate as part of a url (e.g. www.xxx.com://vocabury/list_name)
+  name = models.CharField(max_length=256, unique=True, validators=[validate_slug])
   desc = models.CharField(max_length=2048)
-  entries = models.ManyToManyField(Definition, related_name='lists')
+  entries = models.ManyToManyField(Definition, related_name='lists', blank=True)
 
   def __unicode__(self):
     return self.name
