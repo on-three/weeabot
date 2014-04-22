@@ -103,8 +103,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-  os.path.join(BASE_DIR, "static"),
-  os.path.join(BASE_DIR, "webserver/static"),
+  os.path.join(BASE_DIR, "static/shared"),
+  os.path.join(BASE_DIR, "static/jisho"),
+  os.path.join(BASE_DIR, "static/webserver"),
 )
 
 TEMPLATE_DIRS = (

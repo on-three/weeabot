@@ -45,9 +45,7 @@ setup(name='weeabot',
   ],
 	package_data = {
     '': ['*.html', '*.rst', '*.css', '*.jpg', '*.txt',],
-    'weeabot' : ['shared/*', 'registration/*',],
-    'weeabot.jisho': ['static/*'],
-    'weeabot.webserver': ['static/*'],
+    'weeabot' : ['shared/*', 'registration/*', 'static/shared/*', 'static/jisho/*', 'static/webserver/*'],
 	},
   entry_points = {
     'console_scripts': [
