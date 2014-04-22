@@ -9,6 +9,9 @@ Weeabot currently provides the following support via a simple plugin architectur
 * English to Japanese word lookup via Jisho.org.
 * Display current Tokyo time in Japanese.
 * Transliterate words and phrases into katakana via sci.lang.jp web tool.
+* IRC lookups inserted into SQL backend.
+* Django web interface for viewing and manipulating lookup history.
+* Formation of vocabulary lists via web interface.
 
 Installation
 ------------
