@@ -3,7 +3,7 @@
 {% if user.is_authenticated and user.is_active %}
     <table class='authentication'>
       <tr><td>
-Currently logged in as: {{ user.username }}
+Currently logged in as: <a href='/accounts/profile' >{{ user.username }}</a>
       </td></tr>
       <tr><td>
         <form action="/logout">

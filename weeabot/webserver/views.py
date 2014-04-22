@@ -7,17 +7,11 @@ from django.contrib.auth.decorators import login_required
 
 def home(request):
   t = loader.get_template('webserver/index.html')
-  c = RequestContext(request,
-  {
-    'user' : request.user,
-  })
+  c = RequestContext(request)
   return HttpResponse(t.render(c))
 
 @login_required
 def profile(request):
   t = loader.get_template('webserver/profile.html')
-  c = RequestContext(request,
-  {
-    'user' : request.user,
-  })
+  c = RequestContext(request)
   return HttpResponse(t.render(c))
