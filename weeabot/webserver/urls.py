@@ -21,6 +21,7 @@ urlpatterns = patterns('',
       'next_page': '/',
     }
   ),
+  url(r'^accounts/profile/', 'weeabot.webserver.views.profile', name='profile'),
   url(r'^accounts/', include('registration.backends.default.urls')),
   url(r'^jisho/', include('weeabot.jisho.urls')),
   url(r'^admin/', include(admin.site.urls)),

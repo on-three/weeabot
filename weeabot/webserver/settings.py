@@ -45,6 +45,7 @@ INSTALLED_APPS = (
   'weeabot.jisho',
   'registration',
   'django.contrib.sites',
+  'weeabot.webserver',
 )
 
 MIDDLEWARE_CLASSES = (
