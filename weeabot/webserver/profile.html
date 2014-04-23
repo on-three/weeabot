@@ -7,8 +7,17 @@
 <body>
 {% include "shared/header.html" %}
 <div>
-<h1>Weeabot User Profile for {{ user.username }}</h1>
-email: {{ user.email }}<br>
-IRC_Nick : {{ user.django_.nick }}<br>
+<h1>Weeabot User Profile for user: {{ user.username }}</h1>
+Username: {{ user.username }}<br>
+Creation Date: {{ user.date_joined }}<br>
+Last Login: {{ user.last_login }}<br>
+<form method="post" action=''>
+{% csrf_token %}
+{{ userform.first_name.label }}{{ userform.first_name }}<br>
+{{ userform.last_name.label }}{{ userform.last_name }}<br>
+{{ userform.email.label }}{{ userform.email }}<br>
+Associated IRC Nick{{ form.nick }}<br>
+<input type="submit" name='update' value="Update" /><input type="submit" name='cancel' value="Cancel" />
+</form>
 </div>
 </body>

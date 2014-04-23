@@ -2,7 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
-from django import forms
+from django.forms import ModelForm
 from django.core.validators import validate_slug
 
 class WeeabotUser(models.Model):
@@ -23,6 +23,20 @@ class WeeabotUser(models.Model):
   #avatar = models.URLField(blank=True)
   def __unicode__(self):
     return self.user.username
+
+
+#user profile form support as per: http://stackoverflow.com/questions/3523745/best-way-to-do-register-a-user-in-django
+class UserForm(ModelForm):
+  class Meta:
+    model = User
+    fields = [ 'first_name', 'last_name', 'email']
+    #exclude = ['username', 'password', 'last_login', 'groups', 'user_permissions', 'is_staff', 'is_active', 'is_superuser', 'date_joined']
+      
+
+class WeeabotUserForm(ModelForm):
+  class Meta:
+    model = WeeabotUser
+    exclude = ['user']
 
 
 
