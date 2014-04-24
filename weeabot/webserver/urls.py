@@ -11,18 +11,62 @@ urlpatterns = patterns('',
   url(r'^$', 'weeabot.webserver.views.home', name='home'),
   url(r'^login/', 'django.contrib.auth.views.login',
     {
-      #'template_name': 'registration/login.html',
       'extra_context': {'next':'/'},
-    }
+    },
+    name='login',
   ),
   url(r'^logout/', 'django.contrib.auth.views.logout',
     {
-      #'template_name': 'registration/login.html',
       'next_page': '/',
-    }
+    },
+    name='logout',
   ),
-  url(r'^accounts/profile/', 'weeabot.webserver.views.profile', name='profile'),
+  url(r'^accounts/password/change/$',
+    'django.contrib.auth.views.password_change',
+    {
+      'template_name': 'registration/password_change.html',
+      'post_change_redirect': '/accounts/profile/',
+    },
+    name='account_password_change',
+  ),
+
+  url(r'^accounts/password/reset/$',
+    'django.contrib.auth.views.password_reset',
+    {
+      'template_name': 'registration/password_reset.html',
+      'post_reset_redirect': '/accounts/password/reset/done',
+      'email_template_name' : 'registration/reset_password_email.txt',
+    },
+    name='account_password_reset',
+  ),
+
+  url(r'^accounts/password/reset/done/$',
+    'django.contrib.auth.views.password_reset_done',
+    {
+      'template_name': 'registration/password_reset_done.html',
+    },
+    name='account_password_reset_done',
+  ),
+
+  url(r'^accounts/password/reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/$',
+    'django.contrib.auth.views.password_reset_confirm',
+    {
+      'template_name': 'registration/password_reset_confirm.html',
+      #'post_change_redirect': '/accounts/password/done',
+    },
+    name='account_password_reset_confirm',
+  ),
+
+  url(r'^accounts/password/done/$',
+    'django.contrib.auth.views.password_reset_complete',
+    {
+      'template_name': 'registration/password_reset_complete.html',
+      #'post_change_redirect': '/accounts/password/done',
+    },
+    name='password_reset_complete',
+  ),
+  url(r'^accounts/profile/', 'weeabot.webserver.views.profile', name='account_profile'),
   url(r'^accounts/', include('registration.backends.default.urls')),
-  url(r'^jisho/', include('weeabot.jisho.urls')),
-  url(r'^admin/', include(admin.site.urls)),
+  url(r'^jisho/', include('weeabot.jisho.urls'), name='jisho'),
+  url(r'^admin/', include(admin.site.urls), name='admin'),
 )

@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 import datetime
 from django.forms import ModelForm
 from django.core.validators import validate_slug
+from django.db.models.signals import post_save
 
 class WeeabotUser(models.Model):
   '''
@@ -23,6 +24,15 @@ class WeeabotUser(models.Model):
   #avatar = models.URLField(blank=True)
   def __unicode__(self):
     return self.user.username
+
+def create_user_profile(sender, instance, created, **kwargs):
+  '''Need to hook handler to user creation signal. this allows us to
+  create a default instance of a user profile at that time
+  '''
+  if created:
+    WeeabotUser.objects.create(user=instance)
+
+post_save.connect(create_user_profile, sender=User)
 
 
 #user profile form support as per: http://stackoverflow.com/questions/3523745/best-way-to-do-register-a-user-in-django
