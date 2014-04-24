@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Weeabot Activation</title>
-{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
-</head>
-<body>
-<h1>Weeabot Activation</h1>
+{% extends 'shared/base.html' %}
+{% with title="Activate" description='Activate your Weeabot Account' %}
+{% load url from future %}
+
+{% block content %}
 your activation key is: {{ activation key }}
-</body>
+{% endblock %}
+{% endwith %}

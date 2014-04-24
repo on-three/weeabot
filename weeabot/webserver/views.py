@@ -30,6 +30,8 @@ def profile(request):
     t = loader.get_template('webserver/profile.html')
     c = RequestContext(request,
       { 
+        'title' : 'Weeabot User Profile',
+        'description' : 'Current account details for username {name}'.format(name=request.user.username),
         'form' : form,
         'userform' : userform, 
       }

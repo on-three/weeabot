@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Weeabot Registration Email Sent</title>
-{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
-</head>
-<body>
-<h1>Weeabot Activation Email Sent</h1>
+{% extends 'shared/base.html' %}
+{% with title='Weeabot Registration Initiated' description='Continuing the registration process.' %}
+{% load url from future %}
+{% block content %}
 An email has been sent to the address you provided during registration.<br>
 Please follow the link in the email body to activate your account.<br>
 You'll be able to log in with your stated credentials after activation.<br>
-</body>
+{% endblock %}
+{% endwith %}

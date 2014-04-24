@@ -1,24 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Weeabot User Profile</title>
-{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
-</head>
-<body>
-{% include "shared/header.html" %}
-<div>
-<h1>Weeabot User Profile for user: {{ user.username }}</h1>
-Username: {{ user.username }}<br>
-Creation Date: {{ user.date_joined }}<br>
-Last Login: {{ user.last_login }}<br>
+{% extends 'shared/base.html' %}
+{% load url from future %}
+{% block content %}
 <form method="post" action=''>
 {% csrf_token %}
-{{ userform.first_name.label }}{{ userform.first_name }}<br>
-{{ userform.last_name.label }}{{ userform.last_name }}<br>
-{{ userform.email.label }}{{ userform.email }}<br>
-Associated IRC Nick{{ form.nick }}<br>
-<input type="submit" name='update' value="Update" /><input type="submit" name='cancel' value="Cancel" />
+  <table>
+    <tr><td>Username: {{ user.username }}</td></tr>
+    <tr><td>Creation Date: {{ user.date_joined }}</td></tr>
+    <tr><td>Last Login: {{ user.last_login }}</td></tr>
+    <tr><td>{{ userform.first_name.label }}{{ userform.first_name }}</td></tr>
+    <tr><td>{{ userform.last_name.label }}{{ userform.last_name }}</td></tr>
+    <tr><td>{{ userform.email.label }}{{ userform.email }}</td></tr>
+    <tr><td>Associated IRC Nick{{ form.nick }}</td></tr>
+    <tr><td><input type="submit" name='update' value="Update" /><input type="submit" name='cancel' value="Cancel" /></td></tr>
+  </table>
 </form>
 <a href='/accounts/password/change'>Change Password</a><br>
-</div>
-</body>
+{% endblock %}

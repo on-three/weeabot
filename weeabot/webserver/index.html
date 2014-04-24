@@ -11,3 +11,15 @@
 {% load staticfiles %}<img src="{% static "computer-illustration_300.jpg" %}"  alt="weeabot image">
 </div>
 {% endblock %}
+{% block footer %}
+<table>
+  <tr>
+    <td class='left'>
+Page generated {% now "jS F Y H:i" %}.
+    </td>
+    <td class='right'>
+<a href='https://github.com/on-three/weeabot' target="_blank">github</a>
+    </td>
+  </tr>
+</table>
+{% endblock %}

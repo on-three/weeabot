@@ -1,3 +1,8 @@
+h1 {
+  font-size: 300%;
+  font-weight: bold;
+}
+
 body {
   font-family: 'trebuchet MS', 'Lucida sans', Arial;
   font-size: 14px;
@@ -12,12 +17,15 @@ body {
   padding: 10px
 }
 
-.authentication {
+div#authentication {
   text-align: right;
-  display:inline-table
-  width: 0;
+  display: block;
   margin: none;
-  float: right;
+}
+
+div#current_user {
+  font-weight: bold;
+  font-size: 115%;
 }
 
 input.login {
@@ -49,6 +57,10 @@ table.description {
   padding: 0px;
 }
 
+div.block {
+  width: 90%;
+}
+
 td.left {
   text-align: left;
 }
@@ -68,11 +80,50 @@ td.right {
   text-align: center;
 }
 
+div#content {
+  width : 90%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div#title {
+  width : 90%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div#description {
+  width : 90%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div#header {
+  width : 90%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div#footer {
+  width : 90%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+span#login_logout_buttons {
+  display: inline;
+}
+
 table {
-  width: 90%;
   margin: 20px auto;
   *border-collapse: collapse; /* IE7 and lower */
-  border-spacing: 0;   
+  border-spacing: 0;
+  width: 100%;  
 }
 
 td.text {

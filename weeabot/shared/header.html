@@ -1,31 +1,22 @@
-<table class='header'>
-  <tr><td>
+<div id='authentication'>
 {% if user.is_authenticated and user.is_active %}
-    <table class='authentication'>
-      <tr><td>
-Currently logged in as: <a href='/accounts/profile' >{{ user.username }}</a>
-      </td></tr>
-      <tr><td>
-        <form action="/logout">
-          <input class='logout' type="submit" value="logout">
-        </form>
-      </td>
-     </tr></table>
+<div id='current_user'>Currently logged in as: <a href='/accounts/profile' >{{ user.username }}</a></div>
+<form action="/logout">
+  <input class='logout' type="submit" value="logout">
+</form>
 {% else %}
-      <table class='authentication'><tr>
-        <td>
-          <form action="/login">
-            <input class='login' type="submit" value="login">
-          </form>
-        </td>
-        <td>
-          <form action='/accounts/register'>
-            <input class='register' type="submit" value="register">
-          </form>
-        </td>
-      </tr></table>
+  <span id='login_logout_buttons'>
+    <form action="/login">
+      <input class='login' type="submit" value="login">
+    </form>
+  </span>
+  <span id='login_logout_buttons'>
+    <form action='/accounts/register'>
+      <input class='register' type="submit" value="register">
+    </form>
+  </span>
 {% endif %}
-  </td></tr>
-  <tr><td class='navigation_bar'>
+</div>
+<div class='navigation_bar'>
   <a href='/'>weeabot</a> | <a href='/jisho'>jisho</a> | <a href='/jisho/vocab/'>vocabulary</a>
-</td></tr></table>
+</div>
