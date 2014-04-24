@@ -2,10 +2,15 @@
 {% with title='Weeabot Registration' description='Provide required information to create an account.'%}
 {% load url from future %}
 {% block content %}
-    <h2>Create an account</h2>
-    <form action = "/accounts/register/" method = "post">{% csrf_token %}
-    {{form}}
-    <input type="submit" value="Create Account" />
-    </form>
+<form method="post" action='/accounts/register/'>
+{% csrf_token %}
+  <table class='info'>
+  <tr><td class='label'>{{ form.username.label }}</td><td>{{ form.username }}</td></tr>
+  <tr><td class='label'>{{ form.email.label }}</td><td>{{ form.email }}</td></tr>
+  <tr><td class='label'>{{ form.password1.label }}</td><td>{{ form.password1 }}</td></tr>
+  <tr><td class='label'>{{ form.password2.label }}</td><td>{{ form.password2 }}</td></tr>
+  <tr><td class='label'><input type='submit' value='Create Account'></input></td></tr>
+  </table>
+</form>
 {% endblock %}
 {% endwith %}

@@ -3,16 +3,16 @@
 {% block content %}
 <form method="post" action=''>
 {% csrf_token %}
-  <table>
-    <tr><td>Username: {{ user.username }}</td></tr>
-    <tr><td>Creation Date: {{ user.date_joined }}</td></tr>
-    <tr><td>Last Login: {{ user.last_login }}</td></tr>
-    <tr><td>{{ userform.first_name.label }}{{ userform.first_name }}</td></tr>
-    <tr><td>{{ userform.last_name.label }}{{ userform.last_name }}</td></tr>
-    <tr><td>{{ userform.email.label }}{{ userform.email }}</td></tr>
-    <tr><td>Associated IRC Nick{{ form.nick }}</td></tr>
-    <tr><td><input type="submit" name='update' value="Update" /><input type="submit" name='cancel' value="Cancel" /></td></tr>
+  <table class='info'>
+    <tr><td class='label'>Username</td><td>{{ user.username }}</td></tr>
+    <tr><td class='label'>Creation Date</td><td>{{ user.date_joined }}</td></tr>
+    <tr><td class='label'>Last Login</td><td>{{ user.last_login }}</td></tr>
+    <tr><td class='label'>{{ userform.first_name.label }}</td><td>{{ userform.first_name }}</td></tr>
+    <tr><td class='label'>{{ userform.last_name.label }}</td><td>{{ userform.last_name }}</td></tr>
+    <tr><td class='label'>{{ userform.email.label }}</td><td>{{ userform.email }}</td></tr>
+    <tr><td class='label'>Associated IRC Nick</td><td>{{ form.nick }}</td></tr>
+    <tr><td><input type="submit" name='cancel' value="Cancel" /></td><td><input type="submit" name='update' value="Update" /></td></tr>
   </table>
 </form>
-<a href='/accounts/password/change'>Change Password</a><br>
+<p>If you wish you can also <a href='/accounts/password/change'>change your password.</a><p>
 {% endblock %}

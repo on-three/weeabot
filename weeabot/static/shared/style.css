@@ -57,6 +57,17 @@ table.description {
   padding: 0px;
 }
 
+table.info {
+  margin: 0px;
+  padding: 10px;
+  width: 0px;
+  border-spacing: 5px;
+}
+
+td.label {
+  font-weight: bold;
+}
+
 div.block {
   width: 90%;
 }

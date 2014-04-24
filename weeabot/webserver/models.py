@@ -30,7 +30,7 @@ def create_user_profile(sender, instance, created, **kwargs):
   create a default instance of a user profile at that time
   '''
   if created:
-    WeeabotUser.objects.create(user=instance)
+    WeeabotUser.objects.create(user=instance, nick=instance.username)
 
 post_save.connect(create_user_profile, sender=User)
 
