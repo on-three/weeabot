@@ -1,13 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Weeabot</title>
-{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
-</head>
-<body>
-{% include "shared/header.html" %}
+{% extends 'shared/base.html' %}
+
+{% block title %}
 <div class='splash'>
-<h1>Weeabot</h1>
+  <h1>Weeabot</h1>
+<div class='splash'>
+{% endblock %}
+
+{% block content %}
+<div class='splash'>
 {% load staticfiles %}<img src="{% static "computer-illustration_300.jpg" %}"  alt="weeabot image">
 </div>
-</body>
+{% endblock %}

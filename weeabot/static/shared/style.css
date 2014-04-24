@@ -41,6 +41,13 @@ table.header {
   margin: 0px auto;
 }
 
+td.left {
+  text-align: left;
+}
+td.right {
+  text-align: right;
+}
+
 .splash {
   text-align: center;
 }
