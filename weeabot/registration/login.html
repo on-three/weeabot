@@ -1,6 +1,12 @@
 {% extends 'shared/base.html' %}
 {% load url from future %}
 
+{% block header %}
+<div class='navigation_bar'>
+  <a href='/'>weeabot</a> | <a href='/jisho'>jisho</a> | <a href='/jisho/vocab/'>vocabulary</a>
+</div>
+{% endblock %}
+
 {% block content %}
 
 {% if form.errors %}
@@ -31,4 +37,3 @@ Forgotten your password?<a href="{% url 'account_password_reset' %}">Reset it he
 </td></tr></table>
 
 {% endblock %}
-{% block footer %}{% endblock %}

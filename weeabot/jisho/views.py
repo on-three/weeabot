@@ -69,6 +69,7 @@ def VocabularyListsView(request):
   lists = VocabularyList.objects.all()
   t = loader.get_template('jisho/vocab.html')
   c = Context({
+    'user' : request.user,
     'title' : 'Current Weeabot Vocabulary Lists',
     'description' : 'Choose a list to view contents.',
     'lists' : lists,

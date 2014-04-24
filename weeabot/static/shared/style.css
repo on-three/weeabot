@@ -115,8 +115,8 @@ div#footer {
   margin-right: auto;
 }
 
-span#login_logout_buttons {
-  display: inline;
+table#login_logout_buttons {
+  width: 0%;
 }
 
 table {
