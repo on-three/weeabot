@@ -10,12 +10,19 @@
     {% include "shared/header.html" %}
   {% endblock %}
   {% block title %}
+  <table class='title'><tr><td>
   <h1>{{ title|default:"Weeabot" }}</h1>
+  </td></tr></table>
+  {% endblock %}
+  {% block description %}
+  <table class='description'><tr><td>
+    {{ description|default:'' }}
+  </td></tr></table>
   {% endblock %}
   <div id="content">
     {% block content %}{% endblock %}
   </div>
-  {%block footer %}
+  {% block footer %}
     {% include "shared/footer.html" %} 
   {% endblock %} 
 </body>

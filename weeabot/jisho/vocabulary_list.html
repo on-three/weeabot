@@ -1,13 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>{{ list_object.name }}</title>
-{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
-</head>
-<body>
-{% include "shared/header.html" %}
-<h1 class="tablename">{{ list_object.name }}</h1>
-{{ list_object.desc }}
+{% extends 'shared/base.html' %}
+
+{% block content %}
 	<table class="urls bordered">
     <thead class='definitions'>
 	    <tr>
@@ -34,3 +27,5 @@
     </tfoot>
     </table>
 </body>
+
+{% endblock %}

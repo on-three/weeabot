@@ -40,6 +40,14 @@ table.authentication {
 table.header {
   margin: 0px auto;
 }
+table.title {
+  margin: 0px auto;
+  padding: 0px;
+}
+table.description {
+  margin: 0px auto;
+  padding: 0px;
+}
 
 td.left {
   text-align: left;

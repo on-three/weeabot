@@ -37,6 +37,8 @@ def home(request):
 
   t = loader.get_template('jisho/index.html')
   c = RequestContext(request, {
+    'title' : 'Weeabot Jisho Lookups',
+    'description' : 'Recent weeabot irc bot .jisho lookups',
     'first_date' : first_date,
     'last_date' : last_date,
     'definitions': definitions,
@@ -57,6 +59,8 @@ def VocabularyListView(request, listname):
  
   t = loader.get_template('jisho/vocabulary_list.html')
   c = RequestContext(request, {
+    'title' : 'Weeabot Vocabulary List: {name}'.format(name=listname),
+    'description' : list_object.desc,
     'list_object' : list_object,
     })
   return HttpResponse(t.render(c))
@@ -65,6 +69,8 @@ def VocabularyListsView(request):
   lists = VocabularyList.objects.all()
   t = loader.get_template('jisho/vocab.html')
   c = Context({
+    'title' : 'Current Weeabot Vocabulary Lists',
+    'description' : 'Choose a list to view contents.',
     'lists' : lists,
     })
   return HttpResponse(t.render(c))
@@ -98,6 +104,8 @@ def NickView(request, nick):
 
   t = loader.get_template('jisho/nick.html')
   c = RequestContext(request, {
+    'title' : 'Weeabot Lookups by Nick {nick}'.format(nick=nick),
+    'description' : 'Current weeabot IRC bot lookups by user with nick {nick}.'.format(nick=nick),
     'nick' : nick,
     'definitions': definitions,
     'paginator' : paginator,
