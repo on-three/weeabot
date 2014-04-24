@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Weeabot Login</title>
-{% load staticfiles %}<link rel="stylesheet" href="{% static "style.css" %}" type="text/css" />
-</head>
-<body>
-<h1>Weeabot Login</h1>
+{% extends 'shared/base.html' %}
 {% load url from future %}
 
 {% block content %}
@@ -14,7 +7,7 @@
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
 
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+<form method="post" action="{% url 'login' %}">
 {% csrf_token %}
 <table>
 <tr>
@@ -25,13 +18,17 @@
   <td>{{ form.password.label_tag }}</td>
   <td>{{ form.password }}</td>
 </tr>
+<tr>
+  <td><input type="submit" value="login" /></td>
+</tr>
 </table>
-
-<input type="submit" value="login" />
 <input type="hidden" name="next" value="{{ next }}" />
 </form>
 <hl>
-Forgotten your password?<a href='/accounts/password/reset'>Reset it here.</a>
+
+<table><tr><td>
+Forgotten your password?<a href="{% url 'account_password_reset' %}">Reset it here.</a>
+</td></tr></table>
 
 {% endblock %}
-</body>
+{% block footer %}{% endblock %}

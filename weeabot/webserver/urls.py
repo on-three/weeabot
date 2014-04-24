@@ -11,7 +11,12 @@ urlpatterns = patterns('',
   url(r'^$', 'weeabot.webserver.views.home', name='home'),
   url(r'^login/', 'django.contrib.auth.views.login',
     {
-      'extra_context': {'next':'/'},
+      'extra_context': 
+      {
+        'next':'/',
+        'title' : 'Weeabot Login', 
+        'description' : 'Enter registered username and password to login.' 
+      },
     },
     name='login',
   ),
