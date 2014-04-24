@@ -99,7 +99,7 @@ class Jisho(object):
     '''
     Initiate an asynchronous scrape of jisho.org for japanese word lookup.
     '''
-    url = 'http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword)
+    url = 'http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword.lower())
     result = getPage(url, timeout=3)
     result.addCallbacks(
       callback = Jisho.JishoResponse(self.on_jisho_response, jword, channel, user, url),

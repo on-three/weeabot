@@ -89,7 +89,7 @@ class Moon(object):
     '''
     Initiate an asynchronous scrape of jisho.org for english word lookup.
     '''
-    result = getPage('http://jisho.org/words?jap=&eng={eword}&dict=edict&common=on'.format(eword=eword))
+    result = getPage('http://jisho.org/words?jap=&eng={eword}&dict=edict&common=on'.format(eword=eword.lower()))
     result.addCallbacks(
       callback = Moon.JishoResponse(self.on_jisho_response, channel),
       errback = Moon.JishoError(self.on_jisho_error))
