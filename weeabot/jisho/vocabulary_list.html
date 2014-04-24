@@ -1,31 +1,7 @@
 {% extends 'shared/base.html' %}
 
 {% block content %}
-	<table class="urls bordered">
-    <thead class='definitions'>
-	    <tr>
-        <th class="timestamp">Timestamp</th><th class="channel">Channel</th><th class='word'>Lookup</th><th class='text'>Definition</th><th class='url'>URL</th><th></th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for definition in list_object.entries.all %}
-      <tr class='definition'>
-              <td class="timestamp">{{ definition.timestamp }}</td><td class="channel">{{ definition.channel }}</td><td class='word'>{{ definition.word }}</td><td class='text'>{{ definition.text }}</td><td class='url'><a href="{{ definition.url }}" target="_blank">link</a></td>
-			<td>
-			<form action="" method="post">
-			{% csrf_token %}
-			<input type="hidden" name="definition" value="{{ definition.pk }}">
-			<input type="hidden" name="list_name" value="{{ list_object.name }}">   
-			<input type="submit" value="Delete">
-			</form>
-			</td>
-      </tr>
-    {% endfor %}
-    </tbody>
-    <tfoot>
-        <tr><td class="footer" colspan=7><em>Page generated {% now "jS F Y H:i" %}.</em></td></tr>
-    </tfoot>
-    </table>
-</body>
-
+  {% with show_nicks=False show_vocab_lists=False %}
+    {% include "jisho/wordlist.html" %}
+  {% endwith %}
 {% endblock %}

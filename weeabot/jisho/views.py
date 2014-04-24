@@ -8,6 +8,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django import forms
 
+def in_group(user, groupname):
+  return u.groups.filter(name=groupname).count() == 0
+
 def home(request):
   #handling post dropdown result
   if request.method == 'POST':
@@ -44,17 +47,29 @@ def home(request):
     'definitions': definitions,
     'paginator' : paginator,
     'lists' : lists,
+    'editable' : request.user.is_staff,
+    'deleteable' : False,
     })
   return HttpResponse(t.render(c))
 
 def VocabularyListView(request, listname):
   list_object = VocabularyList.objects.get(name=listname)
+  lists = VocabularyList.objects.all()
   
-  #handle delte of single list entry
-  if request.method == 'POST':
+  #handle delte of single list entry or vocab insertion
+  if request.method == 'POST' and 'delete' in request.POST:
     definition_pk = request.POST.get('definition', '')
     definition = Definition.objects.get(pk=definition_pk)
     definition.lists.remove(list_object)
+    return HttpResponseRedirect('')
+  elif request.method == 'POST' and 'select' in request.POST:
+    list_name = request.POST.get('vlist', '')
+    if list_name == '...':
+      return HttpResponseRedirect('')
+    definition_pk = request.POST.get('definition', '')
+    definition = Definition.objects.get(pk=definition_pk)
+    new_list = VocabularyList.objects.get(name=list_name)
+    definition.lists.add(new_list)
     return HttpResponseRedirect('')
  
   t = loader.get_template('jisho/vocabulary_list.html')
@@ -62,6 +77,10 @@ def VocabularyListView(request, listname):
     'title' : 'Weeabot Vocabulary List: {name}'.format(name=listname),
     'description' : list_object.desc,
     'list_object' : list_object,
+    'definitions' : list_object.entries.all(),
+    'lists' : lists,
+    'editable' : request.user.is_staff,
+    'deleteable' : request.user.is_staff,
     })
   return HttpResponse(t.render(c))
 
@@ -111,5 +130,7 @@ def NickView(request, nick):
     'definitions': definitions,
     'paginator' : paginator,
     'lists' : lists,
+    'editable' : request.user.is_staff,
+    'deleteable' : request.user.is_staff,
     })
   return HttpResponse(t.render(c))

@@ -1,0 +1,103 @@
+{% if not definitions %}
+<p class="message">No definitions to display.</p>
+{% else %}
+{% block wordlist %}
+<table class="urls bordered">
+  <thead class='definitions'><tr>
+    <th class="timestamp">Timestamp</th>
+    <th class="channel">Channel</th>
+    {% if show_nicks %}
+    <th class="nick">Nick</th>
+    {% endif %}
+    <th class='word'>Lookup</th>
+    <th class='text'>Definition</th>
+    <th class='url'>URL</th>
+    {% if show_vocab_lists %}
+    <th>Vocabulary Lists</th>
+    {% endif %}
+    {% if editable %}
+    <th>Add To:</th>
+    {% endif %}
+    {% if deleteable %}
+    <th>Delete</th>
+    {% endif %}
+    </tr>
+  </thead>
+<tbody>
+{% for definition in definitions %}
+  <tr class='definition'>
+  <td class="timestamp">{{ definition.timestamp }}</td>
+  <td class="channel">{{ definition.channel }}</td>
+  {% if show_nicks %}
+  <td class="nick"><a href="nick/{{ definition.simple_nick }}">{{ definition.simple_nick }}</a></td>
+  {% endif %}
+  <td class='word'>{{ definition.word }}</td>
+  <td class='text'>{{ definition.text }}</td>
+  <td class='url'><a href="{{ definition.url }}" target="_blank">link</a></td>
+  
+  {% if show_vocab_lists %}
+	<td class='url'>
+    {% for vlist in definition.lists.all %}
+    <a href="vocab/{{ vlist.name }}">{{ vlist.name }}</a>
+    {% endfor %}
+	</td>
+  {% endif %}
+
+  {% if editable %}
+	<td>
+		<form action="" method="post">
+			{% csrf_token %}
+			<select id="ddVlist" name="vlist">
+			<option  selected="selected">...</option>
+    {% for vlist in lists %}
+			{% if vlist not in definition.lists.all %}
+        <option value="{{ vlist.name }}">{{ vlist.name }}</option>
+			{% endif %}
+    {% endfor %}
+			</select>
+			<input type="hidden" name="definition" value="{{ definition.pk }}">  
+			<input type="submit" name="select" value="Select">
+		</form>
+	</td>
+  {% endif %}
+  {% if deleteable %}
+  <td>
+  <form action="" method="post">
+  {% csrf_token %}
+  <input type="hidden" name="definition" value="{{ definition.pk }}">
+  <input type="hidden" name="list_name" value="{{ list_object.name }}">   
+  <input type="submit" name="delete" value="Delete">
+  </form>
+  </td>
+  {% endif %}
+  </tr>
+{% endfor %}
+</tbody>
+<tfoot>
+  <tr><td class="footer" colspan="100%">
+Database records available from {{ first_date }}.<br>
+Last lookup on {{ last_date }}.</td></tr>
+Currently only staff users can delete entries and add to vocabulary lists.
+</tfoot>
+</table>
+{% endblock %}
+
+{% block pagination %}
+<div class="pagination">
+    <span class="step-links">
+        {% if definitions.has_previous %}
+            <a href="?page={{ definitions.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ definitions.number }} of {{ definitions.paginator.num_pages }}.
+        </span>
+
+        {% if definitions.has_next %}
+            <a href="?page={{ definitions.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+{% endblock %}
+{% endif %}
+
