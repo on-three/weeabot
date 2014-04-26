@@ -76,7 +76,7 @@ def irc_encode(bytes):
 
 class WeeaBot(twisted_irc.IRCClient):
   plugins = []
-  COMMAND_REGEX = r'^(?P<command>weeabot:?)( (?P<help>help))?'
+  COMMAND_REGEX = r'^(?P<command>\.h(elp)?( )?)'
 
   def connectionMade(self):
     log.msg('connection made')
@@ -138,7 +138,8 @@ class WeeaBot(twisted_irc.IRCClient):
     '''
     msg = re.sub(' +',' ',msg)
     if re.match(WeeaBot.COMMAND_REGEX, msg):
-      help = self.list_loaded_plugins()
+      plugins = self.list_loaded_plugins()
+      help = plugins + '| source: https://github.com/on-three/weeabot'
       self.say(channel, help)
       return
 
