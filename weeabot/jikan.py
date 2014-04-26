@@ -33,10 +33,7 @@ class Jikan(object):
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
     '''
-    #print Jikan.COMMAND_REGEX.encode('utf8')
-    amsg = msg.decode('utf8')
-    myre = re.compile(Jikan.COMMAND_REGEX, re.UNICODE)
-    m = myre.match(amsg)
+    m = re.match(Jikan.COMMAND_REGEX, msg)
     if m:
       return True
     else:

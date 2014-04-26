@@ -121,6 +121,14 @@ class WeeaBot(twisted_irc.IRCClient):
     Invoked upon receipt of a message in channel X.
     Give plugins a chance to handle it until one does
     '''
+    #issue #5. UTF-8 decoding fails sometimes in plugins
+    #so we'll try to decode into unicode here. If it fails we ignore.
+    try:
+      msg = msg.decode('utf-8')
+    except UnicodeDecodeError:
+      log.msg('privmsg ' + msg)
+      return
+
     log.msg('privmsg ' + msg)
     self.handle_msg(user, channel, msg)
 
