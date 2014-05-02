@@ -82,7 +82,7 @@ class Jisho(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    log.msg('{channel} : {msg}'.format(channel=channel, msg=msg))
+    log.msg('{channel} : {msg}'.format(channel=channel, msg=msg.encode('utf-8')))
     m = re.match(Jisho.COMMAND_REGEX, msg)
     if not m:
       return
@@ -99,7 +99,7 @@ class Jisho(object):
     '''
     Initiate an asynchronous scrape of jisho.org for japanese word lookup.
     '''
-    url = 'http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword.lower())
+    url = 'http://jisho.org/words?jap={jword}&eng=&dict=edict'.format(jword=jword.lower().encode('utf-8'))
     result = getPage(url, timeout=3)
     result.addCallbacks(
       callback = Jisho.JishoResponse(self.on_jisho_response, jword, channel, user, url),
@@ -118,7 +118,7 @@ class Jisho(object):
       db_entry.save()
       response = '\x035{result}'.format(result=result.encode('utf-8'))
       log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
-      print '{channel}:{user} {jword}-->{msg}:{url}'.format(channel=channel, jword=jword, msg=response, user=user, url=url)
+      #print '{channel}:{user} {jword}-->{msg}:{url}'.format(channel=channel, jword=jword, msg=response, user=user, url=url)
       self._parent.say(channel, response)
 
   def on_jisho_error(self, error):
