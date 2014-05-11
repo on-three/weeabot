@@ -1,5 +1,4 @@
-weeabot
-=======
+#weeabot
 
 Python Twisted based Japanese support irc bot.
 
@@ -15,14 +14,74 @@ Weeabot currently provides the following support via a simple plugin architectur
 
 Regarding the removed functionality above (sql and web backend) I'm currently maintainting them in the https://github.com/on-three/weeabot_site.git repository. I'm as yet unsure how this original bot and the updated bot/webserver will coexist.
 
-Lacking Functionality
----------------------
-The primary bit of functionality lacking in weeabot is the ability to have it sign into multiple channels. This could be added, but as yet I'm unsure how robust it would handle multiple simultaneous web lookups from multiple users in multiple channels. For the moment I'm content to run one bot per channel.
-I've also not done much work on testing the bot in how well it handles netsplits/kicks/bans. Don't know when i'll get to this.
-Lastly, even though I was sure to add support for IRC passwords (i.e. signing onto a znc server with password) I don't believe I've added support for irc registered nicks (i.e. NICKSERV). This could be added. Just haven't gotten to it yet.
+##Using the Bot
 
-Installation
-------------
+
+Currently the bot supports the current commands:
+
+### weeabot (list plugins)
+Type bot should pick up the weeabot single command (no preceeding words) and display current plugins.
+```
+me: weeabot
+weeabot: currently loaded plugins: Jisho Moon Jikan
+```
+
+### Jisho (Japanese Word Lookup)
+Use the jisho command to look up Japanese words (in romaji, hiragana, katakana or kanji) via jisho.org.
+Command available by using the jisho command or simply '.j'.
+```
+me: jisho watashi
+weeabot: 私 | わたし | watashi | I; me
+
+me: .j わたし
+weeabot: 私 | わたし | watashi | I; me
+
+me: .j 私
+weeabot: 私 | わたし | watashi | I; me
+```
+
+### Moon (English to Japanese Word Lookup)
+Use the moon command (after 'moonrunes') to look up Japanese equivalents of English words.
+Also available via '.m'
+```
+me: moon me
+weeabot:  私 | わたし | watashi | I; me
+
+me: .m me
+weeabot:  私 | わたし | watashi | I; me
+```
+
+### Jikan (Current Tokyo Time)
+Use the jikan command to display current Tokyo time.
+Command also available via '.t'.
+```
+me: jikan
+weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
+
+me: .t
+weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
+```
+
+### Katakanize (transliterate words and phrases to katakana)
+Use the katakanize command to approximate any kind of word or phrase into katakana. This preserves the old "youkousoo" functionality which transliterated nicks into katakana, but which has been removed ;_;.
+Command also available via '.k'.
+It's clear the web serviced used here is very spotty, however.
+```
+me: katakanize on_three
+weeabot:---> オン・スリー
+
+me: .k on_three
+weeabot:---> オン・スリー
+```
+
+##Lacking Functionality
+The bot currently lacks the following:
+* the ability to have it sign into multiple channels.This could be added, but as yet I'm unsure how robust it would handle multiple simultaneous web lookups from multiple users in multiple channels. For the moment I'm content to run one bot per channel.
+* I've also not done much work on testing the bot in how well it handles netsplits/kicks/bans. Don't know when i'll get to this.
+* Lastly, even though I was sure to add support for IRC passwords (i.e. signing onto a znc server with password) I don't believe I've added support for irc registered nicks (i.e. NICKSERV). This could be added. Just haven't gotten to it yet.
+
+
+##Installation
 
 I recommend installing via python pip package manager. The usual caveats of invoking a python virtual environment before installation apply. Use 'sudo' as required by your OS.
 To install, point pip to:
@@ -41,8 +100,8 @@ The pip installation above should also install all required python dependencies.
 pip install -r requirements.txt
 ```
 
-Running
--------
+##Running
+
 Installation via pip above (or running setup.py) should give you access to a 'weabot-daemon' command line executable. Help is available by simply typing the executable without arguments or with the -h switch:
 ```
 (weeabot_irc)xxx@jxxxDesktop ~/code/weeabot $ weeabot-daemon
@@ -90,14 +149,14 @@ If the above weeabot-daemon comand line exe is not available on your system (for
 /path/to/weeabot/dir/weeabot.py irc.rizon.net:6660 botname '#channel'
 ```
 
-Logging
--------
+##Logging
+
 The bot currently logs its activity to a log at ~/.weeabot (i.e. hidden directory in user's home directory).
 You can also see logging from the command line by using the -v switch (see command line options above).
 
 
-Daemon Support
---------------
+##Daemon Support
+
 If you don't want a command line window open all the time with weeabot running, I've put in some daemon support-- so the bot should start up automatically when your server starts. This is currently only for modern linux Debian systems with Upstart.
 To do this, I've inlcuded two Upstart (new debian daemon management system) configuration scripts which can be used to  weeabot.conf and weeabot.override scripts to the /etc/init/ directory on Unix-like systems. This is meant as support for Upstart service management, allowing the bot to be run at system boot as a daemon.
 In those systems that support Upstart .conf files, edit the /etc/init/weeabot.conf file to specify your IRC network, desired bot nick and channel to join. Other command line options can be added as needed. Then run the following to start the service:
@@ -114,62 +173,3 @@ sudo stop weeabot
 
 Delete or rename the /etc/init/weeabot.override file to enable automatic starting of daemon on boot.
 
-Using the Bot
-#
-
-Currently the bot supports the current commands:
-
-## weeabot (list plugins)
-Type bot should pick up the weeabot single command (no preceeding words) and display current plugins.
-```
-me: weeabot
-weeabot: currently loaded plugins: Jisho Moon Jikan
-```
-
-## Jisho (Japanese Word Lookup)
-Use the jisho command to look up Japanese words (in romaji, hiragana, katakana or kanji) via jisho.org.
-Command available by using the jisho command or simply '.j'.
-```
-me: jisho watashi
-weeabot: 私 | わたし | watashi | I; me
-
-me: .j わたし
-weeabot: 私 | わたし | watashi | I; me
-
-me: .j 私
-weeabot: 私 | わたし | watashi | I; me
-```
-
-## Moon (English to Japanese Word Lookup)
-Use the moon command (after 'moonrunes') to look up Japanese equivalents of English words.
-Also available via '.m'
-```
-me: moon me
-weeabot:  私 | わたし | watashi | I; me
-
-me: .m me
-weeabot:  私 | わたし | watashi | I; me
-```
-
-### Jikan (Current Tokyo Time)
-Use the jikan command to display current Tokyo time.
-Command also available via '.t'.
-```
-me: jikan
-weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
-
-me: .t
-weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
-```
-
-## Katakanize (transliterate words and phrases to katakana)
-Use the katakanize command to approximate any kind of word or phrase into katakana. This preserves the old "youkousoo" functionality which transliterated nicks into katakana, but which has been removed ;_;.
-Command also available via '.k'.
-It's clear the web serviced used here is very spotty, however.
-```
-me: katakanize on_three
-weeabot:---> オン・スリー
-
-me: .k on_three
-weeabot:---> オン・スリー
-```
