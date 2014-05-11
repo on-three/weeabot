@@ -19,21 +19,21 @@ Regarding the removed functionality above (sql and web backend) I'm currently ma
 
 Currently the bot supports the current commands:
 
-### weeabot (list plugins)
+### .h (help/list plugins)
 Type bot should pick up the weeabot single command (no preceeding words) and display current plugins.
 ```
-me: weeabot
-weeabot: currently loaded plugins: Jisho Moon Jikan
+me: .h
+weeabot: currently loaded plugins: Jisho Moon Jikan Katakanize | source: https://github.com/on-three/weeabot
 ```
 
 ### Jisho (Japanese Word Lookup)
 Use the jisho command to look up Japanese words (in romaji, hiragana, katakana or kanji) via jisho.org.
 Command available by using the jisho command or simply '.j'.
 ```
-me: jisho watashi
+me: .j watashi
 weeabot: 私 | わたし | watashi | I; me
 
-me: .j わたし
+me: jisho わたし
 weeabot: 私 | わたし | watashi | I; me
 
 me: .j 私
@@ -44,10 +44,10 @@ weeabot: 私 | わたし | watashi | I; me
 Use the moon command (after 'moonrunes') to look up Japanese equivalents of English words.
 Also available via '.m'
 ```
-me: moon me
+me: .m me
 weeabot:  私 | わたし | watashi | I; me
 
-me: .m me
+me: moon me
 weeabot:  私 | わたし | watashi | I; me
 ```
 
@@ -55,10 +55,10 @@ weeabot:  私 | わたし | watashi | I; me
 Use the jikan command to display current Tokyo time.
 Command also available via '.t'.
 ```
-me: jikan
+me: .t
 weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
 
-me: .t
+me: jikan
 weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
 ```
 
@@ -79,6 +79,7 @@ The bot currently lacks the following:
 * the ability to have it sign into multiple channels.This could be added, but as yet I'm unsure how robust it would handle multiple simultaneous web lookups from multiple users in multiple channels. For the moment I'm content to run one bot per channel.
 * I've also not done much work on testing the bot in how well it handles netsplits/kicks/bans. Don't know when i'll get to this.
 * Lastly, even though I was sure to add support for IRC passwords (i.e. signing onto a znc server with password) I don't believe I've added support for irc registered nicks (i.e. NICKSERV). This could be added. Just haven't gotten to it yet.
+* the SSL support is as yet _completely_ untested. I'd recommend just using non-ssl connections for the moment.
 
 
 ##Installation
