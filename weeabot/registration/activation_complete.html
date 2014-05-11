@@ -1,8 +1,0 @@
-{% extends 'shared/base.html' %}
-{% with title='Registration Complete' description='Weeabot account registration complete.'  %}
-{% load url from future %}
-{% block content %}
-<p>Thanks for taking the time to register with weeabot.<p>
-<p>You may low <a href="{% url 'login' %}">login.</a><p>
-{% endblock %}
-{% endwith %}
