@@ -3,13 +3,19 @@ from setuptools import setup
 
 #version 0.2: include basic webserver and jisho database display
 #version 0.3: added katakanize function
+#version 0.4: Removed web backend for easier running
+#             Web backend still available in weeabot_site repository.
 
 def readme():
     with open('README.md') as f:
         return f.read()
 
+def requirements():
+  with open('requirements.txt') as f:
+    return f.read().splitlines()
+
 setup(name='weeabot',
-  version='0.3',
+  version='0.4',
   description='Japanese support IRC bot.',
   long_description = readme(),
 	classifiers=[
@@ -25,32 +31,11 @@ setup(name='weeabot',
   license='MIT',
   packages=[
     'weeabot',
-    'weeabot.jisho',
-    'weeabot.webserver',
   ],
-  install_requires=[
-    'twisted',
-    'argparse',
-    'romkan',
-    'beautifulsoup4',
-    'pytz',
-    'django',
-  ],
-	data_files=[
-    ('/etc/init',
-      [
-      'daemon/weeabot.conf',
-      'daemon/weeabot.override',
-      ])
-  ],
-	package_data = {
-    '': ['*.html', '*.rst', '*.css', '*.jpg', '*.txt',],
-    'weeabot' : ['shared/*', 'registration/*', 'static/shared/*', 'static/jisho/*', 'static/webserver/*'],
-	},
+  install_requires = requirements(),
   entry_points = {
     'console_scripts': [
       'weeabot-daemon=weeabot:main',
-			'weeabot-django-manage=weeabot.manage:main',
     ],
   },
   zip_safe=True)

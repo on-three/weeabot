@@ -12,17 +12,18 @@ import os
 from twisted.web.client import getPage
 import string
 import re
-from weeabot.denshi_jisho import scrape_japanese_definitions
+from denshi_jisho import scrape_japanese_definitions
 from twisted.python import log
 
-#We want to log in a django sqlite3 database for web display
+#Removing django backend
+'''
 try:  
   os.environ.setdefault("DJANGO_SETTINGS_MODULE", "weeabot.webserver.settings")
   from .models import Definition                  
 except ImportError:
   print 'Could not import django settings file to access database.'
   sys.exit(-1)
-
+'''
 
 class Jisho(object):
   '''
@@ -114,8 +115,9 @@ class Jisho(object):
       self._parent.say(channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
       return
     for result in results:
-      db_entry = Definition(channel=channel, nick=user, url=url, text=result, word=jword)
-      db_entry.save()
+      #removing django database backend.
+      #db_entry = Definition(channel=channel, nick=user, url=url, text=result, word=jword)
+      #db_entry.save()
       response = '\x035{result}'.format(result=result.encode('utf-8'))
       log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
       #print '{channel}:{user} {jword}-->{msg}:{url}'.format(channel=channel, jword=jword, msg=response, user=user, url=url)

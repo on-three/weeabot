@@ -35,7 +35,7 @@ from twisted.words.protocols import irc as twisted_irc
 
 
 #for now directly import plugins
-from jisho.plugin import Jisho
+from jisho import Jisho
 from jikan import Jikan
 from moon import Moon
 #from youkoso import Youkoso
