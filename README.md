@@ -76,7 +76,7 @@ weeabot:---> オン・スリー
 
 ##Lacking Functionality
 The bot currently lacks the following:
-* the ability to have it sign into multiple channels.This could be added, but as yet I'm unsure how robust it would handle multiple simultaneous web lookups from multiple users in multiple channels. For the moment I'm content to run one bot per channel.
+* ~~the ability to have it sign into multiple channels.This could be added, but as yet I'm unsure how robust it would handle multiple~~ ~~simultaneous web lookups from multiple users in multiple channels. For the moment I'm content to run one bot per channel.~~
 * I've also not done much work on testing the bot in how well it handles netsplits/kicks/bans. Don't know when i'll get to this.
 * Lastly, even though I was sure to add support for IRC passwords (i.e. signing onto a znc server with password) I don't believe I've added support for irc registered nicks (i.e. NICKSERV). This could be added. Just haven't gotten to it yet.
 * the SSL support is as yet _completely_ untested. I'd recommend just using non-ssl connections for the moment.
@@ -140,9 +140,9 @@ optional arguments:
   -s, --ssl             Connect to server via SSL.
 
 ```
-Running from the command line is therefore usually just providing 1. hostname:port 2. bot nick 3. channel to join.
+Running from the command line is therefore usually just providing 1. hostname:port 2. bot nick 3. channels to join. N channels can be specified.
 ```
-weeabot-daemon irc.network.net:6660 botname '#channel'
+weeabot-daemon irc.network.net:6660 botname '#channel_one' '#channel_two' '#channel_three'
 ```
 
 If the above weeabot-daemon comand line exe is not available on your system (for some reason) you could probably run it right from the weeabot.py script:
