@@ -244,7 +244,7 @@ def main():
   parser = argparse.ArgumentParser(description='Scrape jisho.org for japanese word (romaji) lookup.')
   parser.add_argument('hostname', help='IRC server URL as domain:port (e.g. www.freenode.net:6660).', type=str)
   parser.add_argument('nickname', help='Nick to use at signon. Multiple nicks not yet supported.', type=str)
-  parser.add_argument('channel', help='Channel to join on server. Only supporting one channel presently.', type=str)
+  parser.add_argument('channels', nargs='*', help='Channel(s) to join on server.', type=str)
   #parser.add_argument('-p','--server_port', help='Port this server will service html client requests on. NOT the IRC server port this server connects to.', type=int, default=8888)
   parser.add_argument('-u', '--username', help='Username this server uses at IRC server signon.', type=str, default='')
   parser.add_argument('-r', '--realname', help='Realname this server uses at IRC server signon.', type=str, default='')
@@ -284,7 +284,8 @@ def main():
   WeeaBot.username = credentials['username']
   WeeaBot.password = credentials['password']
     
-  channels = (args.channel,)
+  channels = args.channels
+  print str(channels)
 
   network = {
     'host': hostname,
