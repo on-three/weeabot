@@ -89,6 +89,11 @@ I recommend installing via python pip package manager. Some python dependencies 
 sudo apt-get install build-essential libssl-dev libffi-dev python-dev
 
 ```
+And it may be necessary to ensure that the japanese locale is available:
+```
+sudo apt-get install locales
+sudo dpkg-reconfigure locales
+```
 
 The usual caveats of invoking a python virtual environment before installation apply. Use 'sudo' as required by your OS.
 To install, point pip to:
