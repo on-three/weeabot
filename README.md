@@ -84,7 +84,13 @@ The bot currently lacks the following:
 
 ##Installation
 
-I recommend installing via python pip package manager. The usual caveats of invoking a python virtual environment before installation apply. Use 'sudo' as required by your OS.
+I recommend installing via python pip package manager. Some python dependencies have tooling requirements, which can be handled on debian like systems by:
+```
+sudo apt-get install build-essential libssl-dev libffi-dev python-dev
+
+```
+
+The usual caveats of invoking a python virtual environment before installation apply. Use 'sudo' as required by your OS.
 To install, point pip to:
 ```
 sudo pip install git+https://github.com/on-three/weeabot.git
