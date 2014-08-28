@@ -21,7 +21,7 @@ class Moon(object):
   Scrape definitions off of jisho.org
   '''
 
-  COMMAND_REGEX = r'^(?P<command>moon |\.m |\.M )(?P<word>[\S]*)?( (?P<dict>[\S]*))?'
+  COMMAND_REGEX = r'^(?P<command>moon |\.m |\.M )(?P<word>\S+)?( (?P<dict>\S+))?'
   USAGE = '\x033USAGE: [moon|.m] <english word to look up at jisho.org>'
 
   class JishoResponse(object):
