@@ -38,8 +38,9 @@ from twisted.words.protocols import irc as twisted_irc
 from jisho import Jisho
 from jikan import Jikan
 from moon import Moon
-#from youkoso import Youkoso
+from youkoso import Youkoso
 from katakanize import Katakanize
+from slingbox import Slingbox
 
 DEFAULT_PORT = 6660
 LOG_FILENAME = 'weeabot.log'
@@ -86,6 +87,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Jikan(self))
     WeeaBot.plugins.append(Katakanize(self))
     #self.youkoso = Youkoso(self)
+    WeeaBot.plugins.append(Slingbox(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')
@@ -129,18 +131,18 @@ class WeeaBot(twisted_irc.IRCClient):
       log.msg('privmsg ' + msg)
       return
 
-    log.msg('privmsg ' + msg)
+    #log.msg(u'privmsg ' + msg)
     self.handle_msg(user, channel, msg)
 
   def handle_msg(self, user, channel, msg):
     '''
     Generic handler for all msgs in channel.
     '''
-    msg = re.sub(' +',' ',msg)
+    #msg = re.sub(' +',' ',msg)
     if re.match(WeeaBot.COMMAND_REGEX, msg):
       plugins = self.list_loaded_plugins()
-      help = plugins + '| source: https://github.com/on-three/weeabot'
-      self.say(channel, help)
+      help = plugins + u'| source: https://github.com/on-three/weeabot'
+      self.say(channel, help.encode('utf-8'))
       return
 
     #msg = irc_decode(msg)
@@ -209,9 +211,9 @@ class WeeaBot(twisted_irc.IRCClient):
     '''
     Return a string with a list of all the currently loaded plugins
     '''
-    plugins = 'currently loaded plugins: '
+    plugins = u'currently loaded plugins: '
     for plugin in WeeaBot.plugins:
-      plugins += '{plugin} '.format(plugin=plugin.__class__.__name__)
+      plugins += u'{plugin} '.format(plugin=plugin.__class__.__name__)
     return plugins
 
 class WeeaBotFactory(protocol.ClientFactory):

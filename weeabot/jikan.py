@@ -1,4 +1,5 @@
 # vim: set ts=2 expandtab:
+# -*- coding: utf-8 -*-
 """
 
 Module: jikan.py
@@ -20,7 +21,7 @@ class Jikan(object):
   '''
   print current japan time
   '''
-  COMMAND_REGEX = ur'^(?P<command>jikan|\.t|\.T|\u6642\u9593|\u3058\u304B\u3093)( (?P<data>\S+)$)?'
+  COMMAND_REGEX = ur'^(?P<command>jikan|\.t|\.T|時間|じかん)( (?P<data>\S+)$)?'
 
   def __init__(self, parent):
     '''
@@ -53,7 +54,7 @@ class Jikan(object):
     '''
     now = datetime.now(timezone('Asia/Tokyo'))
     locale.setlocale(locale.LC_ALL, 'ja_JP.utf8')
-    fmt = u'\u73FE\u5728\u306E\u6771\u4EAC\u6642\u9593 \u0002%c\u0002 %a'
+    fmt = u'現在の東京時間 \u0002%c\u0002 %a' #\u0002 is IRC BOLD
     current_time = now.strftime(fmt.encode('utf-8'))
     log.msg('{channel}-->{msg}'.format(channel=channel, msg=current_time))
     self._parent.say(channel, current_time)
