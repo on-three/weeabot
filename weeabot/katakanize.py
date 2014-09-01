@@ -36,9 +36,8 @@ class Katakanize(object):
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
     '''
-    amsg = msg.decode('utf8')
     myre = re.compile(Katakanize.COMMAND_REGEX, re.UNICODE)
-    m = myre.match(amsg)
+    m = myre.match(msg)
     if m:
       return True
     else:
