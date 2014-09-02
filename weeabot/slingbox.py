@@ -93,6 +93,14 @@ class Return(object):
   def do():
     #keypresses_to_sling('{backspace}')
     return u'Pressing Return button'
+	
+class Menu(object):
+  '''Press the menu button to show or hide show info.
+  '''
+  @staticmethod
+  def do():
+    keypresses_to_sling(u'M')
+    return u'Pressing menu (info) button. Press again to toggle.'
 
 class List(object):
   '''List current supported channels
@@ -104,6 +112,14 @@ class List(object):
       if re.search('[a-zA-Z]', name):
         names = names + name + u' '
     return names
+	
+class Help(object):
+  '''simple channel help
+  '''
+  @staticmethod
+  def do():
+    help = u'use ".c list" for channel names. ".c NAME" to go to a channel. ".c air" for broadcast stations, ".c cable" for cable stations and ".c bs" for the few non-HD basic cable stations.'
+    return help
 	
 BUTTON_LOCATIONS = {
 	u'air' : { u'x' : 560, u'y' : 130 },
@@ -121,7 +137,10 @@ COMMAND_TABLE = {
   u'ok' : Ok.do,
   u'return' : Return.do,
   u'esc' : Return.do,
-  u'list' : List.do, 
+  u'menu' : Menu.do,
+  u'info' : Menu.do,
+  u'list' : List.do,
+  u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
 }
 CHANNEL_LIST = {
   u'imagika' : u'251', u'251' : u'251',
