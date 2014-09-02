@@ -20,10 +20,18 @@ import os
 
 autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
 command_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/command.ahk'
+push_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/press.ahk'
 
 def keypresses_to_sling(command):
     os_call = autohotkey + u' ' + command_script + u' ' + command
     print os_call
+    retvalue = os.system(os_call.encode('utf-8'))
+def press_sling_button(name):
+    if name not in BUTTON_LOCATIONS:
+      return
+    x = BUTTON_LOCATIONS[name][u'x']
+    y = BUTTON_LOCATIONS[name][u'y']
+    os_call = autohotkey + u' ' + push_script + u' ' + unicode(x) + u' ' + unicode(y)
     retvalue = os.system(os_call.encode('utf-8'))
 
 #TODO: write a cooloff timer to prevent spamming
@@ -33,7 +41,7 @@ class Air(object):
   '''
   @staticmethod
   def do():
-    #keypresses_to_sling(u'=')
+    press_sling_button(u'air')
     return u'Changing to broadcast channels.'
 
 class BS(object):
@@ -41,7 +49,7 @@ class BS(object):
   '''
   @staticmethod
   def do():
-    #keypresses_to_sling(u'=')
+    press_sling_button(u'bs')
     return u'Changing to BS channels.'
 
 class Cable(object):
@@ -49,7 +57,7 @@ class Cable(object):
   '''
   @staticmethod
   def do():
-    #keypresses_to_sling(u'=')
+    press_sling_button(u'cable')
     return u'Changing to cable channels.'
 
 class ChannelUp(object):
@@ -74,7 +82,7 @@ class Ok(object):
   '''
   @staticmethod
   def do():
-    keypresses_to_sling('{space}')
+    #keypresses_to_sling('{space}')
     return u'Pressing OK button.'
 
 class Return(object):
@@ -83,7 +91,7 @@ class Return(object):
   '''
   @staticmethod
   def do():
-    keypresses_to_sling('{backspace}')
+    #keypresses_to_sling('{backspace}')
     return u'Pressing Return button'
 
 class List(object):
@@ -96,6 +104,12 @@ class List(object):
       if re.search('[a-zA-Z]', name):
         names = names + name + u' '
     return names
+	
+BUTTON_LOCATIONS = {
+	u'air' : { u'x' : 560, u'y' : 130 },
+	u'bs' : {u'x' : 600, u'y' : 130 },
+	u'cable' : {u'x' : 640, u'y' : 130 },
+}
 
 COMMAND_TABLE = {
   #handle tuner commands 
