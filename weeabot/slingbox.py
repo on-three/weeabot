@@ -122,9 +122,9 @@ class Help(object):
     return help
 	
 BUTTON_LOCATIONS = {
-	u'air' : { u'x' : 560, u'y' : 130 },
-	u'bs' : {u'x' : 600, u'y' : 130 },
-	u'cable' : {u'x' : 640, u'y' : 130 },
+	u'air' : { u'x' : -130, u'y' : 115 },
+	u'bs' : {u'x' : -85, u'y' : 115 },
+	u'cable' : {u'x' : -55, u'y' : 115 },
 }
 
 COMMAND_TABLE = {

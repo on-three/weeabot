@@ -4,8 +4,13 @@ if 0 != 2
   MsgBox exiting
   ExitApp
 }
-CoordMode, Mouse, Screen
 
-Click %1%, %2%
+IfWinExist SlingPlayer
+{
+  WinActivate
+  CoordMode, Mouse, Relative
+  ;MouseMove %1%, %2%
+  Click %1%, %2%
+}
 
 Return
