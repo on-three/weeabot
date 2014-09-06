@@ -161,6 +161,16 @@ class Sync(object):
     else:
       return u'Chikushouu. Do not recognize that as a tuner or channel. Piss orf.'
 
+class Now(object):
+  '''simple channel help
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    response = u''
+    response += u'On channel {channel}. '.format(channel=Slingbox.current_channel())
+    response += u'On tuner {tuner}.'.format(tuner=Slingbox.current_tuner())
+    return response      
+
 class Help(object):
   '''simple channel help
   '''
@@ -190,6 +200,7 @@ COMMAND_TABLE = {
   u'list' : List.do,
   u'last' : Last.do,
   u'sync' : Sync.do,
+  u'now' : Now.do,
   u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
 }
 
@@ -240,6 +251,20 @@ class Slingbox(object):
   _current_channel = None
   _previous_channel = None
   _current_tuner = CABLE #this could be a mistake. but is statistically sound.
+  
+  @staticmethod
+  def current_channel():
+    if Slingbox._current_channel:
+      return get_channel_name(Slingbox._current_channel)
+    else:
+      return u'UNKNOWN'
+      
+  @staticmethod
+  def current_tuner():
+    if Slingbox._current_tuner:
+      return Slingbox._current_tuner
+    else:
+      return u'UNKNOWN'
   
   def __init__(self, parent):
     '''
