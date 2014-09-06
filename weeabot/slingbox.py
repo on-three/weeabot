@@ -21,6 +21,16 @@ import os
 #plugin Hikari TV service
 import hikaritv
 CHANNEL_LIST = hikaritv.CHANNEL_LIST
+#tuners available is tied to hikari, but more so to sling buttons
+#so i'm putting it here
+AIR = u'air'
+BS = u'bs'
+CABLE = u'cable'
+TUNER_LIST = [
+  AIR,
+  BS,
+  CABLE,
+]
 
 autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
 command_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/command.ahk'
@@ -44,34 +54,37 @@ class Air(object):
   '''set tuner to broadcast stationsyo
   '''
   @staticmethod
-  def do():
-    press_sling_button(u'air')
+  def do(command=None, data=None):
+    press_sling_button(AIR)
     Slingbox._previous_channel = None
+    Slingbox._current_tuner = AIR
     return u'Changing to broadcast channels.'
 
 class BS(object):
   '''Set tuner to BS stations
   '''
   @staticmethod
-  def do():
-    press_sling_button(u'bs')
+  def do(command=None, data=None):
+    press_sling_button(BS)
     Slingbox._previous_channel = None
+    Slingbox._current_tuner = BS
     return u'Changing to BS channels.'
 
 class Cable(object):
   '''Set tuner to cable stations
   '''
   @staticmethod
-  def do():
-    press_sling_button(u'cable')
+  def do(command=None, data=None):
+    press_sling_button(CABLE)
     Slingbox._previous_channel = None
+    Slingbox._current_tuner = CABLE
     return u'Changing to cable channels.'
 
 class ChannelUp(object):
   '''Channel up
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     keypresses_to_sling(u'=')
     Slingbox._previous_channel = None
     return u'Channel up.'
@@ -80,7 +93,7 @@ class ChannelDown(object):
   '''Channel down
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     keypresses_to_sling(u'-')
     Slingbox._previous_channel = None
     return u'Channel down.'
@@ -90,7 +103,7 @@ class Ok(object):
   TODO: consider if this is really needed.
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     #keypresses_to_sling('{space}')
     return u'Pressing OK button.'
 
@@ -99,7 +112,7 @@ class Return(object):
   TODO: consider if this is really needed.
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     #keypresses_to_sling('{backspace}')
     return u'Pressing Return button'
 	
@@ -107,7 +120,7 @@ class Menu(object):
   '''Press the menu button to show or hide show info.
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     keypresses_to_sling(u'M')
     return u'Pressing menu (info) button. Press again to toggle.'
     
@@ -115,7 +128,7 @@ class Last(object):
   '''Press the menu button to show or hide show info.
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     if Slingbox._previous_channel:
       return set_channel(Slingbox._previous_channel)
     else:
@@ -125,30 +138,48 @@ class List(object):
   '''List current supported channels
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     names = [k for k,v in CHANNEL_LIST.iteritems() if re.search('[a-zA-Z]', k)]
     names.sort()
     return ' '.join(names)
-	
+    
+class Sync(object):
+  '''Sync the module's state to user provided information
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    if not data:
+      return u'Unknown command.'
+    if data in TUNER_LIST:
+      Slingbox._current_tuner = data
+      Slingbox._previous_channel = None
+      return u'Arigatou user-tan. I know we are now on tuner {tuner}.'.format(tuner=data)
+    elif data in CHANNEL_LIST:
+      Slingbox._current_channel = CHANNEL_LIST[data].number
+      Slingbox._previous_channel = None
+      return u'Arigatou, user-tan. I know we are now on channel {channel}'.format(channel=data)
+    else:
+      return u'Chikushouu. Do not recognize that as a tuner or channel. Piss orf.'
+
 class Help(object):
   '''simple channel help
   '''
   @staticmethod
-  def do():
+  def do(command=None, data=None):
     help = u'use ".c list" for channel names. ".c NAME" to go to a channel. ".c air" for broadcast stations, ".c cable" for cable stations and ".c bs" for the few non-HD basic cable stations.'
     return help
 	
 BUTTON_LOCATIONS = {
-	u'air' : { u'x' : -130, u'y' : 115 },
-	u'bs' : {u'x' : -85, u'y' : 115 },
-	u'cable' : {u'x' : -55, u'y' : 115 },
+	AIR : { u'x' : -130, u'y' : 115 },
+	BS : {u'x' : -85, u'y' : 115 },
+	CABLE : {u'x' : -55, u'y' : 115 },
 }
 
 COMMAND_TABLE = {
   #handle tuner commands 
-  u'air' : Air.do ,
-  u'bs' : BS.do ,
-  u'cable' : Cable.do,
+  AIR : Air.do ,
+  BS : BS.do ,
+  CABLE : Cable.do,
   u'up' : ChannelUp.do,
   u'down' : ChannelDown.do,
   u'ok' : Ok.do,
@@ -158,6 +189,7 @@ COMMAND_TABLE = {
   u'info' : Menu.do,
   u'list' : List.do,
   u'last' : Last.do,
+  u'sync' : Sync.do,
   u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
 }
 
@@ -166,16 +198,13 @@ def get_channel_name(n):
   '''
   if n in CHANNEL_LIST:
     return CHANNEL_LIST[n].name
-  #for name, number in CHANNEL_LIST.iteritems():
-  #  if number == n and re.search('[a-zA-Z]', name):
-  #    return name
   return u'Unknown'
 
-def do(command, irc_channel):
+def do(command, irc_channel, data):
   '''Carry out a command from the manager command table
   '''
   if command in COMMAND_TABLE:
-    return COMMAND_TABLE[command]()
+    return COMMAND_TABLE[command](command=command, data=data)
   elif command in CHANNEL_LIST:
     channel_number = CHANNEL_LIST[command].number
     return set_channel(channel_number)
@@ -187,7 +216,12 @@ def set_channel(channel_number):
   Note that i don't care if the slingbox actually goes there or not.
   We just fire and forget.
   '''
-  name = get_channel_name(channel_number)
+  if channel_number not in CHANNEL_LIST:
+    return u'Mitsukeranai, user-me. Giving me bad channel names. I cannot forgive you!'
+  chan = CHANNEL_LIST[channel_number]
+  #do we need a tuner switch to go there?
+  if chan.tuner != Slingbox._current_tuner:
+    return u'Channel {name} is on the {tuner} tuner. Sync me if I am incorrect.'.format(name=chan.name, tuner=chan.tuner)
   temp = Slingbox._current_channel
   Slingbox._current_channel = channel_number
   if Slingbox._previous_channel != temp:
@@ -195,16 +229,17 @@ def set_channel(channel_number):
   if not Slingbox._previous_channel:
     Slingbox._previous_channel = Slingbox._current_channel
   keypresses_to_sling(channel_number)
-  return u'Changing to channel {number}, {name}.'.format(number=channel_number, name=name)
+  return u'Changing to channel {number}, {name} | {jname}'.format(number=channel_number, name=chan.name, jname=chan.japanese_name)
 
 
 class Slingbox(object):
   '''
   regex for command to control slingbox
   '''
-  COMMAND_REGEX = ur'^(?P<statement>\.channel|\.c|.チャンネル) (?P<command>\S+)$'
+  COMMAND_REGEX = ur'^(?P<statement>\.channel|\.c|.チャンネル) (?P<command>\S+)( (?P<data>\S+))?$'
   _current_channel = None
   _previous_channel = None
+  _current_tuner = CABLE #this could be a mistake. but is statistically sound.
   
   def __init__(self, parent):
     '''
@@ -234,13 +269,16 @@ class Slingbox(object):
       return
     #got a command along with the .c or .channel statement
     command = m.groupdict()['command']
-    self.do(command, irc_channel)
+    data= None
+    if 'data' in m.groupdict():
+      data = m.groupdict()['data']
+    self.do(command, irc_channel, data)
 
-  def do(self, command, irc_channel):
+  def do(self, command, irc_channel, data):
     '''
     Pass a command to the slingbox via our slingbox manager class  
     '''
-    response = do(command, irc_channel).encode('utf-8')
+    response = do(command, irc_channel, data).encode('utf-8')
     self._parent.say(irc_channel, response)
 
 
