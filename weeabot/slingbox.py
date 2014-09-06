@@ -107,11 +107,15 @@ class List(object):
   '''
   @staticmethod
   def do():
-    names = u''
-    for name, number in CHANNEL_LIST.iteritems():
-      if re.search('[a-zA-Z]', name):
-        names = names + name + u' '
-    return names
+    names = [k for k,v in CHANNEL_LIST.iteritems() if re.search('[a-zA-Z]', k)]
+    #names = 
+    #for name, number in CHANNEL_LIST.iteritems():
+    #  if re.search('[a-zA-Z]', name):
+    #    names = names + name + u' '
+    #return ' '.join(names.sort())
+    #return 'length of names list is ' + str(len(names))
+    names.sort()
+    return ' '.join(names)
 	
 class Help(object):
   '''simple channel help
@@ -188,6 +192,7 @@ CHANNEL_LIST = {
   u'foodies' : u'831', u'831' : u'831',
   u'nhk' : u'011', u'11': u'011', u'011' : u'011',
   u'nhke' : u'012', u'12': u'012', u'012' : u'012',
+  u'nhkworld' : u'103', u'103' : u'103',
   u'ntv' : u'041', u'41': u'041', u'041' : u'041',
   u'tbs' : u'061', u'61': u'061', u'061' : u'061',
   u'fuji' : u'081', u'81' : u'081', u'081' : u'081',
