@@ -42,6 +42,7 @@ class Air(object):
   @staticmethod
   def do():
     press_sling_button(u'air')
+    Slingbox._previous_channel = None
     return u'Changing to broadcast channels.'
 
 class BS(object):
@@ -50,6 +51,7 @@ class BS(object):
   @staticmethod
   def do():
     press_sling_button(u'bs')
+    Slingbox._previous_channel = None
     return u'Changing to BS channels.'
 
 class Cable(object):
@@ -58,6 +60,7 @@ class Cable(object):
   @staticmethod
   def do():
     press_sling_button(u'cable')
+    Slingbox._previous_channel = None
     return u'Changing to cable channels.'
 
 class ChannelUp(object):
@@ -66,6 +69,7 @@ class ChannelUp(object):
   @staticmethod
   def do():
     keypresses_to_sling(u'=')
+    Slingbox._previous_channel = None
     return u'Channel up.'
 
 class ChannelDown(object):
@@ -74,6 +78,7 @@ class ChannelDown(object):
   @staticmethod
   def do():
     keypresses_to_sling(u'-')
+    Slingbox._previous_channel = None
     return u'Channel down.'
 
 class Ok(object):
@@ -101,6 +106,16 @@ class Menu(object):
   def do():
     keypresses_to_sling(u'M')
     return u'Pressing menu (info) button. Press again to toggle.'
+    
+class Last(object):
+  '''Press the menu button to show or hide show info.
+  '''
+  @staticmethod
+  def do():
+    if Slingbox._previous_channel:
+      return set_channel(Slingbox._previous_channel)
+    else:
+      return u'Gomenasai user-kun. No memory of previous channel. Dame dame.'
 
 class List(object):
   '''List current supported channels
@@ -144,6 +159,7 @@ COMMAND_TABLE = {
   u'menu' : Menu.do,
   u'info' : Menu.do,
   u'list' : List.do,
+  u'last' : Last.do,
   u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
 }
 CHANNEL_LIST = {
@@ -202,40 +218,39 @@ CHANNEL_LIST = {
   u'daigaku' : u'0121', u'121' : u'121',
 }
 
-class SlingboxManager(object):
-  '''Manage a slingbox in a simple way
-  Commands to the box will probably be just invoked AutoHotkey shit
+def get_channel_name(n):
+  '''returns the first alphabetic key match in the dict
   '''
-  def __init__(self):
-    pass
+  for name, number in CHANNEL_LIST.iteritems():
+    if number == n and re.search('[a-zA-Z]', name):
+      return name
+  return u'Unknown'
 
-  def get_channel_name(self, n):
-    '''returns the first alphabetic key match in the dict
-    '''
-    for name, number in CHANNEL_LIST.iteritems():
-      if number == n and re.search('[a-zA-Z]', name):
-        return name
-    return u'Unknown'
+def do(command, irc_channel):
+  '''Carry out a command from the manager command table
+  '''
+  if command in COMMAND_TABLE:
+    return COMMAND_TABLE[command]()
+  elif command in CHANNEL_LIST:
+    channel_number = CHANNEL_LIST[command]
+    return set_channel(channel_number)
+  else:
+    return u'Sorry. Unknown Command. Check yur privilege.'
 
-  def do(self, command, irc_channel):
-    '''Carry out a command from the manager command table
-    '''
-    if command in COMMAND_TABLE:
-      return COMMAND_TABLE[command]()
-    elif command in CHANNEL_LIST:
-      channel_number = CHANNEL_LIST[command]
-      return self.set_channel(channel_number)
-    else:
-      return u'Sorry. Unknown Command. Check yur privilege.'
-
-  def set_channel(self, channel_number):
-    '''Given a string name of a channel, tell the slingbox to go there
-    Note that i don't care if the slingbox actually goes there or not.
-    We just fire and forget.
-    '''
-    name = self.get_channel_name(channel_number)
-    keypresses_to_sling(channel_number)
-    return u'Changing to channel {number}, {name}.'.format(number=channel_number, name=name)
+def set_channel(channel_number):
+  '''Given a string name of a channel, tell the slingbox to go there
+  Note that i don't care if the slingbox actually goes there or not.
+  We just fire and forget.
+  '''
+  name = get_channel_name(channel_number)
+  temp = Slingbox._current_channel
+  Slingbox._current_channel = channel_number
+  if Slingbox._previous_channel != temp:
+    Slingbox._previous_channel = temp
+  if not Slingbox._previous_channel:
+    Slingbox._previous_channel = Slingbox._current_channel
+  keypresses_to_sling(channel_number)
+  return u'Changing to channel {number}, {name}.'.format(number=channel_number, name=name)
 
 
 class Slingbox(object):
@@ -243,13 +258,14 @@ class Slingbox(object):
   regex for command to control slingbox
   '''
   COMMAND_REGEX = ur'^(?P<statement>\.channel|\.c|.チャンネル) (?P<command>\S+)$'
-
+  _current_channel = None
+  _previous_channel = None
+  
   def __init__(self, parent):
     '''
     constructor
     '''
     self._parent = parent
-    self._slingmanager = SlingboxManager()
 
   def is_msg_of_interest(self, user, channel, msg):
     '''
@@ -279,7 +295,7 @@ class Slingbox(object):
     '''
     Pass a command to the slingbox via our slingbox manager class  
     '''
-    response = self._slingmanager.do(command, irc_channel).encode('utf-8')
+    response = do(command, irc_channel).encode('utf-8')
     self._parent.say(irc_channel, response)
 
 
