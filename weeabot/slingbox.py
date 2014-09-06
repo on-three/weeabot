@@ -18,6 +18,10 @@ import re
 from twisted.python import log
 import os
 
+#plugin Hikari TV service
+import hikaritv
+CHANNEL_LIST = hikaritv.CHANNEL_LIST
+
 autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
 command_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/command.ahk'
 push_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/press.ahk'
@@ -123,12 +127,6 @@ class List(object):
   @staticmethod
   def do():
     names = [k for k,v in CHANNEL_LIST.iteritems() if re.search('[a-zA-Z]', k)]
-    #names = 
-    #for name, number in CHANNEL_LIST.iteritems():
-    #  if re.search('[a-zA-Z]', name):
-    #    names = names + name + u' '
-    #return ' '.join(names.sort())
-    #return 'length of names list is ' + str(len(names))
     names.sort()
     return ' '.join(names)
 	
@@ -162,68 +160,15 @@ COMMAND_TABLE = {
   u'last' : Last.do,
   u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
 }
-CHANNEL_LIST = {
-  u'imagika' : u'251', u'251' : u'251',
-  u'cinema' : u'252', u'252' : u'252',
-  u'foxmovie' : u'253', u'253' : u'253',
-  u'jmovie' : u'260', u'260': u'260',
-  u'neco' : u'261', u'261' : u'261',
-  u'animax' : u'350', u'350' : u'350',
-  u'kids' : u'351', u'351' : u'351',
-  u'cn' : u'352', u'352' : u'352',
-  u'disney' : u'550', u'550' : u'550',
-  u'disneyjr' : u'353', u'353' : u'353',
-  u'fox' : u'450', u'450' : u'450',
-  u'superdrama' : u'451', u'451': u'451',
-  u'axn' : u'452', u'452' : u'452',
-  u'foxcrime' : u'453', u'453' : u'453',
-  u'mystery' : u'455', u'455' : u'455',
-  u'homedrama' : u'460', u'460' : u'460',
-  u'samurai' : u'461', u'461' : u'461',
-  u'kbs' : u'552', u'552' : u'552',
-  u'asia' : u'553', u'553' : u'553',
-  u'disneyxd' : u'551', u'551' : u'551',
-  u'asahi1' : u'556', u'5561' : u'556',
-  u'asahi2' : u'740', u'7402' : u'740',
-  u'family' : u'558', u'558' : u'558',
-  u'mondo' : u'554', u'554' : u'554',
-  u'ntvplus' : u'555', u'555' : u'555',
-  u'entame' : u'559', u'559' : u'559',
-  u'tbs1' : u'470', u'470' : u'470',
-  u'tbs2' : u'471', u'471' : u'471',
-  u'spaceshower' : u'650', u'650' : u'650',
-  u'spaceshowerplus' : u'651', u'651' : u'651',
-  u'mon' : u'653', u'653' : u'653',
-  u'enka' : u'655', u'655' : u'655',
-  u'foxsports' : u'741', u'741' : u'741',
-  u'gaora' : u'750', u'750' : u'750',
-  u'aplus' : u'751', u'751' : u'751',
-  u'gplus' : u'752', u'752' : u'752',
-  u'golf' : u'754', u'754' : u'754',
-  u'tbssports' : u'860', u'860' : u'860',
-  u'bbc' : u'861', u'861' : u'861',
-  u'natgeo' : u'811', u'811' : u'811',
-  u'history' : u'812', u'812' : u'812',
-  u'shogi' : u'832', u'832' : u'832',
-  u'foodies' : u'831', u'831' : u'831',
-  u'nhk' : u'011', u'11': u'011', u'011' : u'011',
-  u'nhke' : u'012', u'12': u'012', u'012' : u'012',
-  u'nhkworld' : u'103', u'103' : u'103',
-  u'ntv' : u'041', u'41': u'041', u'041' : u'041',
-  u'tbs' : u'061', u'61': u'061', u'061' : u'061',
-  u'fuji' : u'081', u'81' : u'081', u'081' : u'081',
-  u'asahi' : u'051', u'51' : u'051', u'051' : u'051',
-  u'tbs' : u'071', u'71': u'071', u'071' : u'071',
-  u'ktv' : u'031', u'31': u'031', u'031' : u'031',
-  u'daigaku' : u'0121', u'121' : u'121',
-}
 
 def get_channel_name(n):
   '''returns the first alphabetic key match in the dict
   '''
-  for name, number in CHANNEL_LIST.iteritems():
-    if number == n and re.search('[a-zA-Z]', name):
-      return name
+  if n in CHANNEL_LIST:
+    return CHANNEL_LIST[n].name
+  #for name, number in CHANNEL_LIST.iteritems():
+  #  if number == n and re.search('[a-zA-Z]', name):
+  #    return name
   return u'Unknown'
 
 def do(command, irc_channel):
@@ -232,7 +177,7 @@ def do(command, irc_channel):
   if command in COMMAND_TABLE:
     return COMMAND_TABLE[command]()
   elif command in CHANNEL_LIST:
-    channel_number = CHANNEL_LIST[command]
+    channel_number = CHANNEL_LIST[command].number
     return set_channel(channel_number)
   else:
     return u'Sorry. Unknown Command. Check yur privilege.'
