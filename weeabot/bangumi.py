@@ -95,7 +95,7 @@ class Bangumi(object):
   def handle_msg(self, user, irc_channel, msg):
     '''
     PLUGIN API REQUIRED
-    Handle message and return nothing
+    Handle message and return nothing.
     '''
     #log.msg('{channel} : {msg}'.format(channel=channel, msg=msg.encode('utf-8')))
     m = re.match(Bangumi.COMMAND_REGEX, msg)
@@ -103,7 +103,7 @@ class Bangumi(object):
       return
     tv_channel = m.groupdict()['channel']
     if tv_channel not in CHANNEL_LIST:
-      self._parent.say(channel, 'Unknown channel. Stop wasting my tiem.')
+      self._parent.say(irc_channel, 'Nani sore... .')
       return
     
     self.initiate_current_program_lookup(tv_channel, irc_channel, user=user)
@@ -123,7 +123,7 @@ class Bangumi(object):
     #time = datetime.now(timezone('Asia/Tokyo')).strftime('%Y%m%d%H%M')
     time = datetime.now(timezone('Asia/Tokyo')).strftime('%H%M')
     
-    url = u'http://tv.so-net.ne.jp/past/{tuner_code}{channel}{time}1.action'.format(tuner_code=tuner_code, channel=channel, time=time).encode('utf-8')
+    url = u'http://tv.so-net.ne.jp/past/{tuner_code}{channel}{time}2.action'.format(tuner_code=tuner_code, channel=channel, time=time).encode('utf-8')
     #url = u'http://tv.so-net.ne.jp/schedule/{tuner}{channel}{time}.action'.format(tuner=tuner_code, channel=channel, time=time).encode('utf-8')
     log.msg('{url}'.format(url=url).encode('utf-8'))
     result = getPage(url, timeout=3)
