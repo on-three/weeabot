@@ -15,6 +15,24 @@ import re
 import romkan
 from twisted.python import log
 
+'''
+
+Content we're scraping is of the form:
+
+<h1 class="basicContTitle">番組情報</h1>
+				<dl class="basicTxt">
+					<dd> 石田とあさくら　<a href="/webSearch.action?query=%E7%9F%B3%E7%94%B0%E3%81%A8%E3%81%82%E3%81%95%E3%81%8F%E3%82%89" target="_blank" class="linkArrowA">ウェブ検索</a></dd>
+					<dd>
+					    9/7 (Sun) 12:40 ～ 13:00&nbsp;（20分）
+					  <a class="linkArrowA" href="/chartFromSchedule.action?id=400670201409071240">この時間帯の番組表</a>
+					</dd>
+					<dd>アニマックス HD(Ch.670)</dd>
+					<dd><a href="/schedulesBySearch.action?condition.genres[0].id=107000">アニメ／特撮</a> - <a href="/schedulesBySearch.action?condition.genres[0].id=107100">国内アニメ</a></dd>
+				</dl>
+</h1>
+
+'''
+
 def elipsize(string, max_length=128, elipsis='...'):
   '''
   cap string at max X characters.
@@ -33,33 +51,18 @@ def scrape_tv_schedule(html, max_results=3):
   '''
   results = []
   try:
-    #soup = BeautifulSoup(html)
-    results.append(u'Dragonball #2: 13:00 ~ 13:30: アニマックス')
-    '''
-    kanji = soup.findAll('td', {'class': 'kanji_column'})
-    kana = soup.findAll('td', {'class': 'kana_column'})
-    engrish = soup.findAll('td', {'class': 'meanings_column'})
-    if not kanji or not kana or not engrish:
-      return None
-    kanji = [' '.join(x.stripped_strings) for x in kanji]
-    kana = [' '.join(x.stripped_strings) for x in kana]
-    romaji = [romkan.to_roma(x) for x in kana]
-    engrish = [elipsize(' '.join(x.stripped_strings)) for x in engrish]
-    results = zip(kanji, kana, romaji, engrish)
-    '''
-    '''
-    #before forming final definitions string list from these sublists
-    #we'll remove definitions which have identical english meanings???
-    results = []
-    for i,definition in enumerate(definitions):
-      if len(results>0) and definition[3] in results[:i-1][3]:
-        pass
-      else:
-        results.append(definition)
-    '''
+    soup = BeautifulSoup(html)
+    content_block = soup('dl', {'class' : 'basicTxt'})[0]
+    name = content_block.contents[1].text.strip()
+    #remove un needed content and strip again
+    name = re.sub(u'ウェブ検索', '', name).strip()
+    time = content_block.contents[3].text.strip()
+    time = re.sub(u'この時間帯の番組表', '', time).strip()
 
-    #form final results from zipped list and return    
-    #results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in results[:max_results]]
+    #log.msg(u'title: {name}'.format(name=name).encode('utf-8'))
+    #log.msg(u'time : {time}'.format(time=time).encode('utf-8'))
+
+    results.append(u'\x035|\u000f {name} \x035|\u000f \x032{time}\u000f \x035|\u000f'.format(name=name, time=time))
   except:
     log.err()
   return results

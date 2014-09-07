@@ -138,7 +138,7 @@ class Bangumi(object):
       self._parent.say(channel, u'\x032No schedule found at tv.so-net.ne.jp...'.encode('utf-8'))
       return
     for result in results:
-      response = u'\x035{result}'.format(result=result).encode('utf-8')
+      response = u'{result}'.format(result=result).encode('utf-8')
       self._parent.say(irc_channel, response)
   
   def on_bangumi_error(self, error):
