@@ -57,6 +57,7 @@ class Air(object):
   def do(command=None, data=None):
     press_sling_button(AIR)
     Slingbox._previous_channel = None
+    Slingbox._current_channel = None
     Slingbox._current_tuner = AIR
     return u'Changing to broadcast channels.'
 
@@ -67,6 +68,7 @@ class BS(object):
   def do(command=None, data=None):
     press_sling_button(BS)
     Slingbox._previous_channel = None
+    Slingbox._current_channel = None
     Slingbox._current_tuner = BS
     return u'Changing to BS channels.'
 
@@ -77,6 +79,7 @@ class Cable(object):
   def do(command=None, data=None):
     press_sling_button(CABLE)
     Slingbox._previous_channel = None
+    Slingbox._current_channel = None
     Slingbox._current_tuner = CABLE
     return u'Changing to cable channels.'
 
@@ -87,6 +90,7 @@ class ChannelUp(object):
   def do(command=None, data=None):
     keypresses_to_sling(u'=')
     Slingbox._previous_channel = None
+    Slingbox._current_channel = None
     return u'Channel up.'
 
 class ChannelDown(object):
@@ -96,6 +100,7 @@ class ChannelDown(object):
   def do(command=None, data=None):
     keypresses_to_sling(u'-')
     Slingbox._previous_channel = None
+    Slingbox._current_channel = None
     return u'Channel down.'
 
 class Ok(object):
