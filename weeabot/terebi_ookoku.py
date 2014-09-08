@@ -42,14 +42,14 @@ def elipsize(string, max_length=128, elipsis='...'):
     string = string[:max_length-len(elipsis)]+elipsis
   return string
 
-def scrape_tv_schedule(html, max_results=3):
+def scrape_tv_schedule(html):
   '''
   Extract japanese kanji, kana, english definitions and parts of speech
   from html off jisho.org.
   Return the values as a list of strings.
   If nothing found, return None.
   '''
-  results = []
+  result = u'何？Wakarimasen aniki.'
   try:
     soup = BeautifulSoup(html)
     content_block = soup('dl', {'class' : 'basicTxt'})[0]
@@ -62,10 +62,10 @@ def scrape_tv_schedule(html, max_results=3):
     #log.msg(u'title: {name}'.format(name=name).encode('utf-8'))
     #log.msg(u'time : {time}'.format(time=time).encode('utf-8'))
 
-    results.append(u'\x035|\u000f {name} \x035|\u000f \x032{time}\u000f \x035|\u000f'.format(name=name, time=time))
+    result = u'\x035|\u000f {name} \x035|\u000f \x032{time}\u000f \x035|\u000f'.format(name=name, time=time)
   except:
     log.err()
-  return results
+  return result
 
 
 

@@ -51,14 +51,16 @@ class Bangumi(object):
     '''
     Functor that wraps a HTML response
     '''
-    def __init__(self, callback_handler, tv_channel, irc_channel, user, url):
+    def __init__(self, callback_handler, tv_channel, irc_channel, user, url, next):
       self._callback_handler = callback_handler
       self._tv_channel = tv_channel 
       self._irc_channel = irc_channel
       self._user = user
       self._url = url
+      self._next = next
+
     def __call__(self, response):
-      self._callback_handler(response, self._tv_channel, self._irc_channel, self._user, self._url)
+      self._callback_handler(response, self._tv_channel, self._irc_channel, self._user, self._url, self._next)
 
   class BangumiError(object):
     '''
@@ -105,10 +107,15 @@ class Bangumi(object):
     if tv_channel not in CHANNEL_LIST:
       self._parent.say(irc_channel, 'Nani sore... .')
       return
-    
-    self.initiate_current_program_lookup(tv_channel, irc_channel, user=user)
 
-  def initiate_current_program_lookup(self, tv_channel, irc_channel, user=''):
+    #does the user want the show on NEXT?
+    next = False
+    if u'next' in m.groupdict():
+      next = True
+    
+    self.initiate_current_program_lookup(tv_channel, irc_channel, user=user, next=next)
+
+  def initiate_current_program_lookup(self, tv_channel, irc_channel, user='', **kwargs):
     '''
     Initiate an asynchronous scrape of terabi ookoku for japanese program lookup.
     '''
@@ -122,24 +129,27 @@ class Bangumi(object):
     tuner_code = TUNER_LOOKUP[tuner]
     #time = datetime.now(timezone('Asia/Tokyo')).strftime('%Y%m%d%H%M')
     time = datetime.now(timezone('Asia/Tokyo')).strftime('%H%M')
-    
     url = u'http://tv.so-net.ne.jp/past/{tuner_code}{channel}{time}2.action'.format(tuner_code=tuner_code, channel=channel, time=time).encode('utf-8')
-    #url = u'http://tv.so-net.ne.jp/schedule/{tuner}{channel}{time}.action'.format(tuner=tuner_code, channel=channel, time=time).encode('utf-8')
-    log.msg('{url}'.format(url=url).encode('utf-8'))
+    #log.msg('{url}'.format(url=url).encode('utf-8'))
     result = getPage(url, timeout=3)
     result.addCallbacks(
-      callback = Bangumi.BangumiResponse(self.on_bangumi_response, tv_channel, irc_channel, user, url),
+      callback = Bangumi.BangumiResponse(self.on_bangumi_response, tv_channel, irc_channel, user, url, next),
       errback = Bangumi.BangumiError(self.on_bangumi_error))
 
-  def on_bangumi_response(self, response, tv_channel, irc_channel, user, url):
+  def on_bangumi_response(self, response, tv_channel, irc_channel, user, url, next=False):
     #log.msg('{response}'.format(response=response))
-    results = scrape_tv_schedule(response)
-    if not results:
+    if next:
+      #TODO: figure out the time the current program ends
+      #this will be of the form '6:00 ～ 7:00' in the response.
+      #in that case i'd just want '7:00' which i can turn into a datetime
+      #THen we initiate another lookup with that time.
+      pass
+    result = scrape_tv_schedule(response)
+    if not result:
       self._parent.say(channel, u'\x032No schedule found at tv.so-net.ne.jp...'.encode('utf-8'))
       return
-    for result in results:
-      response = u'{result}'.format(result=result).encode('utf-8')
-      self._parent.say(irc_channel, response)
+    response = u'{result}'.format(result=result).encode('utf-8')
+    self._parent.say(irc_channel, response)
   
   def on_bangumi_error(self, error):
     '''
