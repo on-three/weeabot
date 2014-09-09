@@ -52,14 +52,18 @@ def scrape_tv_schedule(html):
     content_block = soup('dl', {'class' : 'basicTxt'})[0]
     name = content_block.contents[1].text.strip()
     #remove un needed content and strip again
-    name = re.sub(u'ウェブ検索', '', name).strip()
-    time = content_block.contents[3].text.strip()
-    time = re.sub(u'この時間帯の番組表', '', time).strip()
+    name = re.sub(u'ウェブ検索', u'', name).strip()
+    time = unicode(content_block.contents[3].text)
+    time = re.sub(u'この時間帯の番組表', u'', time)
+    #there appears to be a bug in string.strip() in unicode whereby numerals can be stripped
+    #so we strip here via regex
+    time = re.sub(u'^[\D]+',u' ', time)
+    time = time.rstrip()
 
     #log.msg(u'title: {name}'.format(name=name).encode('utf-8'))
     #log.msg(u'time : {time}'.format(time=time).encode('utf-8'))
 
-    result = u'\x035|\u000f {name} \x035|\u000f \x032{time}\u000f \x035|\u000f'.format(name=name, time=time)
+    result = u'{name} \x035|\u000f\x032{time}\u000f\x035|\u000f'.format(name=name, time=time)
   except:
     log.err()
   return result
