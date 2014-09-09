@@ -47,7 +47,7 @@ class Bangumi(object):
   enter ".bangumi animax next" and the following program will be reported.
   '''
 
-  COMMAND_REGEX = r'^(?P<command>\.whatson |\.w |\.W )(?P<channel>\S+)( (?P<next>next))?$'
+  COMMAND_REGEX = r'^(?P<command>\.whatson|\.w|\.W)( (?P<channel>\S+))?( (?P<next>next))?$'
   USAGE = '\x033USAGE: [.whatson|.w] <channel to get current program> [next]'
 
   class BangumiResponse(object):
@@ -106,7 +106,14 @@ class Bangumi(object):
     m = re.match(Bangumi.COMMAND_REGEX, msg)
     if not m:
       return
-    tv_channel = m.groupdict()['channel']
+    tv_channel = get_current_channel()
+    if m.groupdict()['channel']:
+      tv_channel = m.groupdict()['channel']
+
+    if tv_channel == u'UNKNOWN':
+      self._parent.say(channel, u'\x033BAKAMON. Current channeru UNKNOWN.'.encode('utf-8'))
+      return
+    
     if tv_channel not in CHANNEL_LIST:
       self._parent.say(irc_channel, 'Nani sore... .')
       return
