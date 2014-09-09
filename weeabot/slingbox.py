@@ -36,6 +36,12 @@ autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
 command_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/command.ahk'
 push_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/press.ahk'
 
+
+def get_current_channel():
+  '''module level access to static current channel data
+  '''
+  return Slingbox.current_channel()  
+
 def keypresses_to_sling(command):
     os_call = autohotkey + u' ' + command_script + u' ' + command
     print os_call

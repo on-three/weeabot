@@ -18,6 +18,10 @@ from twisted.python import log
 from datetime import datetime, timedelta
 from pytz import timezone
 
+#don't like accessing other modules which may or may not be present
+#but the hell with it
+from slingbox import get_current_channel
+
 #plug in skyplus channels for lookups
 import skyplus
 CHANNEL_LIST = skyplus.CHANNEL_LIST
@@ -35,7 +39,6 @@ TUNER_LOOKUP = {
   u'cable' : SUKAPAA_PREMI,
   u'kanagawa' : KANAGAWA 
 }
-
 
 class Bangumi(object):
   '''
@@ -128,7 +131,9 @@ class Bangumi(object):
       return
     tuner_code = TUNER_LOOKUP[tuner]
     time_str = t.strftime('%H%M')
-    url = u'http://tv.so-net.ne.jp/past/{tuner_code}{channel}{time}2.action'.format(tuner_code=tuner_code, channel=channel, time=time_str).encode('utf-8')
+    day_of_week_code = int(t.strftime('%w'))
+    day_of_week_code = (day_of_week_code+1)%7
+    url = u'http://tv.so-net.ne.jp/past/{tuner_code}{channel}{time}{dow}.action'.format(tuner_code=tuner_code, channel=channel, time=time_str, dow=day_of_week_code).encode('utf-8')
     result = getPage(url, timeout=3)
     result.addCallbacks(
       callback = Bangumi.BangumiResponse(self.on_bangumi_response, tv_channel, irc_channel, user, url, next),
