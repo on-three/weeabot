@@ -44,10 +44,7 @@ def elipsize(string, max_length=128, elipsis='...'):
 
 def scrape_tv_schedule(html):
   '''
-  Extract japanese kanji, kana, english definitions and parts of speech
-  from html off jisho.org.
-  Return the values as a list of strings.
-  If nothing found, return None.
+  Extract curretn program name and running time from html.
   '''
   result = u'何？Wakarimasen aniki.'
   try:
