@@ -51,6 +51,9 @@ class Channel(object):
 
 
 CHANNELS = [
+  Channel(u'toei', u'629', u'東映チャンネル', u'Tokusatsu and pinku.', u'cable'),
+  Channel(u'atx' , u'667', u'アニメシアターX', u'Anime', u'cable'),
+  Channel(u'vpara' , u'635', u'Ｖ☆パラダイスＨＤ', u'Mahjong, pachinko, gravure.', u'cable'),
   Channel(u'imagika', u'630', u'イマジカＢＳ・映画', u'Movie channel', u'cable'),
   Channel(u'cinema' , u'631', u'ザ・シネマＨＤ', u'cinema', u'cable'),
   Channel(u'foxmovie' , u'624', u'ＦＯＸムービー プレミアム HD', u'Movie channel', u'cable'),
