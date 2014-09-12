@@ -22,12 +22,9 @@ from credentials import BING_CLIENT_ID
 from credentials import BING_CLIENT_SECRET
 
 def translate(text, from_language=u'ja', to_language=u'en'):
-  if not secret_key:
-    raise Exception(u'No Microsoft Azure secret key provided on bing.translate call.')
-
   args = {
           'client_id': BING_CLIENT_ID.encode('utf8'),
-          'client_secret': BING_CLIENT_SECRET.encode('utf-8'),#your azure secret here
+          'client_secret': BING_CLIENT_SECRET.encode('utf-8'),
           'scope': 'http://api.microsofttranslator.com',
           'grant_type': 'client_credentials'
       }
@@ -46,14 +43,12 @@ def translate(text, from_language=u'ja', to_language=u'en'):
 def main():
 
   parser = argparse.ArgumentParser(description='Exercise bing translation api.')
-  parser.add_argument('text', help='Input filename (MPEG2 Elmentary Stream)', type=str)
-  parser.add_argument('-k', '--secret_key', help='Windows secret key for bing translate API.', type=str, default='')
+  parser.add_argument('text', help='Input text to translate.', type=str)
   args = parser.parse_args()
 
-  text = args.text
-  secret_key = args.secret_key
+  text = args.text.decode('utf-8')
   translation = translate(text)
-  print(translation.decode('utf-8'))
+  print(translation)#.encode('utf-8'))
 
 if __name__ == "__main__":
   main()
