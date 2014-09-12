@@ -102,13 +102,17 @@ class Bangumi(object):
     PLUGIN API REQUIRED
     Handle message and return nothing.
     '''
-    #log.msg('{channel} : {msg}'.format(channel=channel, msg=msg.encode('utf-8')))
+    next = False
     m = re.match(Bangumi.COMMAND_REGEX, msg)
     if not m:
       return
+
     tv_channel = get_current_channel()
     if m.groupdict()['channel']:
-      tv_channel = m.groupdict()['channel']
+      if m.groupdict()['channel'] != u'next':
+        tv_channel = m.groupdict()['channel']
+      else:
+        next = True
 
     if tv_channel == u'UNKNOWN':
       self._parent.say(irc_channel, u'\x033BAKAMON. Current channeru UNKNOWN.'.encode('utf-8'))
@@ -119,7 +123,6 @@ class Bangumi(object):
       return
 
     #does the user want the show on NEXT?
-    next = False
     if m.groupdict()['next']:
       next = True
     time = datetime.now(timezone('Asia/Tokyo'))
