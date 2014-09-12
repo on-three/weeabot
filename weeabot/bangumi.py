@@ -111,7 +111,7 @@ class Bangumi(object):
       tv_channel = m.groupdict()['channel']
 
     if tv_channel == u'UNKNOWN':
-      self._parent.say(channel, u'\x033BAKAMON. Current channeru UNKNOWN.'.encode('utf-8'))
+      self._parent.say(irc_channel, u'\x033BAKAMON. Current channeru UNKNOWN.'.encode('utf-8'))
       return
     
     if tv_channel not in CHANNEL_LIST:
