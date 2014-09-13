@@ -151,34 +151,21 @@ class Bangumi(object):
 
   def on_bangumi_response(self, response, tv_channel, irc_channel, user, url, next):
     #log.msg('{response}'.format(response=response))
-    result = scrape_tv_schedule(response)
+    program = scrape_tv_schedule(response, tv_channel)
+    if not program:
+      self._parent.say(channel, u'\x033No schedule found at tv.so-net.ne.jp...'.encode('utf-8'))
+      return
     if next:
       #TODO: figure out the time the current program ends
       #this will be of the form '6:00 ～ 7:00' in the response.
       #in that case i'd just want '7:00' which i can turn into a datetime
       #THen we initiate another lookup with that time.
-      next_program_time = self.extract_next_program_time(result)
-      log.msg('Initiating 2nd program lookup with {time}'.format(time=next_program_time))
+      next_program_time = program.end_time
       self.initiate_program_lookup(next_program_time, tv_channel, irc_channel, user, False)
       return
-    
-    if not result:
-      self._parent.say(channel, u'\x033No schedule found at tv.so-net.ne.jp...'.encode('utf-8'))
-      return
-    response = u'{result} \x033{url}'.format(result=result, url=url).encode('utf-8')
-    self._parent.say(irc_channel, response)
 
-  def extract_next_program_time(self, result):
-    #log.msg(result.encode('utf-8'))
-    myre = re.compile(ur'～ (?P<hour>\d{1,2}):(?P<minute>\d{2})', re.UNICODE)
-    r = re.search(myre, result)
-    if not r:
-      return datetime.now(timezone('Asia/Tokyo'))
-    
-    hour = int(r.groupdict()[u'hour'])
-    minute = int(r.groupdict()[u'minute'])
-    time = datetime.now(timezone('Asia/Tokyo')).replace(hour=hour, minute=minute)
-    return time
+    blurb = u'{program}\x033{url}'.format(program=unicode(program), url=url)
+    self._parent.say(irc_channel, blurb.encode('utf-8'))
   
   def on_bangumi_error(self, error):
     '''

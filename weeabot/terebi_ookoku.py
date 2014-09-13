@@ -14,6 +14,8 @@ import string
 import re
 import romkan
 from twisted.python import log
+from datetime import datetime, timedelta
+from pytz import timezone
 
 '''
 
@@ -42,31 +44,70 @@ def elipsize(string, max_length=128, elipsis='...'):
     string = string[:max_length-len(elipsis)]+elipsis
   return string
 
-def scrape_tv_schedule(html):
+class TVProgram(object):
+  def __init__(self, name, start_time, end_time, channel):
+    self._name = name
+    self._start_time = start_time
+    self._end_time = end_time
+    self._channel = channel
+  @property
+  def name(self):
+      return self._name
+  @property
+  def start_time(self):
+      return self._start_time
+  @property
+  def end_time(self):
+      return self._end_time
+  @property
+  def channel(self):
+      return self._channel
+  @property
+  def  running_time(self):
+    '''return running time in integer minutes
+    '''
+    delta = self._end_time - self._start_time
+    minutes = int(delta.total_seconds() / 60)
+    return minutes
+  
+  def __unicode__(self):
+    return u'{name} \x035|\u000f\x032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\x035 |\u000f ' \
+      .format(name=self.name, \
+        date=self.start_time.strftime("%m/%d (%a)"), \
+        start_time=self.start_time.strftime(u'%H:%M'), \
+        end_time=self.end_time.strftime(u'%H:%M'), \
+        running_time=unicode(self.running_time))
+
+
+def scrape_tv_schedule(html, tv_channel):
   '''
   Extract curretn program name and running time from html.
   '''
-  result = u'何？Wakarimasen aniki.'
-  try:
-    soup = BeautifulSoup(html)
-    content_block = soup('dl', {'class' : 'basicTxt'})[0]
-    name = content_block.contents[1].text.strip()
-    #remove un needed content and strip again
-    name = re.sub(u'ウェブ検索', u'', name).strip()
-    time = unicode(content_block.contents[3].text)
-    time = re.sub(u'この時間帯の番組表', u'', time)
-    #there appears to be a bug in string.strip() in unicode whereby numerals can be stripped
-    #so we strip here via regex
-    time = re.sub(u'^[\D]+',u' ', time)
-    time = time.rstrip()
+  soup = BeautifulSoup(html)
+  content_block = soup('dl', {'class' : 'basicTxt'})[0]
+  name = content_block.contents[1].text.strip()
+  #remove un needed content and strip again
+  name = re.sub(u'ウェブ検索', u'', name).strip()
+  time_string = unicode(content_block.contents[3].text)
+  time_string = re.sub(u'この時間帯の番組表', u'', time_string)
+  #there appears to be a bug in string.strip() in unicode whereby numerals can be stripped
+  #so we strip here via regex
+  time_string = re.sub(u'^[\D]+',u' ', time_string)
+  time_string = time_string.rstrip()
 
-    #log.msg(u'title: {name}'.format(name=name).encode('utf-8'))
-    #log.msg(u'time : {time}'.format(time=time).encode('utf-8'))
+  myre = re.compile(ur'(?P<starthour>\d{1,2}):(?P<startminute>\d{2}) ～ (?P<endhour>\d{1,2}):(?P<endminute>\d{2})', re.UNICODE)
+  r = re.search(myre, time_string)
+  start_hour = int(r.groupdict()[u'starthour'])
+  start_minute = int(r.groupdict()[u'startminute'])
+  end_hour = int(r.groupdict()[u'endhour'])
+  end_minute = int(r.groupdict()[u'endminute'])
 
-    result = u'{name} \x035|\u000f\x032{time}\u000f\x035|\u000f'.format(name=name, time=time)
-  except:
-    log.err()
-  return result
+  start_time = datetime.now(timezone('Asia/Tokyo')).replace(hour=start_hour, minute=start_minute)
+  end_time = datetime.now(timezone('Asia/Tokyo')).replace(hour=end_hour, minute=end_minute)
+
+  return TVProgram(name, start_time, end_time, tv_channel)
+
+
 
 
 
