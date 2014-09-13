@@ -190,11 +190,11 @@ class Whatson(object):
     #blurb = u'{program}\x033{url}'.format(program=response, url=url)
     blurb = u'{name} \x035|\u000f\x032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\x035 |\u000f \x033{url}' \
       .format(name=response.decode('utf-8'), \
-        date=program.start_time.strftime("%m/%d (%a)"), \
+        date=program.start_time.strftime(u'%m/%d (%a)'), \
         start_time=program.start_time.strftime(u'%H:%M'), \
         end_time=program.end_time.strftime(u'%H:%M'), \
         running_time=unicode(program.running_time), \
-        url=url)
+        url=unicode(url))
     self._parent.say(irc_channel, blurb.encode('utf-8'))
 
   def on_translation_error(self, response, text, **kwargs):
