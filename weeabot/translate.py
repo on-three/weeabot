@@ -90,9 +90,9 @@ class Translate(object):
     if not m:
       return
     text = m.groupdict()['text']
-    self.initiate_program_lookup(irc_channel, user, text)
+    self.initiate_translation(irc_channel, user, text)
 
-  def initiate_program_lookup(self, irc_channel, user, text):
+  def initiate_translation(self, irc_channel, user, text):
     '''
     Initiate an asynchronous translation via web
     '''

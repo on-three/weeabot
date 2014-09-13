@@ -47,8 +47,8 @@ class Bangumi(object):
   enter ".bangumi animax next" and the following program will be reported.
   '''
 
-  COMMAND_REGEX = r'^(?P<command>\.whatson|\.w|\.W)( (?P<channel>\S+))?( (?P<next>next))?$'
-  USAGE = '\x033USAGE: [.whatson|.w] <channel to get current program> [next]'
+  COMMAND_REGEX = r'^(?P<command>\.nani|\.n|\.N)( (?P<channel>\S+))?( (?P<next>next))?$'
+  USAGE = '\x033USAGE: [.nani|.n] <channel to get current program> [next]'
 
   class BangumiResponse(object):
     '''
