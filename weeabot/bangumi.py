@@ -140,11 +140,11 @@ class Bangumi(object):
     if tuner not in TUNER_LOOKUP:
       return
     tuner_code = TUNER_LOOKUP[tuner]
-    time_str = t.strftime('%H%M')
-    day_of_week_code = int(t.strftime('%w'))
+    time_str = t.strftime(u'%H%M')
+    day_of_week_code = int(t.strftime(u'%w'))
     day_of_week_code = (day_of_week_code+1)%7
-    url = u'http://tv.so-net.ne.jp/past/{tuner_code}{channel}{time}{dow}.action'.format(tuner_code=tuner_code, channel=channel, time=time_str, dow=day_of_week_code).encode('utf-8')
-    result = getPage(url, timeout=3)
+    url = u'http://tv.so-net.ne.jp/past/{tuner_code}{channel}{time}{dow}.action'.format(tuner_code=tuner_code, channel=channel, time=time_str, dow=day_of_week_code)
+    result = getPage(url.encode('utf-8'), timeout=3)
     result.addCallbacks(
       callback = Bangumi.BangumiResponse(self.on_bangumi_response, tv_channel, irc_channel, user, url, next),
       errback = Bangumi.BangumiError(self.on_bangumi_error))

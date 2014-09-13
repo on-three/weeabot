@@ -87,8 +87,10 @@ def scrape_tv_schedule(html, tv_channel):
   content_block = soup('dl', {'class' : 'basicTxt'})[0]
   name = content_block.contents[1].text.strip()
   #remove un needed content and strip again
-  name = re.sub(u'ウェブ検索', u'', name).strip()
-  time_string = unicode(content_block.contents[3].text)
+  name = re.sub(ur'ウェブ検索', '', name).strip()
+  name = unicode(name)
+  time_string = content_block.contents[3].text
+  time_string = unicode(time_string)
   time_string = re.sub(u'この時間帯の番組表', u'', time_string)
   #there appears to be a bug in string.strip() in unicode whereby numerals can be stripped
   #so we strip here via regex
