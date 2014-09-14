@@ -43,6 +43,11 @@ TUNER_LOOKUP = {
   u'kanagawa' : KANAGAWA 
 }
 
+#workaround for formatting unicode times
+#after: http://stackoverflow.com/questions/2571515/using-a-unicode-format-for-pythons-time-strftime
+def ustrftime(t, format):
+  return t.strftime(format.encode('utf-8')).decode('utf-8')
+
 class Whatson(object):
   '''
   Weeabot 'plugin' to get japanese tv schedules.
@@ -186,13 +191,15 @@ class Whatson(object):
     irc_channel = kwargs[u'irc_channel']
     program = kwargs[u'program']
     url = kwargs[u'url']
+    if isinstance(url, str):
+      url = url.decode('utf-8')
     #blurb = u'{program}\x033{url}'.format(program=unicode(program), url=url)
     #blurb = u'{program}\x033{url}'.format(program=response, url=url)
     blurb = u'{name} \x035|\u000f\x032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\x035 |\u000f \x033{url}' \
       .format(name=response.decode('utf-8'), \
-        date=program.start_time.strftime(u'%m/%d (%a)'), \
-        start_time=program.start_time.strftime(u'%H:%M'), \
-        end_time=program.end_time.strftime(u'%H:%M'), \
+        date=ustrftime(program.start_time, u'%m/%d (%a)'), \
+        start_time=ustrftime(program.start_time, u'%H:%M'), \
+        end_time=ustrftime(program.end_time, u'%H:%M'), \
         running_time=unicode(program.running_time), \
         url=url)
     self._parent.say(irc_channel, blurb.encode('utf-8'))
