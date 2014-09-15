@@ -40,6 +40,11 @@ TUNER_LOOKUP = {
   u'kanagawa' : KANAGAWA 
 }
 
+#workaround for formatting unicode times
+#after: http://stackoverflow.com/questions/2571515/using-a-unicode-format-for-pythons-time-strftime
+def ustrftime(t, format):
+  return t.strftime(format.encode('utf-8')).decode('utf-8')
+
 class Bangumi(object):
   '''
   Weeabot 'plugin' to get japanese tv schedules.

@@ -35,6 +35,11 @@ Content we're scraping is of the form:
 
 '''
 
+#workaround for formatting unicode times
+#after: http://stackoverflow.com/questions/2571515/using-a-unicode-format-for-pythons-time-strftime
+def ustrftime(t, format):
+  return t.strftime(format.encode('utf-8')).decode('utf-8')
+
 def elipsize(string, max_length=128, elipsis='...'):
   '''
   cap string at max X characters.
@@ -73,9 +78,9 @@ class TVProgram(object):
   def __unicode__(self):
     return u'{name} \x035|\u000f\x032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\x035 |\u000f ' \
       .format(name=self.name, \
-        date=self.start_time.strftime("%m/%d (%a)"), \
-        start_time=self.start_time.strftime(u'%H:%M'), \
-        end_time=self.end_time.strftime(u'%H:%M'), \
+        date=ustrftime(self.start_time, u"%m/%d (%a)"), \
+        start_time=ustrftime(self.start_time, u'%H:%M'), \
+        end_time=ustrftime(self.end_time, u'%H:%M'), \
         running_time=unicode(self.running_time))
 
 
@@ -89,7 +94,7 @@ def scrape_tv_schedule(html, tv_channel):
   #remove un needed content and strip again
   name = re.sub(ur'ウェブ検索', '', name).strip()
   time_string = content_block.contents[3].text
-  time_string = time_string
+  #time_string = time_string.decode('utf-8')
   time_string = re.sub(u'この時間帯の番組表', u'', time_string)
   #there appears to be a bug in string.strip() in unicode whereby numerals can be stripped
   #so we strip here via regex
