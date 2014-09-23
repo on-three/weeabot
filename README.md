@@ -8,6 +8,10 @@ Weeabot currently provides the following support via a simple plugin architectur
 * English to Japanese word lookup via Jisho.org.
 * Display current Tokyo time in Japanese.
 * Transliterate words and phrases into katakana via sci.lang.jp web tool.
+* Control of a local slingbox player via autohotkey (windows only).
+* Lookup of Japanese TV schedules fia the テレビ王国 site, including current and next program.
+* Translaton of phrases via Bing Translate
+* Auto translation of TV schedules scraped off テレビ王国.
 * ~~IRC lookups inserted into SQL backend.~~
 * ~~Django web interface for viewing and manipulating lookup history.~~
 * ~~Formation of vocabulary lists via web interface.~~
@@ -33,11 +37,6 @@ Command available by using the jisho command or simply '.j'.
 me: .j watashi
 weeabot: 私 | わたし | watashi | I; me
 
-me: jisho わたし
-weeabot: 私 | わたし | watashi | I; me
-
-me: .j 私
-weeabot: 私 | わたし | watashi | I; me
 ```
 
 ### Moon (English to Japanese Word Lookup)
@@ -47,8 +46,6 @@ Also available via '.m'
 me: .m me
 weeabot:  私 | わたし | watashi | I; me
 
-me: moon me
-weeabot:  私 | わたし | watashi | I; me
 ```
 
 ### Jikan (Current Tokyo Time)
@@ -58,8 +55,6 @@ Command also available via '.t'.
 me: .t
 weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
 
-me: jikan
-weeabot: 現在の東京時間 2014年01月20日 19時21分40秒 月
 ```
 
 ### Katakanize (transliterate words and phrases to katakana)
@@ -70,8 +65,38 @@ It's clear the web serviced used here is very spotty, however.
 me: katakanize on_three
 weeabot:---> オン・スリー
 
-me: .k on_three
-weeabot:---> オン・スリー
+```
+
+### Channel (Slingbox Control)
+This is perhaps the most complex, so i can only summarize here.
+* `.c list` List channels available
+* `.c up` or `.c down` Next channel up or down the dial
+* `.c <channel name>` Change slingbox to that channel
+* `.c air` `.c cable` or `.c bs` Change slingbox tuner
+* `.c last` go to last channel (if known)
+
+### Nani (tv schedule)
+Scrape Terebi Oukoku for current channel info in Japanese.
+```
+.n animax                                                                                                            weeabot [字]ガラスの仮面 #17 | 09/23 (火) 14:00 ~ 14:30 (30分) | http://tv.so-net.ne.jp/past/40067014003.action
+
+.n animax next                                                                                                       weeabot: 魔法のプリンセス ミンキーモモ リマスター版 #17 | 09/23 (火) 14:30 ~ 15:00 (30分) | http://tv.so-net.ne.jp/past/40067014303.action
+
+```
+
+###Whatson (tv schedule english translation)
+Fetch current tv schedule info and translate to English.
+```
+.w animax                                                                                                            weeabot: "[S] glass mask # 17" | 09/23 (火) 14:00 ~ 14:30 (30分) | http://tv.so-net.ne.jp/past/40067014003.action
+
+.w animax next                                                                                                       weeabot: "Magical Princess minky Momo remastered edition # 17" | 09/23 (火) 14:30 ~ 15:00 (30分) | http://tv.so-net.ne.jp/past/40067014303.action
+
+```
+
+###Bing Translate
+Simple Bing translate utility.
+```
+.b ガラスの仮面                                                                                                      weeabot: "Glass mask" 
 ```
 
 ##Lacking Functionality
