@@ -78,18 +78,26 @@ This is perhaps the most complex, so i can only summarize here.
 ### Nani (tv schedule)
 Scrape Terebi Oukoku for current channel info in Japanese.
 ```
-.n animax                                                                                                            weeabot [字]ガラスの仮面 #17 | 09/23 (火) 14:00 ~ 14:30 (30分) | http://tv.so-net.ne.jp/past/40067014003.action
+.n animax 
+weeabot [字]ガラスの仮面 #17 | 09/23 (火) 14:00 ~ 14:30 (30分) | 
+http://tv.so-net.ne.jp/past/40067014003.action
 
-.n animax next                                                                                                       weeabot: 魔法のプリンセス ミンキーモモ リマスター版 #17 | 09/23 (火) 14:30 ~ 15:00 (30分) | http://tv.so-net.ne.jp/past/40067014303.action
+.n animax next
+weeabot: 魔法のプリンセス ミンキーモモ リマスター版 #17 | 09/23 (火) 14:30 ~ 15:00 (30分) | 
+http://tv.so-net.ne.jp/past/40067014303.action
 
 ```
 
 ###Whatson (tv schedule english translation)
 Fetch current tv schedule info and translate to English.
 ```
-.w animax                                                                                                            weeabot: "[S] glass mask # 17" | 09/23 (火) 14:00 ~ 14:30 (30分) | http://tv.so-net.ne.jp/past/40067014003.action
+.w animax
+weeabot: "[S] glass mask # 17" | 09/23 (火) 14:00 ~ 14:30 (30分) | 
+http://tv.so-net.ne.jp/past/40067014003.action
 
-.w animax next                                                                                                       weeabot: "Magical Princess minky Momo remastered edition # 17" | 09/23 (火) 14:30 ~ 15:00 (30分) | http://tv.so-net.ne.jp/past/40067014303.action
+.w animax next
+weeabot: "Magical Princess minky Momo remastered edition # 17" | 09/23 (火) 14:30 ~ 15:00 (30分) | 
+http://tv.so-net.ne.jp/past/40067014303.action
 
 ```
 
