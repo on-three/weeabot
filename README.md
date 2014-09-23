@@ -104,7 +104,8 @@ http://tv.so-net.ne.jp/past/40067014303.action
 ###Bing Translate
 Simple Bing translate utility.
 ```
-.b ガラスの仮面                                                                                                      weeabot: "Glass mask" 
+.b ガラスの仮面
+weeabot: "Glass mask" 
 ```
 
 ##Lacking Functionality
