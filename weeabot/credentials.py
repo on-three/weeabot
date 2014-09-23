@@ -16,5 +16,5 @@ BING CREDENTIALS to import
   
 """
 
-BING_CLIENT_ID = u'xxxxx'
-BING_CLIENT_SECRET = u'xxxxx'
+BING_CLIENT_ID =  u'XXXXX'
+BING_CLIENT_SECRET =  u'XXXXX'
