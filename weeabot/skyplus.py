@@ -107,6 +107,12 @@ CHANNELS = [
   Channel(u'tokyo' , u'071', u'7.テレビ東京 ', u'Movie channel', u'air'),
   Channel(u'tvk' , u'632', u'テレビ神奈川', u'Movie channel', u'kanagawa'),#requires code 124
   Channel(u'daigaku' , u'088', u'放送大学', u'Movie channel', u'air'),
+  Channel(u'wowow' , u'621', u'wowow プライム', u'Movie channel', u'cable'),
+  Channel(u'wowowlive' , u'622', u'wowow ライブ', u'Movie channel', u'cable'),
+  Channel(u'wowowcinema' , u'623', u'WOWOWシネマ', u'Movie channel', u'cable'),
+  Channel(u'nhkbs1' , u'101', u'ＮＨＫ ＢＳ１', u'Movie channel', u'bs'),
+  Channel(u'nhkbs2' , u'102', u'ＮＨＫ ＢＳ2', u'Movie channel', u'bs'),
+  Channel(u'nhkprime' , u'103', u'ＮＨＫ ＢＳプレミアム', u'Movie channel', u'bs'),
 ]
 
 

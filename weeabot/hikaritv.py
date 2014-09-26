@@ -103,7 +103,12 @@ CHANNELS = [
   Channel(u'asahi' , u'5', u'テレビ朝日', u'Movie channel', u'air'),
   Channel(u'tokyo' , u'7', u'tbs', u'Movie channel', u'air'),
   Channel(u'tvk' , u'3', u'テレビ神奈川', u'Movie channel', u'air'),
-  Channel(u'daigaku' , u'0121', u'放送大学', u'Movie channel', u'air'),
+  Channel(u'wowow' , u'9', u'wowow プライム', u'Movie channel', u'bs'),
+  Channel(u'wowowlive' , u'9', u'wowow ライブ', u'Movie channel', u'bs'),
+  Channel(u'wowowcinema' , u'9', u'WOWOWシネマ', u'Movie channel', u'bs'),
+  Channel(u'nhkbs1' , u'1', u'ＮＨＫ ＢＳ１', u'Movie channel', u'bs'),
+  Channel(u'nhkbs2' , u'2', u'ＮＨＫ ＢＳ2', u'Movie channel', u'bs'),
+  Channel(u'nhkprime' , u'3', u'ＮＨＫ ＢＳプレミアム', u'Movie channel', u'bs'),
 ]
 
 
