@@ -61,7 +61,7 @@ class Air(object):
   '''
   @staticmethod
   def do(command=None, data=None):
-    press_sling_button(AIR)
+    press_sling_button(AIR_CMD)
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     Slingbox._current_tuner = AIR
@@ -72,7 +72,7 @@ class BS(object):
   '''
   @staticmethod
   def do(command=None, data=None):
-    press_sling_button(BS)
+    press_sling_button(BS_CMD)
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     Slingbox._current_tuner = BS
@@ -83,7 +83,7 @@ class Cable(object):
   '''
   @staticmethod
   def do(command=None, data=None):
-    press_sling_button(CABLE)
+    press_sling_button(CABLE_CMD)
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     Slingbox._current_tuner = CABLE
