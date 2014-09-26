@@ -23,13 +23,13 @@ import hikaritv
 CHANNEL_LIST = hikaritv.CHANNEL_LIST
 #tuners available is tied to hikari, but more so to sling buttons
 #so i'm putting it here
-AIR = u'air'
-BS = u'bs'
-CABLE = u'cable'
+AIR_CMD = u'air'
+BS_CMD = u'bs'
+CABLE_CMD = u'cable'
 TUNER_LIST = [
-  AIR,
-  BS,
-  CABLE,
+  AIR_CMD,
+  BS_CMD,
+  CABLE_CMD,
 ]
 
 autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
@@ -191,16 +191,16 @@ class Help(object):
     return help
 	
 BUTTON_LOCATIONS = {
-	AIR : { u'x' : -130, u'y' : 115 },
-	BS : {u'x' : -85, u'y' : 115 },
-	CABLE : {u'x' : -55, u'y' : 115 },
+	AIR_CMD : { u'x' : -130, u'y' : 115 },
+	BS_CMD : {u'x' : -85, u'y' : 115 },
+	CABLE_CMD : {u'x' : -55, u'y' : 115 },
 }
 
 COMMAND_TABLE = {
   #handle tuner commands 
-  AIR : Air.do ,
-  BS : BS.do ,
-  CABLE : Cable.do,
+  AIR_CMD : Air.do ,
+  BS_CMD : BS.do ,
+  CABLE_CMD : Cable.do,
   u'up' : ChannelUp.do,
   u'down' : ChannelDown.do,
   u'ok' : Ok.do,
@@ -261,7 +261,7 @@ class Slingbox(object):
   COMMAND_REGEX = ur'^(?P<statement>\.channel|\.c|.チャンネル) (?P<command>\S+)( (?P<data>\S+))?$'
   _current_channel = None
   _previous_channel = None
-  _current_tuner = CABLE #this could be a mistake. but is statistically sound.
+  _current_tuner = CABLE_CMD #this could be a mistake. but is statistically sound.
   
   @staticmethod
   def current_channel():
