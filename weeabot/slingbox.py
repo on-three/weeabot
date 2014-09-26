@@ -86,7 +86,7 @@ class Cable(object):
     press_sling_button(CABLE_CMD)
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
-    Slingbox._current_tuner = CABLE
+    Slingbox._current_tuner = CABLE_CMD
     return u'Changing to cable channels.'
 
 class ChannelUp(object):
