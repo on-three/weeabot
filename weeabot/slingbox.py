@@ -64,7 +64,7 @@ class Air(object):
     press_sling_button(AIR_CMD)
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
-    Slingbox._current_tuner = AIR
+    Slingbox._current_tuner = AIR_CMD
     return u'Changing to broadcast channels.'
 
 class BS(object):
@@ -75,7 +75,7 @@ class BS(object):
     press_sling_button(BS_CMD)
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
-    Slingbox._current_tuner = BS
+    Slingbox._current_tuner = BS_CMD
     return u'Changing to BS channels.'
 
 class Cable(object):
