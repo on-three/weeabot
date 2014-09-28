@@ -97,7 +97,7 @@ class ChannelUp(object):
     keypresses_to_sling(u'=')
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
-    return u'Channel up.'
+    return u''
 
 class ChannelDown(object):
   '''Channel down
