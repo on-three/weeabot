@@ -65,7 +65,7 @@ class Air(object):
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     Slingbox._current_tuner = AIR_CMD
-    return u'Changing to broadcast channels.'
+    return u''
 
 class BS(object):
   '''Set tuner to BS stations
@@ -76,7 +76,7 @@ class BS(object):
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     Slingbox._current_tuner = BS_CMD
-    return u'Changing to BS channels.'
+    return u''
 
 class Cable(object):
   '''Set tuner to cable stations
@@ -87,7 +87,7 @@ class Cable(object):
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     Slingbox._current_tuner = CABLE_CMD
-    return u'Changing to cable channels.'
+    return u''
 
 class ChannelUp(object):
   '''Channel up
@@ -107,7 +107,7 @@ class ChannelDown(object):
     keypresses_to_sling(u'-')
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
-    return u'Channel down.'
+    return u''
 
 class Ok(object):
   '''Press the okay button when needed
@@ -315,6 +315,7 @@ class Slingbox(object):
     Pass a command to the slingbox via our slingbox manager class  
     '''
     response = do(command, irc_channel, data).encode('utf-8')
-    self._parent.say(irc_channel, response)
+    if response:
+      self._parent.say(irc_channel, response)
 
 
