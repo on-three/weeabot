@@ -44,6 +44,7 @@ from slingbox import Slingbox
 from bangumi import Bangumi
 from translate import Translate
 from whatson import Whatson
+from info import Info
 
 DEFAULT_PORT = 6660
 LOG_FILENAME = 'weeabot.log'
@@ -94,6 +95,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Bangumi(self))
     WeeaBot.plugins.append(Translate(self))
     WeeaBot.plugins.append(Whatson(self))
+    WeeaBot.plugins.append(Info(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')
