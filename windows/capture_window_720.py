@@ -22,13 +22,13 @@ def set_registry(top, left, width, height):
   set_value(cap, 'start_y', top)
   set_value(cap, 'capture_width', width)
   set_value(cap, 'capture_height', height)
+  #never capture the mouse pointer.
+  set_value(cap, 'capture_mouse_default_1', 0)
   
 def set_value(key, subkey, value):
   #first echo the current value
   v, t = cygwinreg.QueryValueEx(key, subkey)
   print "{subkey} initial value {v} and type {t}".format(subkey=subkey, v=v, t=str(t))
-  #cygwinreg.SetValue(key, subkey, t, cygwinreg.REG_SZ(str(value)))
-  #cygwinreg.SetValue(key, subkey, cygwinreg.REG_SZ, str(value))
   cygwinreg.SetValueEx(key, subkey, 0, t, value)
 
   v, t = cygwinreg.QueryValueEx(key, subkey)
@@ -39,9 +39,6 @@ def main():
   #parser = argparse.ArgumentParser(description='Exercise bing translation api.')
   #parser.add_argument('text', help='Input text to translate.', type=str)
   #args = parser.parse_args()
-  #text = args.text.decode('utf-8')
-  #translation = translate(text)
-  #print(translation)#.encode('utf-8'))
   set_registry(20,500, 1280, 720)
 
 if __name__ == "__main__":
