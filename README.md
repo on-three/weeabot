@@ -108,6 +108,20 @@ Simple Bing translate utility.
 weeabot: "Glass mask" 
 ```
 
+###Stream info
+Display current stream info if there is any
+```
+.i
+| XXX | http:/XXX:XXX/XXX.ts | 480p 25fps (h264/mpga)ts |
+
+.info
+| XXX | http:/XXX:XXX/XXX.ts | 480p 25fps (h264/mpga)ts |
+
+.streaminfo
+| XXX | http:/XXX:XXX/XXX.ts | 480p 25fps (h264/mpga)ts |
+
+```
+
 ##Lacking Functionality
 The bot currently lacks the following:
 * ~~the ability to have it sign into multiple channels.This could be added, but as yet I'm unsure how robust it would handle multiple~~ ~~simultaneous web lookups from multiple users in multiple channels. For the moment I'm content to run one bot per channel.~~
