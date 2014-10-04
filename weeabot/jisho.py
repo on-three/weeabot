@@ -118,7 +118,7 @@ class Jisho(object):
       #removing django database backend.
       #db_entry = Definition(channel=channel, nick=user, url=url, text=result, word=jword)
       #db_entry.save()
-      response = '\x035{result}'.format(result=result.encode('utf-8'))
+      response = '{result}'.format(result=result.encode('utf-8'))
       log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
       #print '{channel}:{user} {jword}-->{msg}:{url}'.format(channel=channel, jword=jword, msg=response, user=user, url=url)
       self._parent.say(channel, response)

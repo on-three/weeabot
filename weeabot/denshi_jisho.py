@@ -13,6 +13,9 @@ import string
 import re
 import romkan
 from twisted.python import log
+from irc import foreground
+from irc import background
+from irc import style
 
 def elipsize(string, max_length=128, elipsis='...'):
   '''
@@ -56,7 +59,9 @@ def scrape_japanese_definitions(html, max_results=3):
     '''
 
     #form final results from zipped list and return    
-    results = [u'{kanji} | {kana} | {romaji} | {engrish}'.format(kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in results[:max_results]]
+    results = [u'{formatting1}| {kanji} | {kana} | {romaji} | {engrish} |'.format( \
+      formatting1= foreground(u'black') + background(u'white'), \
+      kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in results[:max_results]]
   except:
     log.err()
   return results
