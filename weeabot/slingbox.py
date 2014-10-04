@@ -203,7 +203,7 @@ class ButtonLocation(object):
     os_call = autohotkey + u' ' \
       + push_script + u' ' + unicode(self._x) \
       + u' ' + unicode(self._y)
-    return retvalue = os.system(os_call.encode('utf-8'))
+    return os.system(os_call.encode('utf-8'))
 
 BUTTON_LOCATIONS = {
   AIR_CMD : ButtonLocation(AIR_CMD, -130, 115),
