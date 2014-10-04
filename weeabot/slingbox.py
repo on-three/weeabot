@@ -49,10 +49,7 @@ def keypresses_to_sling(command):
 def press_sling_button(name):
     if name not in BUTTON_LOCATIONS:
       return
-    x = BUTTON_LOCATIONS[name][u'x']
-    y = BUTTON_LOCATIONS[name][u'y']
-    os_call = autohotkey + u' ' + push_script + u' ' + unicode(x) + u' ' + unicode(y)
-    retvalue = os.system(os_call.encode('utf-8'))
+    return BUTTON_LOCATIONS[name].press()
 
 #TODO: write a cooloff timer to prevent spamming
 
@@ -189,11 +186,32 @@ class Help(object):
   def do(command=None, data=None):
     help = u'use ".c list" for channel names. ".c NAME" to go to a channel. ".c air" for broadcast stations, ".c cable" for cable stations and ".c bs" for the few non-HD basic cable stations.'
     return help
-	
+
+class Hotkey(object):
+  def __init__(self, name, key):
+    self._name = name
+    self._key = key
+  def press(self):
+    pass
+
+class ButtonLocation(object):
+  def __init__(self, name, x, y):
+    self._name = name
+    self._x = x
+    self._y = y
+  def press(self):
+    os_call = autohotkey + u' ' \
+      + push_script + u' ' + unicode(self._x) \
+      + u' ' + unicode(self._y)
+    return retvalue = os.system(os_call.encode('utf-8'))
+
 BUTTON_LOCATIONS = {
-	AIR_CMD : { u'x' : -130, u'y' : 115 },
-	BS_CMD : {u'x' : -85, u'y' : 115 },
-	CABLE_CMD : {u'x' : -55, u'y' : 115 },
+  AIR_CMD : ButtonLocation(AIR_CMD, -130, 115),
+  BS_CMD : ButtonLocation(BS_CMD, -85, 115),
+  CABLE_CMD : ButtonLocation(BS_CMD, -55, 115),
+  u'10' : ButtonLocation(u'10', -125, 215),
+  u'11' : ButtonLocation(u'11', -85, 215),
+  u'12' : ButtonLocation(u'12', -50, 215),
 }
 
 COMMAND_TABLE = {
@@ -250,7 +268,12 @@ def set_channel(channel_number):
     Slingbox._previous_channel = temp
   if not Slingbox._previous_channel:
     Slingbox._previous_channel = Slingbox._current_channel
-  keypresses_to_sling(channel_number)
+
+  #we sometimes have to press screen locatons rather than hotkeys to get a channel
+  if channel_number in BUTTON_LOCATIONS:
+    BUTTON_LOCATIONS[channel_number].press()
+  else:
+    keypresses_to_sling(channel_number)
   return u'Changing to channel {number}, {name} | {jname}'.format(number=channel_number, name=chan.name, jname=chan.japanese_name)
 
 
