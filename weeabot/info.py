@@ -22,7 +22,7 @@ import re
 from twisted.python import log
 import credentials
 
-COMMAND_REGEX_STR = ur'^(?P<command>\.i|\.info)( (?P<data>\S+)$)?'
+COMMAND_REGEX_STR = ur'^(?P<command>\.i|\.info|\.streaminfo)( (?P<data>\S+)$)?'
 COMMAND_REGEX = re.compile(COMMAND_REGEX_STR, re.UNICODE)
 
 class Info(object):
