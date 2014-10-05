@@ -29,11 +29,10 @@ class Stream(object):
 		self._desc = desc
 		self._url = url
 	def __unicode__(self):
-		#return u'{name} | {url} | {desc} '.format(name=self._name, desc=self._desc, url=self._url)
-		return foreground(u'black') + background(u'green') \
-			+ u'| ' + self._name + foreground(u'black') + u' | ' \
-			+ foreground(u'white') + self._url + foreground(u'black') + u' | '\
-			+ style(u'normal') + foreground(u'black') + background('green') + self._desc + u' |  '
+		return foreground(u'white') + background(u'black') \
+			+ u' ' + self._name + u' ' \
+			+ u' ' + foreground(u'white') + background(u'green') + self._url + u' '\
+			+ u' ' + foreground(u'white') + background('black') + self._desc + u' '
 	def __str__(self):
 		return unicode(self).encode('utf-8')
 
