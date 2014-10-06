@@ -59,9 +59,13 @@ def scrape_japanese_definitions(html, max_results=3):
     '''
 
     #form final results from zipped list and return    
-    results = [u'{formatting1}| {kanji} | {kana} | {romaji} | {engrish} |'.format( \
-      formatting1= foreground(u'black') + background(u'white'), \
-      kanji=x[0], kana=x[1], romaji=x[2], engrish=x[3]) for x in results[:max_results]]
+    results = [u'{white}{kanji}{white}{kana}{white}{romaji}{white}{engrish}'.format( \
+      white= foreground(u'black') + background(u'white'), \
+      black=style(u'normal'), \
+      kanji=(u' '+x[0]+u' '+style(u'normal')+u' ' if x[0] else u''), \
+      kana=(u' '+x[1]+u' '+style(u'normal')+u' ' if x[1] else u''), \
+      romaji=(u' '+x[2]+u' '+style(u'normal')+u' ' if x[2] else u''), \
+      engrish=(u' '+x[3]+u' '+style(u'normal')+u' ' if x[3]else u'')) for x in results[:max_results]]
   except:
     log.err()
   return results
