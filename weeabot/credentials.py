@@ -31,8 +31,8 @@ class Stream(object):
 	def __unicode__(self):
 		return foreground(u'white') + background(u'black') \
 			+ u' ' + self._name + u' ' \
-			+ u' ' + foreground(u'white') + background(u'green') + self._url + u' '\
-			+ u' ' + foreground(u'white') + background('black') + self._desc + u' '
+			+ foreground(u'white') + background(u'green') + u' ' + self._url + u' '\
+			+ foreground(u'white') + background('black') + u' ' + self._desc + u' '
 	def __str__(self):
 		return unicode(self).encode('utf-8')
 
