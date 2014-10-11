@@ -12,6 +12,7 @@ Weeabot currently provides the following support via a simple plugin architectur
 * Lookup of Japanese TV schedules fia the テレビ王国 site, including current and next program.
 * Translaton of phrases via Bing Translate
 * Auto translation of TV schedules scraped off テレビ王国.
+* Automatic playing of posted .webm files (atop a video stream, for example).
 * ~~IRC lookups inserted into SQL backend.~~
 * ~~Django web interface for viewing and manipulating lookup history.~~
 * ~~Formation of vocabulary lists via web interface.~~
@@ -121,6 +122,16 @@ Display current stream info if there is any
 | XXX | http:/XXX:XXX/XXX.ts | 480p 25fps (h264/mpga)ts |
 
 ```
+
+###Webms
+The webms plugin detects webms posted in a channel, and (currently) plays those webms in a local video player.
+I have it configured localy so that these webms are played atop a desktop capture i'm streaming, superimposing the videos atop the stream.
+The following commands can be used to simply control webm functionality:
+* Turn webm playing on: ```.webms on```
+* Turn webm playing off: ```.webms off```
+* Stop all currently playing ```.wipe```
+
+**Note** that only 4 webms can play at a time. Any above this limit (posted while 4 webs are already playing) will just be ignored.
 
 ##Lacking Functionality
 The bot currently lacks the following:
