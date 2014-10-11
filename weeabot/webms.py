@@ -11,20 +11,22 @@ DATE: Friday, Oct 10th 2014
 """
 import string
 import re
-from pytz import timezone
-from datetime import datetime
-import locale
-import time
+import os
+#from pytz import timezone
+#from datetime import datetime
+#import locale
+#import time
 from twisted.python import log
 
 class Webms(object):
   '''
-  print current japan time
+  show a webm via simple system call
   '''
   REGEX = ur'(?P<url>http[s]?://[\S]+\.webm)'
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
+  VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --video-x={x} --video-y={y} {url}'
 
   def __init__(self, parent):
     '''
@@ -83,8 +85,11 @@ class Webms(object):
     if not self._enabled:
       log.msg('Not showing webm as they are turned off.')
       return
-    msg = u'{url}'.format(url=url)
-    log.msg(msg.encode('utf-8'))
+    x=1200
+    y=50
+    call = Webms.VLC_COMMAND.format(x=x, y=y, url=url)
+    log.msg(call.encode('utf-8'))
+    os.system(call.encode('utf-8'))
     #self._parent.say(channel, msg.encode('utf-8'))
 
 
