@@ -22,6 +22,9 @@ class webms(object):
   print current japan time
   '''
   REGEX = ur'(?P<url>http[s]?://[\S]+\.webm)'
+  ON_REGEX = ur'^\.webms on'
+  OFF_REGEX = ur'^\.webms off'
+  WIPE_REGEX = ur'^\.wipe'
 
   def __init__(self, parent):
     '''
@@ -34,8 +37,8 @@ class webms(object):
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
     '''
-    m = re.match(webms.REGEX, msg)
-    if m:
+    re.match(webms.REGEX, msg) or re.match(webms.ON_REGEX) or \
+      re.match(webms.OFF_REGEX) or re.match(webms.WIPE_REGEX):
       return True
     else:
       return False
@@ -45,7 +48,15 @@ class webms(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    #log.msg('{channel} : {msg}'.format(channel=channel, msg=msg))
+    if re.match(webms.ON_REGEX):
+      return self.webms_on()
+
+    if re.match(webms.OFF_REGEX):
+      return self.webms_off()
+
+    if re.match(webms.WIPE_REGEX):
+      return self.wembs_wipe()
+
     m = re.match(webms.REGEX, msg)
     if not m:
       return
@@ -53,12 +64,21 @@ class webms(object):
     url = m.groupdict()['url']
     self.show_webm(channel)
 
+  def webms_on(self):
+    log.msg('webms_on')
+
+  def webms_off(self):
+    log.msg('webms_off')
+
+  def webms_wipe(self):
+    log.msg('wipe_webms')
+
   def show_webm(self, url):
     '''
     show webm at given URL.
     '''
     msg = u'{url}'.format(url=url)
-    log.msg(msg.encode('utf-8')
+    log.msg(msg.encode('utf-8'))
     #self._parent.say(channel, msg.encode('utf-8'))
 
 
