@@ -13,6 +13,7 @@ import string
 import re
 import os
 import subprocess
+import signal
 from twisted.python import log
 
 class ScreenPos(object):
@@ -51,7 +52,7 @@ class Video(object):
     height = 333
     call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, height=height, url=url)
     log.msg(call.encode('utf-8'))
-    pos._subprocess = subprocess.Popen(call, shell=True)
+    pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
 
 class Webms(object):
   '''
@@ -113,6 +114,12 @@ class Webms(object):
 
   def webms_wipe(self):
     log.msg('wipe_webms')
+    for v in Video.POSITIONS:
+      if v._subprocess:
+        if v._subprocess.poll() is None:
+          os.killpg(v._subprocess.pid, signal.SIGTERM)
+        else:
+          v._subprocess = None
 
   def show_webm(self, url, channel):
     '''
