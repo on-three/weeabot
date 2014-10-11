@@ -17,7 +17,7 @@ import locale
 import time
 from twisted.python import log
 
-class webms(object):
+class Webms(object):
   '''
   print current japan time
   '''
@@ -38,8 +38,8 @@ class webms(object):
     PLUGIN API REQUIRED
     Is the rx'd irc message of interest to this plugin?
     '''
-    re.match(webms.REGEX, msg) or re.match(webms.ON_REGEX) or \
-      re.match(webms.OFF_REGEX) or re.match(webms.WIPE_REGEX):
+    if re.search(Webms.REGEX, msg) or re.match(Webms.ON_REGEX, msg) or \
+      re.match(Webms.OFF_REGEX, msg) or re.match(Webms.WIPE_REGEX, msg):
       return True
     else:
       return False
@@ -49,21 +49,21 @@ class webms(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    if re.match(webms.ON_REGEX):
+    if re.match(Webms.ON_REGEX, msg):
       return self.webms_on()
 
-    if re.match(webms.OFF_REGEX):
+    if re.match(Webms.OFF_REGEX, msg):
       return self.webms_off()
 
-    if re.match(webms.WIPE_REGEX):
-      return self.wembs_wipe()
+    if re.match(Webms.WIPE_REGEX, msg):
+      return self.webms_wipe()
 
-    m = re.match(webms.REGEX, msg)
+    m = re.search(Webms.REGEX, msg)
     if not m:
       return
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
-    self.show_webm(channel)
+    self.show_webm(url, channel)
 
   def webms_on(self):
     self._enabled = True
@@ -76,11 +76,12 @@ class webms(object):
   def webms_wipe(self):
     log.msg('wipe_webms')
 
-  def show_webm(self, url):
+  def show_webm(self, url, channel):
     '''
     show webm at given URL.
     '''
     if not self._enabled:
+      log.msg('Not showing webm as they are turned off.')
       return
     msg = u'{url}'.format(url=url)
     log.msg(msg.encode('utf-8'))

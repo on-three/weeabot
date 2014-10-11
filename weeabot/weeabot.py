@@ -45,6 +45,7 @@ from bangumi import Bangumi
 from translate import Translate
 from whatson import Whatson
 from info import Info
+from webms import Webms
 
 DEFAULT_PORT = 6660
 LOG_FILENAME = 'weeabot.log'
@@ -96,6 +97,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Translate(self))
     WeeaBot.plugins.append(Whatson(self))
     WeeaBot.plugins.append(Info(self))
+    WeeaBot.plugins.append(Webms(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')
