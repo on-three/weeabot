@@ -31,6 +31,7 @@ class webms(object):
     constructor
     '''
     self._parent = parent
+    self._enabled = False
 
   def is_msg_of_interest(self, user, channel, msg):
     '''
@@ -65,9 +66,11 @@ class webms(object):
     self.show_webm(channel)
 
   def webms_on(self):
+    self._enabled = True
     log.msg('webms_on')
 
   def webms_off(self):
+    self._enabled = False
     log.msg('webms_off')
 
   def webms_wipe(self):
@@ -77,6 +80,8 @@ class webms(object):
     '''
     show webm at given URL.
     '''
+    if not self._enabled:
+      return
     msg = u'{url}'.format(url=url)
     log.msg(msg.encode('utf-8'))
     #self._parent.say(channel, msg.encode('utf-8'))
