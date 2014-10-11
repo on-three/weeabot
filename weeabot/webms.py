@@ -12,11 +12,30 @@ DATE: Friday, Oct 10th 2014
 import string
 import re
 import os
-#from pytz import timezone
-#from datetime import datetime
-#import locale
-#import time
+import subprocess
 from twisted.python import log
+
+class ScreenPos(object):
+  def __init__(self, x, y):
+    self.x = x
+    self.y = y
+
+class Position(object):
+  POSITIONS = [
+    ScreenPos(1033, 10),
+    ScreenPos(1555, 10),
+    ScreenPos(1033, 250),
+    ScreenPos(1555, 250),
+  ]
+  def __init__(self):
+    self._next_pos = 0
+    
+  def next_pos(self):
+    pos = Position.POSITIONS[self._next_pos]
+    self._next_pos += 1
+    if self._next_pos >= len(Position.POSITIONS):
+      self._next_pos = 0
+    return pos
 
 class Webms(object):
   '''
@@ -26,14 +45,15 @@ class Webms(object):
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
-  VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --video-x={x} --video-y={y} {url}'
-
+  #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
+  MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -noborder -xy {height} -geometry {x}:{y} {url}'
   def __init__(self, parent):
     '''
     constructor
     '''
     self._parent = parent
     self._enabled = False
+    self._pos = Position()
 
   def is_msg_of_interest(self, user, channel, msg):
     '''
@@ -85,11 +105,12 @@ class Webms(object):
     if not self._enabled:
       log.msg('Not showing webm as they are turned off.')
       return
-    x=1200
-    y=50
-    call = Webms.VLC_COMMAND.format(x=x, y=y, url=url)
+    pos = self._pos.next_pos()
+    height = 333
+    call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, height=height, url=url)
     log.msg(call.encode('utf-8'))
-    os.system(call.encode('utf-8'))
+    subprocess.Popen(call, shell=True)
+    #os.system(call.encode('utf-8'))
     #self._parent.say(channel, msg.encode('utf-8'))
 
 
