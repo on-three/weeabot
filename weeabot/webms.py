@@ -19,8 +19,9 @@ class ScreenPos(object):
   def __init__(self, x, y):
     self.x = x
     self.y = y
-
-class Position(object):
+    self._subprocess = None
+  
+class Video(object):
   POSITIONS = [
     ScreenPos(1033, 10),
     ScreenPos(1555, 10),
@@ -29,13 +30,28 @@ class Position(object):
   ]
   def __init__(self):
     self._next_pos = 0
-    
+
   def next_pos(self):
-    pos = Position.POSITIONS[self._next_pos]
+    pos = Video.POSITIONS[self._next_pos]
     self._next_pos += 1
-    if self._next_pos >= len(Position.POSITIONS):
+    if self._next_pos >= len(Video.POSITIONS):
       self._next_pos = 0
     return pos
+  
+  def play(self, url):
+    pos = self.next_pos()
+    if pos._subprocess:
+      log.msg("Video at pos exists")
+      if pos._subprocess.poll() is not None:
+        pos._subprocess = None
+        log.msg("video at position is complete.")
+      else:
+        log.msg("video at position not done yet.")
+        return
+    height = 333
+    call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, height=height, url=url)
+    log.msg(call.encode('utf-8'))
+    pos._subprocess = subprocess.Popen(call, shell=True)
 
 class Webms(object):
   '''
@@ -53,7 +69,7 @@ class Webms(object):
     '''
     self._parent = parent
     self._enabled = False
-    self._pos = Position()
+    self._video = Video()
 
   def is_msg_of_interest(self, user, channel, msg):
     '''
@@ -105,12 +121,6 @@ class Webms(object):
     if not self._enabled:
       log.msg('Not showing webm as they are turned off.')
       return
-    pos = self._pos.next_pos()
-    height = 333
-    call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, height=height, url=url)
-    log.msg(call.encode('utf-8'))
-    subprocess.Popen(call, shell=True)
-    #os.system(call.encode('utf-8'))
-    #self._parent.say(channel, msg.encode('utf-8'))
+    self._video.play(url)
 
 
