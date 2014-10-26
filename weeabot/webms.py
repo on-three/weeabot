@@ -128,6 +128,8 @@ class Webms(object):
     '''
     show webm at given URL.
     '''
+    #hack to show https as http
+    url = url.replace(u'https://', u'http://')
     if not self._enabled:
       log.msg('Not showing webm as they are turned off.')
       return
