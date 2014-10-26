@@ -49,8 +49,9 @@ class Video(object):
       else:
         log.msg("video at position not done yet.")
         return
-    width = 400
-    call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=width, url=url)
+    width = 424
+    height = 240
+    call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=width, height=height, url=url)
     log.msg(call.encode('utf-8'))
     pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
 
@@ -58,17 +59,19 @@ class Webms(object):
   '''
   show a webm via simple system call
   '''
-  REGEX = ur'(?P<url>http[s]?://[\S]+\.webm)'
+  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif))'
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
   #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
-  MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -noborder -xy {width} -geometry {x}:{y} {url}'
+  #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -noborder -xy {width} -geometry {x}:{y} {url}'
+  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
   def __init__(self, parent):
     '''
     constructor
     '''
     self._parent = parent
+    
     self._enabled = False
     self._video = Video()
 
