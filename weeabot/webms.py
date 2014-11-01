@@ -24,10 +24,10 @@ class ScreenPos(object):
   
 class Video(object):
   POSITIONS = [
-    ScreenPos(400, 50),
-    ScreenPos(848, 50),
-    ScreenPos(400, 270),
-    ScreenPos(848, 270),
+    ScreenPos(400, 100),
+    ScreenPos(848, 100),
+    ScreenPos(400, 320),
+    ScreenPos(848, 320),
   ]
   def __init__(self):
     self._next_pos = 0
@@ -51,7 +51,7 @@ class Video(object):
         return
     width = 424
     height = 240
-    call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=width, height=height, url=url)
+    call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=width, url=url)
     log.msg(call.encode('utf-8'))
     pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
 
@@ -63,8 +63,8 @@ class Webms(object):
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
-  #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
-  #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -noborder -xy {width} -geometry {x}:{y} {url}'
+  VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
+  MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
   MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
   def __init__(self, parent):
     '''
