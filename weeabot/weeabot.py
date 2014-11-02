@@ -37,19 +37,19 @@ from config import Config
 
 
 #for now directly import plugins
-#from jisho import Jisho
-#from jikan import Jikan
-#from moon import Moon
+from jisho import Jisho
+from jikan import Jikan
+from moon import Moon
 #from youkoso import Youkoso
-#from katakanize import Katakanize
-#from slingbox import Slingbox
-#from bangumi import Bangumi
-#from translate import Translate
-#from whatson import Whatson
-#from info import Info
-#from webms import Webms
+from katakanize import Katakanize
+from slingbox import Slingbox
+from bangumi import Bangumi
+from translate import Translate
+from whatson import Whatson
+from info import Info
+from webms import Webms
 from config import Config
-from textoverlay import TextOverlay
+#from textoverlay import TextOverlay
 
 DEFAULT_PORT = 6660
 LOG_FILENAME = '{botname}.weeabot.log'.format(botname=Config.BOTNAME)
@@ -91,18 +91,18 @@ class WeeaBot(twisted_irc.IRCClient):
   def connectionMade(self):
     log.msg('connection made')
     twisted_irc.IRCClient.connectionMade(self)
-    #WeeaBot.plugins.append(Jisho(self))
-    #WeeaBot.plugins.append(Moon(self))
-    #WeeaBot.plugins.append(Jikan(self))
-    #WeeaBot.plugins.append(Katakanize(self))
+    WeeaBot.plugins.append(Jisho(self))
+    WeeaBot.plugins.append(Moon(self))
+    WeeaBot.plugins.append(Jikan(self))
+    WeeaBot.plugins.append(Katakanize(self))
     #self.youkoso = Youkoso(self)
-    #WeeaBot.plugins.append(Slingbox(self))
-    #WeeaBot.plugins.append(Bangumi(self))
-    #WeeaBot.plugins.append(Translate(self))
-    #WeeaBot.plugins.append(Whatson(self))
-    #WeeaBot.plugins.append(Info(self))
-    #WeeaBot.plugins.append(Webms(self))
-    WeeaBot.plugins.append(TextOverlay(self))
+    WeeaBot.plugins.append(Slingbox(self))
+    WeeaBot.plugins.append(Bangumi(self))
+    WeeaBot.plugins.append(Translate(self))
+    WeeaBot.plugins.append(Whatson(self))
+    WeeaBot.plugins.append(Info(self))
+    WeeaBot.plugins.append(Webms(self))
+    #WeeaBot.plugins.append(TextOverlay(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')

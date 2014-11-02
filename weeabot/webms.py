@@ -16,6 +16,9 @@ import subprocess
 import signal
 from twisted.python import log
 
+#allow "mod" like control
+from config import Config
+
 class ScreenPos(object):
   def __init__(self, x, y):
     self.x = x
@@ -72,7 +75,7 @@ class Webms(object):
     '''
     self._parent = parent
     
-    self._enabled = False
+    self._enabled = True
     self._video = Video()
 
   def is_msg_of_interest(self, user, channel, msg):
@@ -91,13 +94,13 @@ class Webms(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    if re.match(Webms.ON_REGEX, msg):
+    if re.match(Webms.ON_REGEX, msg) and user in Config.MODS:
       return self.webms_on()
 
-    if re.match(Webms.OFF_REGEX, msg):
+    if re.match(Webms.OFF_REGEX, msg) and user in Config.MODS:
       return self.webms_off()
 
-    if re.match(Webms.WIPE_REGEX, msg):
+    if re.match(Webms.WIPE_REGEX, msg) and user in Config.MODS:
       return self.webms_wipe()
 
     m = re.search(Webms.REGEX, msg)
