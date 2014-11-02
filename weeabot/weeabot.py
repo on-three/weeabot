@@ -33,22 +33,26 @@ from twisted.python import log
 from twisted.python.logfile import DailyLogFile
 from twisted.words.protocols import irc as twisted_irc
 
+from config import Config
+
 
 #for now directly import plugins
-from jisho import Jisho
-from jikan import Jikan
-from moon import Moon
-from youkoso import Youkoso
-from katakanize import Katakanize
-from slingbox import Slingbox
-from bangumi import Bangumi
-from translate import Translate
-from whatson import Whatson
-from info import Info
-from webms import Webms
+#from jisho import Jisho
+#from jikan import Jikan
+#from moon import Moon
+#from youkoso import Youkoso
+#from katakanize import Katakanize
+#from slingbox import Slingbox
+#from bangumi import Bangumi
+#from translate import Translate
+#from whatson import Whatson
+#from info import Info
+#from webms import Webms
+from config import Config
+from textoverlay import TextOverlay
 
 DEFAULT_PORT = 6660
-LOG_FILENAME = 'weeabot.log'
+LOG_FILENAME = '{botname}.weeabot.log'.format(botname=Config.BOTNAME)
 LOG_DIRECTORY = '/.weeabot'
 
 #after http://stackoverflow.com/questions/938870/python-irc-bot-and-encoding-issue
@@ -87,17 +91,18 @@ class WeeaBot(twisted_irc.IRCClient):
   def connectionMade(self):
     log.msg('connection made')
     twisted_irc.IRCClient.connectionMade(self)
-    WeeaBot.plugins.append(Jisho(self))
-    WeeaBot.plugins.append(Moon(self))
-    WeeaBot.plugins.append(Jikan(self))
-    WeeaBot.plugins.append(Katakanize(self))
+    #WeeaBot.plugins.append(Jisho(self))
+    #WeeaBot.plugins.append(Moon(self))
+    #WeeaBot.plugins.append(Jikan(self))
+    #WeeaBot.plugins.append(Katakanize(self))
     #self.youkoso = Youkoso(self)
-    WeeaBot.plugins.append(Slingbox(self))
-    WeeaBot.plugins.append(Bangumi(self))
-    WeeaBot.plugins.append(Translate(self))
-    WeeaBot.plugins.append(Whatson(self))
-    WeeaBot.plugins.append(Info(self))
-    WeeaBot.plugins.append(Webms(self))
+    #WeeaBot.plugins.append(Slingbox(self))
+    #WeeaBot.plugins.append(Bangumi(self))
+    #WeeaBot.plugins.append(Translate(self))
+    #WeeaBot.plugins.append(Whatson(self))
+    #WeeaBot.plugins.append(Info(self))
+    #WeeaBot.plugins.append(Webms(self))
+    WeeaBot.plugins.append(TextOverlay(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')
@@ -116,9 +121,12 @@ class WeeaBot(twisted_irc.IRCClient):
       self.msg('NickServ', 
             'IDENTIFY %s' % network['identity']['nickserv_password'])
 
-    for channel in network['autojoin']:
-      log.msg('join channel %s' % channel)
-      self.join(channel)
+    #NO LONGER AUTOJOIN MULTIPLE CHANNELS
+    #Just join the one from the config
+    self.join(Config.CHANNEL.encode('utf-8'))
+    #for channel in network['autojoin']:
+    #  log.msg('join channel %s' % channel)
+    #  self.join(channel)
 
   def joined(self, channel):
     '''
@@ -126,13 +134,16 @@ class WeeaBot(twisted_irc.IRCClient):
     Initialize a chat dialog on the screen that will later
     be updated with posts as the chat progresses.
     '''
-    log.msg('WeeaBot::joined')
+    log.msg(u'{botname}::joined'.format(botname=Config.BOTNAME).encode('utf-8'))
 
   def privmsg(self, user, channel, msg):
     '''
     Invoked upon receipt of a message in channel X.
     Give plugins a chance to handle it until one does
     '''
+    #we're only active in one channel as specified by config
+    if channel != Config.CHANNEL:
+      return
     #issue #5. UTF-8 decoding fails sometimes in plugins
     #so we'll try to decode into unicode here. If it fails we ignore.
     try:
@@ -255,8 +266,8 @@ def split_server_port(hostname):
 def main():
   parser = argparse.ArgumentParser(description='Scrape jisho.org for japanese word (romaji) lookup.')
   parser.add_argument('hostname', help='IRC server URL as domain:port (e.g. www.freenode.net:6660).', type=str)
-  parser.add_argument('nickname', help='Nick to use at signon. Multiple nicks not yet supported.', type=str)
-  parser.add_argument('channels', nargs='*', help='Channel(s) to join on server.', type=str)
+  #parser.add_argument('nickname', help='Nick to use at signon. Multiple nicks not yet supported.', type=str)
+  #parser.add_argument('channels', nargs='*', help='Channel(s) to join on server.', type=str)
   #parser.add_argument('-p','--server_port', help='Port this server will service html client requests on. NOT the IRC server port this server connects to.', type=int, default=8888)
   parser.add_argument('-u', '--username', help='Username this server uses at IRC server signon.', type=str, default='')
   parser.add_argument('-r', '--realname', help='Realname this server uses at IRC server signon.', type=str, default='')
@@ -282,11 +293,12 @@ def main():
   hostname, port = split_server_port(args.hostname)
   if args.verbose:
     print 'Connecting to ' + hostname + ' on port ' + str(port) +'.'
-    
+
+  nick = Config.BOTNAME.encode('utf-8')
   credentials = {
-    'nickname': args.nickname,
-    'realname': args.realname if len(args.realname)>0 else args.nickname,
-    'username': args.username if len(args.username)>0 else args.nickname,
+    'nickname': nick,
+    'realname': args.realname if len(args.realname)>0 else nick,
+    'username': args.username if len(args.username)>0 else nick,
     'password': args.password,
     'nickserv_password': args.nickserv_pw
   }
@@ -296,15 +308,15 @@ def main():
   WeeaBot.username = credentials['username']
   WeeaBot.password = credentials['password']
     
-  channels = args.channels
-  print str(channels)
+  #channels = args.channels
+  #print str(channels)
 
   network = {
     'host': hostname,
     'port': port,
     'ssl': args.ssl,
     'identity': credentials,
-    'autojoin': channels
+    #'autojoin': channels
   }
 
   factory = WeeaBotFactory(hostname, network)
