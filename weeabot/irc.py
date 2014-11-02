@@ -58,3 +58,8 @@ def style(s):
 	if s not in styles:
 		return u''
 	return styles[s]
+
+def splitnick(fullnick):
+  #nick = string.split(fullnick, '!', maxsplit=1)[0]
+  nick = fullnick.split('!', 1)[0]
+  return nick
