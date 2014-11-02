@@ -2,4 +2,4 @@
 
 VLC_PATH='/cygdrive/c/Program Files (x86)/VideoLAN/VLC/'
 
-"$VLC_PATH/vlc.exe" -I="dummy" dshow:// :dshow-vdev="screen-capture-recorder" :dshow-adev="Line In (Realtek High Definition Audio)" --dshow-aspect-ratio="16:9"  --sout="#transcode{vcodec=h264,vb=800,scale=1,height=480,fps=30,venc=x264{aud,profile=baseline,level=30,keyint=30,ref=1},acodec=mpga,ab=128,channels=2,samplerate=44100}:http{mux=ts,dst=:8082/source}"
+"$VLC_PATH/vlc.exe" -I="dummy" dshow:// :dshow-vdev="screen-capture-recorder" :dshow-adev="Line In (Realtek High Definition Audio)" --dshow-aspect-ratio="16:9"  --sout="#transcode{vcodec=h264,vb=1200,scale=1,height=480,fps=30,venc=x264{aud,profile=baseline,level=30,keyint=30,ref=1},acodec=mpga,ab=128,channels=2,samplerate=44100}:http{mux=ts,dst=:8082/source}"
