@@ -67,7 +67,7 @@ CHANNELS = [
   Channel(u'fox' , u'651', u'FOX HD', u'Movie channel', u'cable'),
   Channel(u'superdrama' , u'647', u'スーパー！ドラマＴＶ ＨＤ', u'Movie channel', u'cable'),
   Channel(u'axn' , u'650', u'AXN HD 海外ドラマ', u'Movie channel', u'cable'),
-  Channel(u'foxcrime' , u'453', u'FOXCRIME HD', u'Movie channel', u'cable'),
+  Channel(u'foxcrime' , u'652', u'FOXCRIME HD', u'Movie channel', u'cable'),
   Channel(u'mystery' , u'649', u'AXNミステリー HD', u'Movie channel', u'cable'),
   Channel(u'homedrama' , u'661', u'ホームドラマチャンネル HD', u'Movie channel', u'cable'),
   Channel(u'samurai' , u'662', u'時代劇専門チャンネルHD', u'Movie channel', u'cable'),
