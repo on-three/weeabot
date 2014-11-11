@@ -1,0 +1,9 @@
+^m::Mute4Window()
+
+Mute4Window(Window=""){
+  DetectHiddenWindows On
+  if Window = 
+    WinGetActiveTitle, Active
+  else Active := Window
+  Run, %A_WinDir%\System32\SndVol.exe, %A_WinDir%\System32\, Hide
+  WinWaitActive, ahk_class #32770,, 3
