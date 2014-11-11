@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+
+cp weeabot/config.py weeabot/config.py.bak
+cp weeabot/credentials.py weeabot/credentials.py.bak
+git checkout weeabot/config.py
+git checkout weeabot/credentials.py
+git pull
+cp weeabot/config.py.bak weeabot/config.py
+cp weeabot/credentials.py.bak weeabot/credentials.py
