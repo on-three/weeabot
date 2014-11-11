@@ -52,6 +52,7 @@ def keypresses_to_sling(command):
     os_call = autohotkey + u' ' + command_script + u' ' + command
     print os_call
     retvalue = os.system(os_call.encode('utf-8'))
+
 def press_sling_button(name):
     if name not in BUTTON_LOCATIONS:
       return
@@ -211,6 +212,20 @@ class Mute(object):
   @staticmethod
   def do(command=None, data=None):
     return mute_sling()
+    
+class Connect(object):
+  '''reconnect to sling (only)
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    return connect_to_sling()
+  
+class Position(object):
+  '''correct sling window position (only)
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    return position_sling_window()
 
 class Hotkey(object):
   def __init__(self, name, key):
@@ -256,13 +271,17 @@ COMMAND_TABLE = {
   u'sync' : Sync.do,
   u'now' : Now.do,
   u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
-  u'reset' : Reset.do,
+  #u'reset' : Reset.do,
+  u'connect' : Connect.do,
+  u'position' : Position.do,
   u'mute' : Mute.do,
 }
 
 RESTRICTED_COMMANDS = [
   u'mute',
   u'reset',
+  u'connect',
+  u'position',
 ]
 
 def get_channel_name(n):
@@ -283,14 +302,22 @@ def do(command, irc_channel, data):
   else:
     return u'Sorry. Unknown Command. Check yur privilege.'
 
-def reset_sling():
+def connect_to_sling():
   run_ahk_script(ok_script)#press "ok" to dismiss dialog
   time.sleep(1)
   keypresses_to_sling(u'\!x')#alt+x to reinitiate connection
-  time.sleep(10)
-  keypresses_to_sling(u'\;')#alt+; for video only mode
-  time.sleep(10)
+  #time.sleep(10)
+  return u'Connecting to sling. Chotto-matte'
+  
+def position_sling_window():
+  keypresses_to_sling(u'\!\;')#alt+; for video only mode
+  #time.sleep(10)
   run_ahk_script(resize_script)#correctly position the window
+  return u'Correcting sling window position sempai...'
+    
+def reset_sling():
+  connect_to_sling()
+  position_sling_window();
   return u'Resetting sling. Chotto-matte'
 
 def mute_sling():
