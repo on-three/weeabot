@@ -14,7 +14,7 @@ import re
 #from pytz import timezone
 #from datetime import datetime
 #import locale
-#import time
+import time
 from twisted.python import log
 import os
 
@@ -35,6 +35,7 @@ TUNER_LIST = [
 autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
 command_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/command.ahk'
 push_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/press.ahk'
+resize_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/size_window_480.ahk'
 
 
 def get_current_channel():
@@ -50,6 +51,11 @@ def press_sling_button(name):
     if name not in BUTTON_LOCATIONS:
       return
     return BUTTON_LOCATIONS[name].press()
+    
+def run_ahk_script(name):
+    os_call = autohotkey + u' ' + name
+    print os_call
+    retvalue = os.system(os_call.encode('utf-8'))
 
 #TODO: write a cooloff timer to prevent spamming
 
@@ -268,9 +274,16 @@ def do(command, irc_channel, data):
     return u'Sorry. Unknown Command. Check yur privilege.'
 
 def reset_sling():
+  keypresses_to_sling(u'\!x') #Alt-X
+  time.sleep(10)
+  keypresses_to_sling(u'\;')
+  #TODO: set to video only mode ('Alt+;')
+  time.sleep(10)
+  run_ahk_script(resize_script)
   return u'Resetting sling. Chotto-matte'
 
 def mute_sling():
+  keypresses_to_sling(u'\!m') #Alt+M
   return u'Toggling sling mute.'
 
 def set_channel(channel_number):
