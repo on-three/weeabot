@@ -75,6 +75,10 @@ class Air(object):
     Slingbox._current_channel = None
     Slingbox._current_tuner = AIR_CMD
     return u''
+  
+  @staticmethod
+  def help():
+    return u'".c air" : Set the slingbox to the air tuner (broadcast stations).'
 
 class BS(object):
   '''Set tuner to BS stations
@@ -86,6 +90,10 @@ class BS(object):
     Slingbox._current_channel = None
     Slingbox._current_tuner = BS_CMD
     return u''
+    
+  @staticmethod
+  def help():
+    return u'".c bs": Set the slingbox to the BS tuner (legacy basic cable).'
 
 class Cable(object):
   '''Set tuner to cable stations
@@ -97,6 +105,10 @@ class Cable(object):
     Slingbox._current_channel = None
     Slingbox._current_tuner = CABLE_CMD
     return u''
+  
+  @staticmethod
+  def help():
+    return u'".c cable": Set the slingbox to the cable tuner (most premium and hd channels).'
 
 class ChannelUp(object):
   '''Channel up
@@ -107,6 +119,11 @@ class ChannelUp(object):
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     return u''
+    
+  @staticmethod
+  def help():
+    return u'".c up": Go to next channel upwards on current tuner.'
+
 
 class ChannelDown(object):
   '''Channel down
@@ -117,6 +134,10 @@ class ChannelDown(object):
     Slingbox._previous_channel = None
     Slingbox._current_channel = None
     return u''
+    
+  @staticmethod
+  def help():
+    return u'".c down": Go to next channel downwards on current tuner.'
 
 class Ok(object):
   '''Press the okay button when needed
@@ -126,6 +147,10 @@ class Ok(object):
   def do(command=None, data=None):
     #keypresses_to_sling('{space}')
     return u'Pressing OK button.'
+    
+  @staticmethod
+  def help():
+    return u'".c ok": Press sling ok button.'
 
 class Return(object):
   '''Press the return button when needed
@@ -135,7 +160,11 @@ class Return(object):
   def do(command=None, data=None):
     #keypresses_to_sling('{backspace}')
     return u'Pressing Return button'
-	
+
+  @staticmethod
+  def help():
+    return u'".c return": Press the slingbox back button.'
+  
 class Menu(object):
   '''Press the menu button to show or hide show info.
   '''
@@ -143,6 +172,10 @@ class Menu(object):
   def do(command=None, data=None):
     keypresses_to_sling(u'M')
     return u'Pressing menu (info) button. Press again to toggle.'
+  
+  @staticmethod
+  def help():
+    return u'".c info": Toggle the slingbox menu button showing (jp) info.'
     
 class Last(object):
   '''Press the menu button to show or hide show info.
@@ -154,6 +187,10 @@ class Last(object):
     else:
       return u'Gomenasai user-kun. No memory of previous channel. Dame dame.'
 
+  @staticmethod
+  def help():
+    return u'".c last": Go to the last explicitly set channel. Will not work if last channel is unknown.'
+    
 class List(object):
   '''List current supported channels
   '''
@@ -162,6 +199,10 @@ class List(object):
     names = [k for k,v in CHANNEL_LIST.iteritems() if re.search('[a-zA-Z]', k)]
     names.sort()
     return ' '.join(names)
+    
+  @staticmethod
+  def help():
+    return u'".c list": List available channels we can go to. Some channels may not be on current tuner.'
     
 class Sync(object):
   '''Sync the module's state to user provided information
@@ -181,6 +222,10 @@ class Sync(object):
     else:
       return u'Chikushouu. Do not recognize that as a tuner or channel. Piss orf.'
 
+  @staticmethod
+  def help():
+    return u'".c sync <channel or tuner name>": Tell the sling the current channel/tuner. Helps for program info retrieval.'
+      
 class Now(object):
   '''simple channel help
   '''
@@ -189,15 +234,27 @@ class Now(object):
     response = u''
     response += u'On channel {channel}. '.format(channel=Slingbox.current_channel())
     response += u'On tuner {tuner}.'.format(tuner=Slingbox.current_tuner())
-    return response      
+    return response
+  
+  @staticmethod
+  def help():
+    return u'".c now": Provide the current channel (if known).'
 
 class Help(object):
   '''simple channel help
   '''
   @staticmethod
   def do(command=None, data=None):
-    help = u'use ".c list" for channel names. ".c NAME" to go to a channel. ".c air" for broadcast stations, ".c cable" for cable stations and ".c bs" for the few non-HD basic cable stations.'
-    return help
+    if data and data in COMMAND_TABLE:
+      return COMMAND_TABLE[data].help()
+    return Help.help()
+  
+  @staticmethod
+  def help():
+    commands = [k for k,v in COMMAND_TABLE.iteritems()]
+    #commands = commands.sort()
+    command_list = u' '.join(commands)
+    return u'Use ".c help <command>" for command in: {commands} ,or visit https://github.com/on-three/weeabot'.format(commands=command_list)
 
 class Reset(object):
   '''reset connection via hotkey script
@@ -206,12 +263,22 @@ class Reset(object):
   def do(command=None, data=None):
     return reset_sling()
 
+  @staticmethod
+  def help():
+    return u'".c reset" Do a full reset on sling, reconnecting and resizing window.'
+
+
 class Mute(object):
   '''mute the sling
   '''
   @staticmethod
   def do(command=None, data=None):
     return mute_sling()
+
+  @staticmethod
+  def help():
+    return u'".c mute" Toggle slingbox mute.'
+
     
 class Connect(object):
   '''reconnect to sling (only)
@@ -220,12 +287,20 @@ class Connect(object):
   def do(command=None, data=None):
     return connect_to_sling()
   
+  @staticmethod
+  def help():
+    return u'****PLEASE USE WITH CAUTION****: ".c connect" Reconnect to sling when connection lost.'
+  
 class Position(object):
   '''correct sling window position (only)
   '''
   @staticmethod
   def do(command=None, data=None):
     return position_sling_window()
+    
+  @staticmethod
+  def help():
+    return u'".c position" Reset the position of slingplayer if it has become corrupted (note: 480p only).'
 
 class Hotkey(object):
   def __init__(self, name, key):
@@ -256,25 +331,25 @@ BUTTON_LOCATIONS = {
 
 COMMAND_TABLE = {
   #handle tuner commands 
-  AIR_CMD : Air.do ,
-  BS_CMD : BS.do ,
-  CABLE_CMD : Cable.do,
-  u'up' : ChannelUp.do,
-  u'down' : ChannelDown.do,
-  u'ok' : Ok.do,
-  u'return' : Return.do,
-  u'esc' : Return.do,
-  u'menu' : Menu.do,
-  u'info' : Menu.do,
-  u'list' : List.do,
-  u'last' : Last.do,
-  u'sync' : Sync.do,
-  u'now' : Now.do,
-  u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
+  AIR_CMD : Air ,
+  BS_CMD : BS ,
+  CABLE_CMD : Cable,
+  u'up' : ChannelUp,
+  u'down' : ChannelDown,
+  #u'ok' : Ok.do,
+  #u'return' : Return.do,
+  #u'esc' : Return.do,
+  #u'menu' : Menu.do,
+  u'info' : Menu,
+  u'list' : List,
+  u'last' : Last,
+  u'sync' : Sync,
+  u'now' : Now,
+  u'help' : Help, u'h' : Help, u'Help' : Help,
   #u'reset' : Reset.do,
-  u'connect' : Connect.do,
-  u'position' : Position.do,
-  u'mute' : Mute.do,
+  u'connect' : Connect,
+  u'position' : Position,
+  u'mute' : Mute,
 }
 
 RESTRICTED_COMMANDS = [
@@ -295,7 +370,7 @@ def do(command, irc_channel, data):
   '''Carry out a command from the manager command table
   '''
   if command in COMMAND_TABLE:
-    return COMMAND_TABLE[command](command=command, data=data)
+    return COMMAND_TABLE[command].do(command=command, data=data)
   elif command in CHANNEL_LIST:
     channel_number = CHANNEL_LIST[command].number
     return set_channel(channel_number)
