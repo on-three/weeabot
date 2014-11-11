@@ -18,6 +18,10 @@ import time
 from twisted.python import log
 import os
 
+#whitelist
+from config import Config
+from irc import splitnick
+
 #plugin Hikari TV service
 import hikaritv
 CHANNEL_LIST = hikaritv.CHANNEL_LIST
@@ -255,6 +259,11 @@ COMMAND_TABLE = {
   u'mute' : Mute.do,
 }
 
+RESTRICTED_COMMANDS = [
+  u'mute',
+  u'reset',
+]
+
 def get_channel_name(n):
   '''returns the first alphabetic key match in the dict
   '''
@@ -363,6 +372,11 @@ class Slingbox(object):
       return
     #got a command along with the .c or .channel statement
     command = m.groupdict()['command']
+    
+    #whitelist powerful commands
+    if command in RESTRICTED_COMMANDS and splitnick(user) not in Config.MODS:
+      return
+    
     data= None
     if 'data' in m.groupdict():
       data = m.groupdict()['data']
