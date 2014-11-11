@@ -40,6 +40,7 @@ autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
 command_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/command.ahk'
 push_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/press.ahk'
 resize_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/size_window_480.ahk'
+ok_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/ok.ahk'
 
 
 def get_current_channel():
@@ -283,12 +284,13 @@ def do(command, irc_channel, data):
     return u'Sorry. Unknown Command. Check yur privilege.'
 
 def reset_sling():
-  keypresses_to_sling(u'\!x') #Alt-X
+  run_ahk_script(ok_script)#press "ok" to dismiss dialog
+  time.sleep(1)
+  keypresses_to_sling(u'\!x')#alt+x to reinitiate connection
   time.sleep(10)
-  keypresses_to_sling(u'\;')
-  #TODO: set to video only mode ('Alt+;')
+  keypresses_to_sling(u'\;')#alt+; for video only mode
   time.sleep(10)
-  run_ahk_script(resize_script)
+  run_ahk_script(resize_script)#correctly position the window
   return u'Resetting sling. Chotto-matte'
 
 def mute_sling():
