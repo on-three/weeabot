@@ -194,6 +194,13 @@ class Reset(object):
   def do(command=None, data=None):
     return reset_sling()
 
+class Mute(object):
+  '''mute the sling
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    return mute_sling()
+
 class Hotkey(object):
   def __init__(self, name, key):
     self._name = name
@@ -239,6 +246,7 @@ COMMAND_TABLE = {
   u'now' : Now.do,
   u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
   u'reset' : Reset.do,
+  u'mute' : Mute.do,
 }
 
 def get_channel_name(n):
@@ -261,6 +269,9 @@ def do(command, irc_channel, data):
 
 def reset_sling():
   return u'Resetting sling. Chotto-matte'
+
+def mute_sling():
+  return u'Toggling sling mute.'
 
 def set_channel(channel_number):
   '''Given a string name of a channel, tell the slingbox to go there
