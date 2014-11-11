@@ -187,6 +187,13 @@ class Help(object):
     help = u'use ".c list" for channel names. ".c NAME" to go to a channel. ".c air" for broadcast stations, ".c cable" for cable stations and ".c bs" for the few non-HD basic cable stations.'
     return help
 
+class Reset(object):
+  '''reset connection via hotkey script
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    return reset_sling()
+
 class Hotkey(object):
   def __init__(self, name, key):
     self._name = name
@@ -231,6 +238,7 @@ COMMAND_TABLE = {
   u'sync' : Sync.do,
   u'now' : Now.do,
   u'help' : Help.do, u'h' : Help.do, u'Help' : Help.do,
+  u'reset' : Reset.do,
 }
 
 def get_channel_name(n):
@@ -250,6 +258,9 @@ def do(command, irc_channel, data):
     return set_channel(channel_number)
   else:
     return u'Sorry. Unknown Command. Check yur privilege.'
+
+def reset_sling():
+  return u'Resetting sling. Chotto-matte'
 
 def set_channel(channel_number):
   '''Given a string name of a channel, tell the slingbox to go there
