@@ -55,6 +55,9 @@ DEFAULT_PORT = 6660
 LOG_FILENAME = '{botname}.weeabot.log'.format(botname=Config.BOTNAME)
 LOG_DIRECTORY = '/.weeabot'
 
+#Don't use global data! lel
+RETURN_CODE = 0
+
 #after http://stackoverflow.com/questions/938870/python-irc-bot-and-encoding-issue
 def irc_decode(bytes):
   '''
@@ -106,6 +109,7 @@ class WeeaBot(twisted_irc.IRCClient):
 
   def connectionLost(self, reason):
     log.msg('connection lost')
+    RETURN_CODE = -1
     twisted_irc.IRCClient.connectionLost(self, reason)
 
   def signedOn(self):
@@ -182,7 +186,9 @@ class WeeaBot(twisted_irc.IRCClient):
     pass
     
   def kickedFrom(self, channel, kicker, message):
-    pass
+    if channel == Config.CHANNEL:
+      RETURN_CODE = -1
+      reactor.stop()
 
   def NickChanged(self, nick):
     pass
@@ -248,6 +254,7 @@ class WeeaBotFactory(protocol.ClientFactory):
     connector.connect()
 
   def clientConnectionFailed(self, connector, reason):
+    RETURN_CODE = -1
     reactor.stop()
 
 
@@ -326,7 +333,7 @@ def main():
     reactor.connectTCP(hostname, port, factory)
 
   reactor.run()
-
+  sys.exit(RETURN_CODE)
 
 if __name__ == "__main__":
   main()
