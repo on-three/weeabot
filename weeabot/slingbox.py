@@ -116,8 +116,10 @@ class ChannelUp(object):
   @staticmethod
   def do(command=None, data=None):
     keypresses_to_sling(u'=')
-    Slingbox._previous_channel = None
-    Slingbox._current_channel = None
+    #disabling because we now need to use up/down to get to
+    #channels that can't be accessed just by their number
+    #Slingbox._previous_channel = None
+    #Slingbox._current_channel = None
     return u''
     
   @staticmethod
@@ -131,8 +133,10 @@ class ChannelDown(object):
   @staticmethod
   def do(command=None, data=None):
     keypresses_to_sling(u'-')
-    Slingbox._previous_channel = None
-    Slingbox._current_channel = None
+    #Slingbox._previous_channel = None
+    #Slingbox._current_channel = None
+    #disabling because we now need to use up/down to get to
+    #channels that can't be accessed just by their number
     return u''
     
   @staticmethod

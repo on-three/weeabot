@@ -30,6 +30,7 @@ CHANNEL_LIST = skyplus.CHANNEL_LIST
 from translator import Translator
 
 #tuner groups
+#It seems to me (now) that this info is better packed in the skyplus.py module
 AIR = 101
 BS = 200
 SUKAPAA_PREMI = 400

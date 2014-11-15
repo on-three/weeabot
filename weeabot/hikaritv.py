@@ -94,6 +94,9 @@ CHANNELS = [
   Channel(u'shogi' , [u'832'], u'囲碁・将棋チャンネル HD【Ch832】', u'Movie channel', u'cable'),
   Channel(u'foodies' , [u'831'], u'ＦＯＯＤＩＥＳ ＴＶ', u'Movie channel', u'cable'),
   Channel(u'nhkworld' , [u'103'], u'nhkworld', u'Movie channel', u'cable'),
+  Channel(u'fishing' , [u'840'], u'釣りビジョンHD', u'All fishing, all the time.', u'cable'),
+  Channel(u'pachinko' , [u'532'], u'パチンコ★パチスロＴＶ！', u'For all your pachinko needs.', u'cable'),
+  Channel(u'fujinext' , [u'562'], u'フジテレビＮＥＸＴ ライブ・プレミアム（ＨＤ）', u'Repeats from fujitv. GamecenterCX, aidoringu, etc.', u'cable'),
   Channel(u'nhk' , [u'1'], u'日本放送協会', u'Movie channel', u'air'),
   Channel(u'nhke' , [u'2'], u'NHK教育テレビジョン Ｅテレ', u'Movie channel', u'air'),
   Channel(u'ntv' , [u'4'], u'日本テレ', u'Movie channel', u'air'),
@@ -106,8 +109,8 @@ CHANNELS = [
   Channel(u'wowow' , [u'9'], u'wowow プライム', u'Movie channel', u'bs'),
   Channel(u'wowowlive' , [u'9', u'up'], u'wowow ライブ', u'Movie channel', u'bs'),
   Channel(u'wowowcinema' , [u'9', u'up', u'up'], u'WOWOWシネマ', u'Movie channel', u'bs'),
-  Channel(u'nhkbsone' , [u'1'], u'ＮＨＫ ＢＳ１', u'Movie channel', u'bs'),
-  Channel(u'nhkbstwo' , [u'1', u'up'], u'ＮＨＫ ＢＳ2', u'Movie channel', u'bs'),
+  Channel(u'nhkbs1' , [u'1'], u'ＮＨＫ ＢＳ１', u'Movie channel', u'bs'),
+  Channel(u'nhkbs2' , [u'1', u'up'], u'ＮＨＫ ＢＳ2', u'Movie channel', u'bs'),
   Channel(u'nhkpremium' , [u'3'], u'ＮＨＫ ＢＳプレミアム', u'Movie channel', u'bs'),
 ]
 
