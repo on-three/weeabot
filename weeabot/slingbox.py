@@ -385,8 +385,7 @@ def do(command, irc_channel, data):
   if command in COMMAND_TABLE:
     return COMMAND_TABLE[command].do(command=command, data=data)
   elif command in CHANNEL_LIST:
-    channel_number = CHANNEL_LIST[command].number
-    return set_channel(channel_number)
+    return set_channel(command)
   else:
     return u'Sorry. Unknown Command. Check yur privilege.'
 
@@ -416,30 +415,40 @@ def press_sap_button():
   press_sling_button(u'sap')
   return u'Pressing Supplementary Audio Program button.'
 
-def set_channel(channel_number):
+def set_channel(channel_name):
   '''Given a string name of a channel, tell the slingbox to go there
   Note that i don't care if the slingbox actually goes there or not.
   We just fire and forget.
   '''
-  if channel_number not in CHANNEL_LIST:
+  #1) fetch data regarding the channel we want
+  if channel_name not in CHANNEL_LIST:
     return u'Mitsukeranai, user-me. Giving me bad channel names. I cannot forgive you!'
-  chan = CHANNEL_LIST[channel_number]
-  #do we need a tuner switch to go there?
+  chan = CHANNEL_LIST[channel_name]
+  
+  #2) do we need a tuner switch to go there? If so, carry it out
   if chan.tuner != Slingbox._current_tuner:
-    return u'Channel {name} is on the {tuner} tuner. Sync me if I am incorrect.'.format(name=chan.name, tuner=chan.tuner)
+    press_sling_button(chan.tuner)
+  Slingbox._current_tuner = chan.tuner  
+  
+  #3) before changing, store current channel.
   temp = Slingbox._current_channel
-  Slingbox._current_channel = channel_number
+  Slingbox._current_channel = channel_name
   if Slingbox._previous_channel != temp:
     Slingbox._previous_channel = temp
   if not Slingbox._previous_channel:
     Slingbox._previous_channel = Slingbox._current_channel
-
-  #we sometimes have to press screen locatons rather than hotkeys to get a channel
-  if channel_number in BUTTON_LOCATIONS:
-    BUTTON_LOCATIONS[channel_number].press()
-  else:
-    keypresses_to_sling(channel_number)
-  return u'Changing to channel {number}, {name} | {jname}'.format(number=channel_number, name=chan.name, jname=chan.japanese_name)
+  
+  #4) Initiate sling keypresses for this channel
+  #we sometimes have to press screen locations rather than hotkeys to get a channel
+  #NOTE: this is an array of keypresses now
+  for channel_number in chan.number:
+    if channel_number in COMMAND_TABLE:
+      COMMAND_TABLE[channel_number].do()
+    elif channel_number in BUTTON_LOCATIONS:
+      BUTTON_LOCATIONS[channel_number].press()
+    else:
+      keypresses_to_sling(channel_number)
+  return u'Changing to {name} | {jname} on tuner {tuner}.'.format(name=chan.name, jname=chan.japanese_name, tuner=chan.tuner)
 
 
 class Slingbox(object):
