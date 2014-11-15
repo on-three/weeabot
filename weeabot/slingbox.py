@@ -220,7 +220,7 @@ class Sync(object):
       Slingbox._previous_channel = None
       return u'Arigatou user-tan. I know we are now on tuner {tuner}.'.format(tuner=data)
     elif data in CHANNEL_LIST:
-      Slingbox._current_channel = CHANNEL_LIST[data].number
+      Slingbox._current_channel = CHANNEL_LIST[data].name
       Slingbox._previous_channel = None
       return u'Arigatou, user-tan. I know we are now on channel {channel}'.format(channel=data)
     else:
@@ -467,7 +467,7 @@ class Slingbox(object):
   @staticmethod
   def current_channel():
     if Slingbox._current_channel:
-      return get_channel_name(Slingbox._current_channel)
+      return Slingbox._current_channel
     else:
       return u'UNKNOWN'
       
