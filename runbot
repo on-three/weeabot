@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+IRC_SERVER="irc.rizon.io:6660"
+ARGS="-v"
+RUN_BOT="./weeabot/weeabot.py ${IRC_SERVER} ${ARGS}"
+
+until ${RUN_BOT}; do
+    echo "cmd ${RUN_BOT} exited with return code $?.  Respawning in 10 seconds..." >&2
+    sleep 10
+done

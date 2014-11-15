@@ -302,6 +302,17 @@ class Position(object):
   def help():
     return u'".c position" Reset the position of slingplayer if it has become corrupted (note: 480p only).'
 
+class Sap(object):
+  '''press supplementary audio button
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    return press_sap_button()
+    
+  @staticmethod
+  def help():
+    return u'".c sap" press Supplementary Audio Program button for dual audio programs.'
+
 class Hotkey(object):
   def __init__(self, name, key):
     self._name = name
@@ -327,6 +338,7 @@ BUTTON_LOCATIONS = {
   u'10' : ButtonLocation(u'10', -125, 215),
   u'11' : ButtonLocation(u'11', -85, 215),
   u'12' : ButtonLocation(u'12', -50, 215),
+  u'sap' : ButtonLocation(u'SAP', -50, 540),
 }
 
 COMMAND_TABLE = {
@@ -350,6 +362,7 @@ COMMAND_TABLE = {
   u'connect' : Connect,
   u'position' : Position,
   u'mute' : Mute,
+  u'sap' : Sap,
 }
 
 RESTRICTED_COMMANDS = [
@@ -398,6 +411,10 @@ def reset_sling():
 def mute_sling():
   keypresses_to_sling(u'\!m') #Alt+M
   return u'Toggling sling mute.'
+  
+def press_sap_button():
+  press_sling_button(u'sap')
+  return u'Pressing Supplementary Audio Program button.'
 
 def set_channel(channel_number):
   '''Given a string name of a channel, tell the slingbox to go there
