@@ -63,7 +63,7 @@ class Webms(object):
   '''
   show a webm via simple system call
   '''
-  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif))'
+  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3))'
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
