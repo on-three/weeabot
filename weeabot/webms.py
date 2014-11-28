@@ -16,46 +16,61 @@ import subprocess
 import signal
 from twisted.python import log
 
+DEFAULT_VIDEO_WIDTH = 424
+DEFAULT_VIDEO_HEIGHT = 240
+
 #allow "mod" like control
 from config import Config
 from irc import splitnick
 
 class ScreenPos(object):
-  def __init__(self, x, y):
+  def __init__(self, x, y, w=DEFAULT_VIDEO_WIDTH, h=DEFAULT_VIDEO_HEIGHT):
     self.x = x
     self.y = y
+    self.w = w
+    self.h = h
     self._subprocess = None
+    
+  def is_busy(self):
+    if self._subprocess:
+      #"Video at pos exists
+      if self._subprocess.poll() is not None:
+        self._subprocess = None
+        #video at position is complete.
+        return False
+      else:
+        #video at position not done yet.
+        return True
+    return False
   
 class Video(object):
   POSITIONS = [
-    ScreenPos(400, 100),
-    ScreenPos(848, 100),
+    ScreenPos(400, 100, h=340),
+    ScreenPos(848, 100, h=340),
     ScreenPos(400, 320),
     ScreenPos(848, 320),
+    ScreenPos(620, 155, h=340),
   ]
   def __init__(self):
-    self._next_pos = 0
+    pass
 
   def next_pos(self):
-    pos = Video.POSITIONS[self._next_pos]
-    self._next_pos += 1
-    if self._next_pos >= len(Video.POSITIONS):
-      self._next_pos = 0
-    return pos
+    '''Always look in order in available positions,
+    returning the one that is not occupied.
+    '''
+    for pos in Video.POSITIONS:
+      if not pos.is_busy():
+        return pos
+    return None
   
   def play(self, url):
     pos = self.next_pos()
-    if pos._subprocess:
-      log.msg("Video at pos exists")
-      if pos._subprocess.poll() is not None:
-        pos._subprocess = None
-        log.msg("video at position is complete.")
-      else:
-        log.msg("video at position not done yet.")
-        return
-    width = 424
-    height = 240
-    call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=width, url=url)
+    if not pos:
+      #simply bail and play nothing if no available spots to play
+      return
+    
+    #call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
+    call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     log.msg(call.encode('utf-8'))
     pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
 
@@ -69,7 +84,7 @@ class Webms(object):
   WIPE_REGEX = ur'^\.wipe'
   VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
-  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
+  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --no-border --ontop -autofit-larger={width}x{height} --geometry {x}:{y} {url}'
   def __init__(self, parent):
     '''
     constructor
