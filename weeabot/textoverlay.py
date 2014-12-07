@@ -40,7 +40,7 @@ class TextOverlay(object):
   COMMAND_REGEX = ur'^(?P<command>{trigger})(?P<text>.+)'.format(trigger=Config.TRIGGER)
   SUBTITLE_REGEX = ur'^(?P<command>{trigger}sub )(?P<text>.+)'.format(trigger=Config.TRIGGER)
   SCROLLING_MSG_REGEX = ur'^(?P<command>{trigger}scroll )(?P<text>.+)'.format(trigger=Config.TRIGGER)
-  CLEAR_REGEX = ur'^(?P<command>{trigger}clear)$'.format(trigger=Config.TRIGGER)
+  CLEAR_REGEX = ur'^(?P<command>{trigger}(?:clear|wipe))$'.format(trigger=Config.TRIGGER)
   ON_REGEX = ur'^(?P<command>{trigger}on)$'.format(trigger=Config.TRIGGER)
   OFF_REGEX = ur'^(?P<command>{trigger}off)$'.format(trigger=Config.TRIGGER)
 
