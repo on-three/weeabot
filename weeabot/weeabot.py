@@ -145,9 +145,6 @@ class WeeaBot(twisted_irc.IRCClient):
     Invoked upon receipt of a message in channel X.
     Give plugins a chance to handle it until one does
     '''
-    #we're only active in one channel as specified by config
-    if channel != Config.CHANNEL:
-      return
     #issue #5. UTF-8 decoding fails sometimes in plugins
     #so we'll try to decode into unicode here. If it fails we ignore.
     try:
@@ -155,7 +152,6 @@ class WeeaBot(twisted_irc.IRCClient):
     except UnicodeDecodeError:
       log.msg('privmsg ' + msg)
       return
-
     #log.msg(u'privmsg ' + msg)
     self.handle_msg(user, channel, msg)
 
@@ -169,10 +165,13 @@ class WeeaBot(twisted_irc.IRCClient):
       help = plugins + u'| source: https://github.com/on-three/weeabot'
       self.say(channel, help.encode('utf-8'))
       return
-
-    #msg = irc_decode(msg)
+      
     for plugin in WeeaBot.plugins:
       if plugin.is_msg_of_interest(user, channel, msg):
+        #we check interest over all channels, but only pass messages to the channel we're on
+        #this allows us to have some plugins process messages via private message, but others ignore them.
+        if channel != Config.CHANNEL:
+          continue
         plugin.handle_msg(user, channel, msg)
         break
 
