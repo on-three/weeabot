@@ -78,7 +78,7 @@ class Webms(object):
   '''
   show a webm via simple system call
   '''
-  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3))'
+  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
@@ -132,6 +132,8 @@ class Webms(object):
 
   def webms_off(self):
     self._enabled = False
+    #also wipe all webms
+    self.webms_wipe()
     log.msg('webms_off')
 
   def webms_wipe(self):
