@@ -84,7 +84,7 @@ class Webms(object):
   WIPE_REGEX = ur'^\.wipe'
   VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
-  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --no-border --ontop -autofit-larger={width}x{height} --geometry {x}:{y} {url}'
+  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --ontop --no-border -autofit-larger={width}x{height} --geometry {x}:{y} {url}'
   def __init__(self, parent):
     '''
     constructor

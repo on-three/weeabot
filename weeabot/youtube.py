@@ -15,9 +15,9 @@ import os
 import subprocess
 import signal
 from twisted.python import log
-
-DEFAULT_VIDEO_WIDTH = 848
-DEFAULT_VIDEO_HEIGHT = 480
+# 390 10 -size 860 600
+DEFAULT_VIDEO_WIDTH = 860
+DEFAULT_VIDEO_HEIGHT = 600
 
 #allow "mod" like control
 from config import Config
@@ -45,7 +45,7 @@ class ScreenPos(object):
   
 class Video(object):
   POSITIONS = [
-    ScreenPos(400, 100),
+    ScreenPos(390, 10),
   ]
   def __init__(self):
     pass
@@ -67,7 +67,8 @@ class Video(object):
     
     #call = Youtube.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
-    call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
+    #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
+    call = Youtube.SMPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     log.msg(call.encode('utf-8'))
     pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
 
@@ -76,13 +77,13 @@ class Youtube(object):
   show a webm via simple system call
   '''
   #REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
-  REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
+  REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+)'
   ON_REGEX = ur'^\.youtube on'
   OFF_REGEX = ur'^\.youtube off'
   WIPE_REGEX = ur'^\.youtube wipe'
   #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
-  SMPLAYER_COMMAND = u'/home/onthree/mpv/mpv.exe -size={width}x{height} -pos {x}:{y} {url}'
+  SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
   
   def __init__(self, parent):
     '''

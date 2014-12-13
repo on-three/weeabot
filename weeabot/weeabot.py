@@ -48,6 +48,7 @@ from translate import Translate
 from whatson import Whatson
 from info import Info
 from webms import Webms
+from youtube import Youtube
 from config import Config
 #from textoverlay import TextOverlay
 
@@ -105,6 +106,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Whatson(self))
     WeeaBot.plugins.append(Info(self))
     WeeaBot.plugins.append(Webms(self))
+    WeeaBot.plugins.append(Youtube(self))
     #WeeaBot.plugins.append(TextOverlay(self))
 
   def connectionLost(self, reason):
