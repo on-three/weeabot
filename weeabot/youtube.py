@@ -15,12 +15,13 @@ import os
 import subprocess
 import signal
 from twisted.python import log
-# 390 10 -size 860 600
-DEFAULT_VIDEO_WIDTH = 860
-DEFAULT_VIDEO_HEIGHT = 600
+
+from screen import Screen
+DEFAULT_VIDEO_WIDTH = Screen.WIDTH
+DEFAULT_VIDEO_HEIGHT = Screen.HEIGHT
 
 #allow "mod" like control
-from config import Config
+from config import is_mod
 from irc import splitnick
 
 class ScreenPos(object):
@@ -45,7 +46,7 @@ class ScreenPos(object):
   
 class Video(object):
   POSITIONS = [
-    ScreenPos(390, 10),
+    ScreenPos(Screen.LEFT, Screen.TOP),
   ]
   def __init__(self):
     pass
@@ -68,7 +69,8 @@ class Video(object):
     #call = Youtube.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
-    call = Youtube.SMPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
+    #call = Youtube.SMPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
+    call = Youtube.MPSYT_COMMAND.format(url=url);
     log.msg(call.encode('utf-8'))
     pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
 
@@ -83,8 +85,8 @@ class Youtube(object):
   WIPE_REGEX = ur'^\.youtube wipe'
   #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
-  SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
-  
+  #SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
+  MPSYT_COMMAND = u'/usr/bin/mpsyt playurl {url}';
   def __init__(self, parent):
     '''
     constructor
@@ -110,18 +112,16 @@ class Youtube(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    if re.match(Youtube.ON_REGEX, msg) and splitnick(user) in Config.MODS:
+    if re.match(Youtube.ON_REGEX, msg) and is_mod(splitnick(user)):
       return self.on()
 
-    if re.match(Youtube.OFF_REGEX, msg) and splitnick(user) in Config.MODS:
+    if re.match(Youtube.OFF_REGEX, msg) and is_mod(splitnick(user)):
       return self.off()
 
-    if re.match(Youtube.WIPE_REGEX, msg) and splitnick(user) in Config.MODS:
+    if re.match(Youtube.WIPE_REGEX, msg) and is_mod(splitnick(user)):
       return self.wipe()
 
     m = re.search(Youtube.REGEX, msg)
-    if not m:
-      return
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
     self.show(url, channel)
@@ -133,7 +133,7 @@ class Youtube(object):
   def off(self):
     self._enabled = False
     #also wipe all Youtubes
-    self.Youtube_wipe()
+    self.wipe()
     log.msg('Youtube_off')
 
   def wipe(self):

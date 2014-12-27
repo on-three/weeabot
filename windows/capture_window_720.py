@@ -39,7 +39,7 @@ def main():
   #parser = argparse.ArgumentParser(description='Exercise bing translation api.')
   #parser.add_argument('text', help='Input text to translate.', type=str)
   #args = parser.parse_args()
-  set_registry(20,500, 1280, 720)
+  set_registry(120,600, 1280, 720)
 
 if __name__ == "__main__":
   main()

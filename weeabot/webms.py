@@ -16,11 +16,14 @@ import subprocess
 import signal
 from twisted.python import log
 
-DEFAULT_VIDEO_WIDTH = 424
-DEFAULT_VIDEO_HEIGHT = 240
+from screen import Screen
+
+DEFAULT_VIDEO_WIDTH = Screen.WIDTH/2
+DEFAULT_VIDEO_HEIGHT = Screen.HEIGHT/2
 
 #allow "mod" like control
-from config import Config
+from config import is_whitelisted
+from config import is_mod
 from irc import splitnick
 
 class ScreenPos(object):
@@ -45,11 +48,11 @@ class ScreenPos(object):
   
 class Video(object):
   POSITIONS = [
-    ScreenPos(400, 100, h=340),
-    ScreenPos(848, 100, h=340),
-    ScreenPos(400, 320),
-    ScreenPos(848, 320),
-    ScreenPos(620, 155, h=340),
+    ScreenPos(Screen.LEFT, Screen.TOP, h=Screen.HEIGHT*2/3),
+    ScreenPos(Screen.LEFT+DEFAULT_VIDEO_WIDTH, Screen.TOP, h=Screen.HEIGHT*2/3),
+    ScreenPos(Screen.LEFT, Screen.TOP+DEFAULT_VIDEO_HEIGHT),
+    ScreenPos(Screen.LEFT+DEFAULT_VIDEO_WIDTH, Screen.TOP+DEFAULT_VIDEO_HEIGHT),
+    ScreenPos(Screen.LEFT+Screen.WIDTH/3, Screen.TOP+Screen.HEIGHT/3, h=Screen.HEIGHT*2/3),
   ]
   def __init__(self):
     pass
@@ -84,7 +87,7 @@ class Webms(object):
   WIPE_REGEX = ur'^\.wipe'
   VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
-  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --ontop --no-border -autofit-larger={width}x{height} --geometry {x}:{y} {url}'
+  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --ontop --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
   def __init__(self, parent):
     '''
     constructor
@@ -110,13 +113,13 @@ class Webms(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    if re.match(Webms.ON_REGEX, msg) and splitnick(user) in Config.MODS:
+    if re.match(Webms.ON_REGEX, msg) and is_mod(splitnick(user)):
       return self.webms_on()
 
-    if re.match(Webms.OFF_REGEX, msg) and splitnick(user) in Config.MODS:
+    if re.match(Webms.OFF_REGEX, msg) and is_mod(splitnick(user)):
       return self.webms_off()
 
-    if re.match(Webms.WIPE_REGEX, msg) and splitnick(user) in Config.MODS:
+    if re.match(Webms.WIPE_REGEX, msg) and is_mod(splitnick(user)):
       return self.webms_wipe()
 
     m = re.search(Webms.REGEX, msg)
