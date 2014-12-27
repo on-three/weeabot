@@ -33,8 +33,7 @@ from twisted.python import log
 from twisted.python.logfile import DailyLogFile
 from twisted.words.protocols import irc as twisted_irc
 
-from config import Config
-
+from config import is_whitelisted
 
 #for now directly import plugins
 from jisho import Jisho
@@ -51,6 +50,8 @@ from webms import Webms
 from youtube import Youtube
 from config import Config
 #from textoverlay import TextOverlay
+
+from irc import splitnick
 
 DEFAULT_PORT = 6660
 LOG_FILENAME = '{botname}.weeabot.log'.format(botname=Config.BOTNAME)
@@ -161,6 +162,12 @@ class WeeaBot(twisted_irc.IRCClient):
     '''
     Generic handler for all msgs in channel.
     '''
+    if not is_whitelisted(splitnick(user)):
+      return
+    
+    if splitnick(user)=='on_three' and msg=='join':
+      self.join(Config.CHANNEL.encode('utf-8'))
+    
     #msg = re.sub(' +',' ',msg)
     if re.match(WeeaBot.COMMAND_REGEX, msg):
       plugins = self.list_loaded_plugins()
