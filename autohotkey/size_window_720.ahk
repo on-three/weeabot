@@ -18,10 +18,10 @@ Loop, %MonitorCount%
 }
 */
 ;setformat,float, 0.2
-x:=(480.0*0.66)
-y:=(2.0*0.66)
-w:=(1290.0*0.66)
-h:=(766*0.66)
+x:=(462.0)
+y:=(85.0)
+w:=(1280.0)
+h:=(602)
 CoordMode, Mouse, Screen
 WinMove,SlingPlayer,,x,y,w,h 
 

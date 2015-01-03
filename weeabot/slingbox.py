@@ -19,7 +19,7 @@ from twisted.python import log
 import os
 
 #whitelist
-from config import Config
+from config import is_mod
 from irc import splitnick
 
 #plugin Hikari TV service
@@ -508,7 +508,7 @@ class Slingbox(object):
     command = m.groupdict()['command']
     
     #whitelist powerful commands
-    if command in RESTRICTED_COMMANDS and splitnick(user) not in Config.MODS:
+    if command in RESTRICTED_COMMANDS and not is_mod(splitnick(user)):
       return
     
     data= None
