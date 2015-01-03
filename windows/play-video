@@ -1,0 +1,11 @@
+#!/bin/bash
+
+VIDEO_FILENAME=$1
+MPV=/home/onthree/mpv/mpv.exe
+
+X=600
+Y=120
+H=720
+W=1280
+
+$MPV --ontop --no-border -autofit=${W}x${H} --geometry ${X}:${Y} "${VIDEO_FILENAME}"
