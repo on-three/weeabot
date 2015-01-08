@@ -15,64 +15,51 @@ import os
 import subprocess
 import signal
 from twisted.python import log
-
-from screen import Screen
-DEFAULT_VIDEO_WIDTH = Screen.WIDTH
-DEFAULT_VIDEO_HEIGHT = Screen.HEIGHT
+from twisted.internet.task import LoopingCall
 
 #allow "mod" like control
 from config import is_mod
 from irc import splitnick
 
-class ScreenPos(object):
-  def __init__(self, x, y, w=DEFAULT_VIDEO_WIDTH, h=DEFAULT_VIDEO_HEIGHT):
-    self.x = x
-    self.y = y
-    self.w = w
-    self.h = h
-    self._subprocess = None
-    
-  def is_busy(self):
-    if self._subprocess:
-      #"Video at pos exists
-      if self._subprocess.poll() is not None:
-        self._subprocess = None
-        #video at position is complete.
-        return False
-      else:
-        #video at position not done yet.
-        return True
-    return False
-  
-class Video(object):
-  POSITIONS = [
-    ScreenPos(Screen.LEFT, Screen.TOP),
-  ]
-  def __init__(self):
-    pass
 
-  def next_pos(self):
-    '''Always look in order in available positions,
-    returning the one that is not occupied.
-    '''
-    for pos in Video.POSITIONS:
-      if not pos.is_busy():
-        return pos
-    return None
+def play_video():
+  #is there a video playing?
+  if Video.SUBPROCESS and Video.SUBPROCESS.poll() is None:
+    #video still playing. don't initiate a new one
+    return
   
-  def play(self, url):
-    pos = self.next_pos()
-    if not pos:
-      #simply bail and play nothing if no available spots to play
-      return
-    
+  if len(Video.QUEUE) > 0:
+    url=Video.QUEUE.pop()
     #call = Youtube.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     #call = Youtube.SMPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     call = Youtube.MPSYT_COMMAND.format(url=url);
     log.msg(call.encode('utf-8'))
-    pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+    Video.SUBPROCESS = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+  else:
+    Video.SUBPROCESS = None
+  
+class Video(object):
+  QUEUE = []
+  STARTER = None
+  SUBPROCESS = None
+  
+  def __init__(self):
+    Video.STARTER = LoopingCall(play_video)
+    Video.STARTER.start(1.0);
+  
+  def play(self, url):
+    Video.QUEUE.append(url)
+    
+  def next(self):
+    os.killpg(Video.SUBPROCESS.pid, signal.SIGTERM)
+    Video.SUBPROCESS = None
+  
+  def wipe(self):
+    del Video.QUEUE[:]
+    os.killpg(Video.SUBPROCESS.pid, signal.SIGTERM)
+    Video.SUBPROCESS = None
 
 class Youtube(object):
   '''
@@ -80,19 +67,20 @@ class Youtube(object):
   '''
   #REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
   REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+)'
-  ON_REGEX = ur'^\.youtube on'
-  OFF_REGEX = ur'^\.youtube off'
-  WIPE_REGEX = ur'^\.youtube wipe'
+  ON_REGEX = ur'^\.(?:youtube on|y on)'
+  OFF_REGEX = ur'^\.(?:youtube off|y off)'
+  WIPE_REGEX = ur'^\.(?:youtube wipe|y wipe)'
+  NEXT_REGEX = ur'^\.(?:youtube wipe|y next)'
   #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
   #SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
   MPSYT_COMMAND = u'/usr/bin/mpsyt playurl {url}';
+  
   def __init__(self, parent):
     '''
     constructor
     '''
     self._parent = parent
-    
     self._enabled = True
     self._video = Video()
 
@@ -102,7 +90,8 @@ class Youtube(object):
     Is the rx'd irc message of interest to this plugin?
     '''
     if re.search(Youtube.REGEX, msg) or re.match(Youtube.ON_REGEX, msg) or \
-      re.match(Youtube.OFF_REGEX, msg) or re.match(Youtube.WIPE_REGEX, msg):
+      re.match(Youtube.OFF_REGEX, msg) or re.match(Youtube.WIPE_REGEX, msg) or\
+      re.match(Youtube.NEXT_REGEX, msg):
       return True
     else:
       return False
@@ -118,8 +107,11 @@ class Youtube(object):
     if re.match(Youtube.OFF_REGEX, msg) and is_mod(splitnick(user)):
       return self.off()
 
-    if re.match(Youtube.WIPE_REGEX, msg) and is_mod(splitnick(user)):
+    if re.match(Youtube.WIPE_REGEX, msg):
       return self.wipe()
+      
+    if re.match(Youtube.NEXT_REGEX, msg):
+      return self.next()
 
     m = re.search(Youtube.REGEX, msg)
     #got a command along with the .c or .channel statement
@@ -137,13 +129,10 @@ class Youtube(object):
     log.msg('Youtube_off')
 
   def wipe(self):
-    log.msg('wipe_Youtube')
-    for v in Video.POSITIONS:
-      if v._subprocess:
-        if v._subprocess.poll() is None:
-          os.killpg(v._subprocess.pid, signal.SIGTERM)
-        else:
-          v._subprocess = None
+    self._video.wipe()
+    
+  def next(self):
+    self._video.next()
 
   def show(self, url, channel):
     '''
