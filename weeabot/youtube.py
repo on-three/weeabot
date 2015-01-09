@@ -29,7 +29,7 @@ def play_video():
     return
   
   if len(Video.QUEUE) > 0:
-    url=Video.QUEUE.pop()
+    url=Video.QUEUE.pop(0)
     #call = Youtube.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
