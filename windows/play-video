@@ -8,4 +8,4 @@ Y=120
 H=720
 W=1280
 
-$MPV --ontop --no-border -autofit=${W}x${H} --geometry ${X}:${Y} "${VIDEO_FILENAME}"
+$MPV --ontop --no-border -geometry ${W}x${H}+${X}+${Y} "${VIDEO_FILENAME}"
