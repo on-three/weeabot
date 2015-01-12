@@ -53,12 +53,14 @@ class Video(object):
     Video.QUEUE.append(url)
     
   def next(self):
-    os.killpg(Video.SUBPROCESS.pid, signal.SIGTERM)
+    if Video.SUBPROCESS:
+      os.killpg(Video.SUBPROCESS.pid, signal.SIGTERM)
     Video.SUBPROCESS = None
   
   def wipe(self):
     del Video.QUEUE[:]
-    os.killpg(Video.SUBPROCESS.pid, signal.SIGTERM)
+    if Video.SUBPROCESS:
+      os.killpg(Video.SUBPROCESS.pid, signal.SIGTERM)
     Video.SUBPROCESS = None
 
 class Youtube(object):
