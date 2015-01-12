@@ -162,8 +162,8 @@ class WeeaBot(twisted_irc.IRCClient):
     '''
     Generic handler for all msgs in channel.
     '''
-    if not is_whitelisted(splitnick(user)):
-      return
+    #if not is_whitelisted(splitnick(user)):
+    #  return
     
     if splitnick(user)=='on_three' and msg=='join':
       self.join(Config.CHANNEL.encode('utf-8'))
