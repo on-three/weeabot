@@ -49,6 +49,7 @@ from info import Info
 from webms import Webms
 from youtube import Youtube
 from config import Config
+from livestream import Livestreamer
 #from textoverlay import TextOverlay
 
 from irc import splitnick
@@ -108,6 +109,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Info(self))
     WeeaBot.plugins.append(Webms(self))
     WeeaBot.plugins.append(Youtube(self))
+    WeeaBot.plugins.append(Livestreamer(self))
     #WeeaBot.plugins.append(TextOverlay(self))
 
   def connectionLost(self, reason):
