@@ -15,6 +15,7 @@ import os
 import subprocess
 import signal
 from twisted.python import log
+#import psutil
 
 LIVESTREAMER = u'"/cygdrive/c/Program Files (x86)/Livestreamer/livestreamer.exe"'
 
@@ -53,7 +54,7 @@ class Livestreamer(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
-    if re.match(Livestreamer.WIPE_REGEX, msg)and is_mod(splitnick(user)):
+    if re.match(Livestreamer.WIPE_REGEX, msg):
       return self.wipe()
 
     m = re.search(Livestreamer.REGEX, msg)
@@ -63,6 +64,7 @@ class Livestreamer(object):
 
   def play(self, url, channel):
     if Livestreamer.SUBPROCESS and Livestreamer.SUBPROCESS.poll() is None:
+      log.msg('Cannot start new livestream. One already playing with pid ' + str(Livestreamer.SUBPROCESS.pid))
       return
     call = Livestreamer.COMMAND.format(url=url)
     log.msg(call.encode('utf-8'))
@@ -70,7 +72,23 @@ class Livestreamer(object):
     
   def wipe(self):
     if Livestreamer.SUBPROCESS:
+      #kill_child_processes(Livestreamer.SUBPROCESS.pid)
+      log.msg('killing livestreamer process at ' + str(Livestreamer.SUBPROCESS.pid))
       os.killpg(Livestreamer.SUBPROCESS.pid, signal.SIGTERM)
+      os.system('taskkill /f /im mpv.exe')
     Livestreamer.SUBPROCESS = None
 
+def kill_child_processes(parent_pid):
+  subprocess.Popen("TASKKILL /F /T /PID {pid}".format(pid=parent_pid), shell=True)
+    
+'''    
+def kill_child_processes(parent_pid, sig=signal.SIGTERM):
+  try:
+    p = psutil.Process(parent_pid)
+  except psutil.error.NoSuchProcess:
+    return
+  child_pid = p.get_children(recursive=True)
+  for pid in child_pid:
+    os.kill(pid.pid, sig)     
+'''
 
