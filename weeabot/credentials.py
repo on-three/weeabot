@@ -37,5 +37,13 @@ class Stream(object):
 		return unicode(self).encode('utf-8')
 
 STREAM_INFO = {
-	Stream(u'xxxxx', u'480p 25fps (h264/mpga)ts', u'http://xxxxx.com:8080/stream.ts')
+	Stream(u'xxxxx', u'480p 25fps (h264/mpga)ts', u'http://xxxxx.xxx:xxx/xxx.ts')
 }
+
+class WeeabotDotCom(object):
+  '''web+database support
+  '''
+  HOSTNAME = u'http://www.xxx.com/'
+  USERNAME = u'xxx'
+  PASSWORD = u'xxx'
+ 

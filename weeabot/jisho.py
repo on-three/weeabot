@@ -15,15 +15,8 @@ import re
 from denshi_jisho import scrape_japanese_definitions
 from twisted.python import log
 
-#Removing django backend
-'''
-try:  
-  os.environ.setdefault("DJANGO_SETTINGS_MODULE", "weeabot.webserver.settings")
-  from .models import Definition                  
-except ImportError:
-  print 'Could not import django settings file to access database.'
-  sys.exit(-1)
-'''
+#log dictionary lookups in REST database
+import web
 
 class Jisho(object):
   '''
@@ -115,12 +108,10 @@ class Jisho(object):
       self._parent.say(channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
       return
     for result in results:
-      #removing django database backend.
-      #db_entry = Definition(channel=channel, nick=user, url=url, text=result, word=jword)
-      #db_entry.save()
       response = '{result}'.format(result=result.encode('utf-8'))
+      #Add lookup to our database
+      web.Jisho.add_lookup(channel=channel, nick=user, url=url, text=response, word=jword)
       log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
-      #print '{channel}:{user} {jword}-->{msg}:{url}'.format(channel=channel, jword=jword, msg=response, user=user, url=url)
       self._parent.say(channel, response)
 
   def on_jisho_error(self, error):
