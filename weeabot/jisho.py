@@ -108,9 +108,17 @@ class Jisho(object):
       self._parent.say(channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
       return
     for result in results:
-      response = '{result}'.format(result=result.encode('utf-8'))
+      response = result.IRC() #'{result}'.format(result=result.encode('utf-8'))
       #Add lookup to our database
-      web.Jisho.add_lookup(channel=channel, nick=user, url=url, text=response, word=jword)
+      #add_lookup(channel, nick, url, text, word, kanji, kana, romaji
+      web.Jisho.add_lookup(channel=channel,
+        nick=user,
+        url=url,
+        text=result.engrish,
+        kana=result.kana,
+        kanji=result.kanji,
+        romaji=result.romaji,
+        word=jword)
       log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
       self._parent.say(channel, response)
 

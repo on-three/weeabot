@@ -19,7 +19,7 @@ class Jisho(object):
   '''Send a definition via JSON to our web interface
   '''
   @staticmethod
-  def add_lookup(channel, nick, url, text, word):
+  def add_lookup(channel, nick, url, text, word, kanji, kana, romaji):
     rest_api = WeeabotDotCom.HOSTNAME + 'jisho/api/'
     user = WeeabotDotCom.USERNAME
     password = WeeabotDotCom.PASSWORD
@@ -27,6 +27,9 @@ class Jisho(object):
       'channel': channel,
       'nick': nick,
       'url': url,
+      'kanji':kanji,
+      'kana':kana,
+      'romaji':romaji,
       'text': text,
       'word': word,
     }
