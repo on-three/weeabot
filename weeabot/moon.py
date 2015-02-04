@@ -103,7 +103,8 @@ class Moon(object):
       self._parent.say(channel, u'\x032No results found at jisho.org using edict...'.encode('utf-8'))
       return
     for result in results:
-      response = '\x035{result}'.format(result=result.encode('utf-8'))
+      response = result.IRC()
+      #response = '\x035{result}'.format(result=result.encode('utf-8'))
       log.msg('{channel}-->{msg}'.format(channel=channel, msg=response))
       self._parent.say(channel, response)
 

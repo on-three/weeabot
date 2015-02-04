@@ -55,13 +55,15 @@ class Lookup(object):
     return result.encode('utf-8')
   
   def IRC(self):
-    result = u'{white}{kanji}{white}{kana}{white}{romaji}{white}{engrish}'.format( \
-      white= foreground(u'black') + background(u'white'), \
-      black=style(u'normal'), \
-      kanji= self._kanji, \
-      kana= self._kana, \
-      romaji= self._romaji, \
-      engrish= self._engrish )
+    result = u''
+    if self._kanji:
+      result= result + foreground(u'black') + background(u'white') + u' ' + self._kanji + u' ' + style(u'normal') + u' '
+    if self._kana:
+      result= result + foreground(u'black') + background(u'white') + u' ' + self._kana + u' ' + style(u'normal') + u' '
+    if self._romaji:
+      result= result + foreground(u'black') + background(u'white') + u' ' + self._romaji + u' ' + style(u'normal') + u' '
+    if self._engrish:
+      result= result + foreground(u'black') + background(u'white') + u' ' + self._engrish + u' ' + style(u'normal') + u' '
     return result.encode('utf-8')
 
 def elipsize(string, max_length=128, elipsis='...'):
