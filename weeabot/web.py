@@ -39,3 +39,43 @@ class Jisho(object):
       auth=(user,password),
       data=json.dumps(payload),headers=headers)
     #TODO: Catch failure and handle
+    
+class Webms(object):
+  '''Send a definition via JSON to our web interface
+  '''
+  @staticmethod
+  def save_webm(channel, nick, url):
+    rest_api = WeeabotDotCom.HOSTNAME + 'webms/new/'
+    user = WeeabotDotCom.USERNAME
+    password = WeeabotDotCom.PASSWORD
+    payload = {
+      'channel': channel,
+      'nick': nick,
+      'url': url,
+    }
+    headers = {'content-type': 'application/json'}
+    #TODO: use twisted http client
+    r = requests.post(rest_api,
+      auth=(user,password),
+      data=json.dumps(payload),headers=headers)
+      #TODO: Catch failure and handle
+    
+class Youtubes(object):
+  '''Send a url via JSON to our web interface
+  '''
+  @staticmethod
+  def save_youtube(channel, nick, url):
+    rest_api = WeeabotDotCom.HOSTNAME + 'youtubes/api/'
+    user = WeeabotDotCom.USERNAME
+    password = WeeabotDotCom.PASSWORD
+    payload = {
+      'channel': channel,
+      'nick': nick,
+      'url': url,
+    }
+    headers = {'content-type': 'application/json'}
+    #TODO: use twisted http client
+    r = requests.post(rest_api,
+      auth=(user,password),
+      data=json.dumps(payload),headers=headers)
+    #TODO: Catch failure and handle

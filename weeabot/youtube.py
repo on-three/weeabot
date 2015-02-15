@@ -21,6 +21,9 @@ from twisted.internet.task import LoopingCall
 from config import is_mod
 from irc import splitnick
 
+#save data via REST to website
+from web import Youtubes as yt
+
 
 def play_video():
   #is there a video playing?
@@ -118,7 +121,7 @@ class Youtube(object):
     m = re.search(Youtube.REGEX, msg)
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
-    self.show(url, channel)
+    self.show(channel, user, url)
 
   def on(self):
     self._enabled = True
@@ -136,7 +139,7 @@ class Youtube(object):
   def next(self):
     self._video.next()
 
-  def show(self, url, channel):
+  def show(self, channel, nick, url):
     '''
     show video at given URL.
     '''
@@ -145,6 +148,7 @@ class Youtube(object):
     if not self._enabled:
       log.msg('Not showing webm as they are turned off.')
       return
+    yt.save_youtube(channel, nick, url)
     self._video.play(url)
 
 

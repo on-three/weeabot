@@ -26,6 +26,9 @@ from config import is_whitelisted
 from config import is_mod
 from irc import splitnick
 
+#save webms etc to remote database
+from web import Webms as WebInterface
+
 class ScreenPos(object):
   def __init__(self, x, y, w=DEFAULT_VIDEO_WIDTH, h=DEFAULT_VIDEO_HEIGHT):
     self.x = x
@@ -114,19 +117,19 @@ class Webms(object):
     Handle message and return nothing
     '''
     if re.match(Webms.ON_REGEX, msg) and is_mod(splitnick(user)):
-      return self.webms_on()
-
-    if re.match(Webms.OFF_REGEX, msg) and is_mod(splitnick(user)):
-      return self.webms_off()
-
-    if re.match(Webms.WIPE_REGEX, msg) and is_mod(splitnick(user)):
-      return self.webms_wipe()
-
+      self.webms_on()
+    elif re.match(Webms.OFF_REGEX, msg) and is_mod(splitnick(user)):
+      self.webms_off()
+    elif re.match(Webms.WIPE_REGEX, msg) and is_mod(splitnick(user)):
+      self.webms_wipe()
+    
     m = re.search(Webms.REGEX, msg)
     if not m:
       return
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
+    #send to remote host for possible saving
+    WebInterface.save_webm(channel, user, url)
     self.show_webm(url, channel)
 
   def webms_on(self):
