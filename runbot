@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-IRC_SERVER="irc.rizon.us:6660"
+IRC_SERVER="irc.rizon.io:6660"
 ARGS="-v"
 RUN_BOT="./weeabot/weeabot.py ${IRC_SERVER} ${ARGS}"
 

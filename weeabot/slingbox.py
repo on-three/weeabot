@@ -370,7 +370,7 @@ COMMAND_TABLE = {
 }
 
 RESTRICTED_COMMANDS = [
-  u'mute',
+  #u'mute',
   u'reset',
   u'connect',
   u'position',
