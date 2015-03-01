@@ -48,6 +48,14 @@ class ScreenPos(object):
         #video at position not done yet.
         return True
     return False
+    
+  def wipe(self):
+    if self._subprocess:
+      if self._subprocess.poll() is None:
+        os.killpg(self._subprocess.pid, signal.SIGTERM)
+      self._subprocess = None
+
+      
   
 class Video(object):
   POSITIONS = [
@@ -55,8 +63,10 @@ class Video(object):
     ScreenPos(Screen.LEFT+DEFAULT_VIDEO_WIDTH, Screen.TOP, h=Screen.HEIGHT*2/3),
     ScreenPos(Screen.LEFT, Screen.TOP+DEFAULT_VIDEO_HEIGHT),
     ScreenPos(Screen.LEFT+DEFAULT_VIDEO_WIDTH, Screen.TOP+DEFAULT_VIDEO_HEIGHT),
-    ScreenPos(Screen.LEFT+Screen.WIDTH/3, Screen.TOP+Screen.HEIGHT/3, h=Screen.HEIGHT*2/3),
+    ScreenPos(Screen.LEFT+Screen.WIDTH/4, Screen.TOP+Screen.HEIGHT/4, h=Screen.HEIGHT*2/3),
   ]
+  FULLSCREEN_POS = ScreenPos(Screen.LEFT, Screen.TOP, w=Screen.WIDTH, h=Screen.HEIGHT)
+  
   def __init__(self):
     pass
 
@@ -79,12 +89,23 @@ class Video(object):
     call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     log.msg(call.encode('utf-8'))
     pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+    
+  def play_fullscreen(self, url):
+    pos = Video.FULLSCREEN_POS
+    if pos.is_busy():
+      return
+    
+    #call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
+    call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
+    log.msg(call.encode('utf-8'))
+    pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
 
 class Webms(object):
   '''
   show a webm via simple system call
   '''
-  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
+  #REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
+  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))( +(?P<full>(?:full|f|fullscreen)))?'
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
@@ -130,7 +151,13 @@ class Webms(object):
     url = m.groupdict()['url']
     #send to remote host for possible saving
     WebInterface.save_webm(channel, user, url)
-    self.show_webm(url, channel)
+    
+    #did we get a 'full' 'f' or 'fullscreen' tag as well?
+    log.msg('URL IS: ' + msg)
+    if m.groupdict()['full']:
+      self.show_webm_fullscreen(url, channel)
+    else:
+      self.show_webm(url, channel)
 
   def webms_on(self):
     self._enabled = True
@@ -145,11 +172,8 @@ class Webms(object):
   def webms_wipe(self):
     log.msg('wipe_webms')
     for v in Video.POSITIONS:
-      if v._subprocess:
-        if v._subprocess.poll() is None:
-          os.killpg(v._subprocess.pid, signal.SIGTERM)
-        else:
-          v._subprocess = None
+      v.wipe()
+    Video.FULLSCREEN_POS.wipe()
 
   def show_webm(self, url, channel):
     '''
@@ -161,5 +185,16 @@ class Webms(object):
       log.msg('Not showing webm as they are turned off.')
       return
     self._video.play(url)
+ 
+  def show_webm_fullscreen(self, url, channel):
+    '''
+    show webm at given URL FULLSCREEN
+    '''
+    #hack to show https as http
+    url = url.replace(u'https://', u'http://')
+    if not self._enabled:
+      log.msg('Not showing webm as they are turned off.')
+      return
+    self._video.play_fullscreen(url)
 
 
