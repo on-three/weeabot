@@ -24,6 +24,13 @@ from irc import splitnick
 #save data via REST to website
 from web import Youtubes as yt
 
+#try to interact with sling to mute it when playing
+from slingbox import mute_sling
+
+class Url(object):
+  def __init__(self, url, mute):
+    self._url = url
+    self._mute = mute
 
 def play_video():
   #is there a video playing?
@@ -37,10 +44,18 @@ def play_video():
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     #call = Youtube.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     #call = Youtube.SMPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
-    call = Youtube.MPSYT_COMMAND.format(url=url);
+    call = Youtube.MPSYT_COMMAND.format(url=url._url);
     log.msg(call.encode('utf-8'))
+    #also turn on mute if specified and needed
+    if url._mute and not Youtube.SLING_MUTE_STATE:
+      Youtube.SLING_MUTE_STATE = True
+      mute_sling()
     Video.SUBPROCESS = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
   else:
+    #try to unmute sling if it needs it
+    if Youtube.SLING_MUTE_STATE:
+      Youtube.SLING_MUTE_STATE = False
+      mute_sling()
     Video.SUBPROCESS = None
   
 class Video(object):
@@ -52,8 +67,8 @@ class Video(object):
     Video.STARTER = LoopingCall(play_video)
     Video.STARTER.start(1.0);
   
-  def play(self, url):
-    Video.QUEUE.append(url)
+  def play(self, url, mute=False):
+    Video.QUEUE.append(Url(url, mute))
     
   def next(self):
     if Video.SUBPROCESS:
@@ -65,13 +80,17 @@ class Video(object):
     if Video.SUBPROCESS:
       os.killpg(Video.SUBPROCESS.pid, signal.SIGTERM)
     Video.SUBPROCESS = None
+    #try to unmute if it needs it
+    if Youtube.SLING_MUTE_STATE:
+      Youtube.SLING_MUTE_STATE = False
+      mute_sling()
 
 class Youtube(object):
   '''
   show a webm via simple system call
   '''
-  #REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
-  REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+)'
+  #REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+)'
+  REGEX = ur'^\.(?:youtube|y) +(?P<url>http[s]?://[\S]+)( +(?P<mute>(?:mute|m)))?'
   ON_REGEX = ur'^\.(?:youtube on|y on)'
   OFF_REGEX = ur'^\.(?:youtube off|y off)'
   WIPE_REGEX = ur'^\.(?:youtube wipe|y wipe)'
@@ -80,6 +99,10 @@ class Youtube(object):
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
   #SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
   MPSYT_COMMAND = u'/usr/bin/mpsyt playurl {url}';
+  
+  #Try to keep track whether we should mute/unmute the sling
+  #Better to keep track here as it's bound to be fucked anyway
+  SLING_MUTE_STATE = False
   
   def __init__(self, parent):
     '''
@@ -121,7 +144,10 @@ class Youtube(object):
     m = re.search(Youtube.REGEX, msg)
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
-    self.show(channel, user, url)
+    mute = False
+    if m.groupdict()['mute']:
+      mute = True
+    self.show(channel, user, url, mute)
 
   def on(self):
     self._enabled = True
@@ -139,7 +165,7 @@ class Youtube(object):
   def next(self):
     self._video.next()
 
-  def show(self, channel, nick, url):
+  def show(self, channel, nick, url, mute):
     '''
     show video at given URL.
     '''
@@ -149,6 +175,6 @@ class Youtube(object):
       log.msg('Not showing webm as they are turned off.')
       return
     yt.save_youtube(channel, nick, url)
-    self._video.play(url)
+    self._video.play(url, mute)
 
 
