@@ -21,15 +21,17 @@ from twisted.python import log
 
 #for the text overlay
 import pyjsonrpc
-from txjsonrpc.web.jsonrpc import Proxy
-import fastjsonrpc
-from fastjsonrpc.client import Proxy
+#from txjsonrpc.web.jsonrpc import Proxy
+#import fastjsonrpc
+#from fastjsonrpc.client import Proxy
 #from fastjsonrpc import StringProducer
 from config import Config
 import uuid
-from txjsonrpc.jsonrpclib import VERSION_2
+#from txjsonrpc.jsonrpclib import VERSION_2
 
 from irc import splitnick
+
+TRIGGER = u':'
 
 
 class TextOverlay(object):
@@ -37,12 +39,12 @@ class TextOverlay(object):
   Send messages to text overlay via HTTP/JSON
   '''
 
-  COMMAND_REGEX = ur'^(?P<command>{trigger})(?P<text>.+)'.format(trigger=Config.TRIGGER)
-  SUBTITLE_REGEX = ur'^(?P<command>{trigger}sub )(?P<text>.+)'.format(trigger=Config.TRIGGER)
-  SCROLLING_MSG_REGEX = ur'^(?P<command>{trigger}scroll )(?P<text>.+)'.format(trigger=Config.TRIGGER)
-  CLEAR_REGEX = ur'^(?P<command>{trigger}(?:clear|wipe))$'.format(trigger=Config.TRIGGER)
-  ON_REGEX = ur'^(?P<command>{trigger}on)$'.format(trigger=Config.TRIGGER)
-  OFF_REGEX = ur'^(?P<command>{trigger}off)$'.format(trigger=Config.TRIGGER)
+  COMMAND_REGEX = ur'^(?P<command>{trigger})(?P<text>.+)'.format(trigger=TRIGGER)
+  SUBTITLE_REGEX = ur'^(?P<command>{trigger}sub )(?P<text>.+)'.format(trigger=TRIGGER)
+  SCROLLING_MSG_REGEX = ur'^(?P<command>{trigger}scroll )(?P<text>.+)'.format(trigger=TRIGGER)
+  CLEAR_REGEX = ur'^(?P<command>{trigger}(?:clear|wipe))$'.format(trigger=TRIGGER)
+  ON_REGEX = ur'^(?P<command>{trigger}on)$'.format(trigger=TRIGGER)
+  OFF_REGEX = ur'^(?P<command>{trigger}off)$'.format(trigger=TRIGGER)
 
   def __init__(self, parent):
     '''
