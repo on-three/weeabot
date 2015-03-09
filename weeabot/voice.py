@@ -16,6 +16,7 @@ import re
 from twisted.python import log
 
 import subprocess
+import signal
 from irc import splitnick
 
 TRIGGER = u'.'
@@ -29,6 +30,9 @@ class Voice(object):
   VOICE_REGEX = ur'^(?P<command>{trigger}v )(?P<text>.+)'.format(trigger=TRIGGER)
   ON_REGEX = ur'^(?P<command>{trigger}v on)$'.format(trigger=TRIGGER)
   OFF_REGEX = ur'^(?P<command>{trigger}v off)$'.format(trigger=TRIGGER)
+  WIPE_REGEX = ur'^(?P<command>{trigger}v wipe)$'.format(trigger=TRIGGER)
+  
+  PROCS = []
 
   def __init__(self, parent):
     '''
@@ -63,6 +67,11 @@ class Voice(object):
     pass
 
   def process_messages(self, user, channel, msg):
+    #wipe?
+    m = re.match(Voice.WIPE_REGEX, msg, re.UNICODE)
+    if m:
+      return self.wipe()
+  
     #turn voice on
     m = re.match(Voice.ON_REGEX, msg, re.UNICODE)
     if m:
@@ -77,7 +86,13 @@ class Voice(object):
     if m and self._on:
       text = m.groupdict()['text']
       return self.say_text(text, channel, user)
- 
+      
+  def wipe(self):
+    for s in self.PROCS:
+      if s.poll() is None:
+        os.killpg(s.pid, signal.SIGTERM)
+    self.PROCS = []
+    
   def turn_on(self, channel, user):
     if splitnick(user) in Config.MODS:
       self._on = True
@@ -98,6 +113,7 @@ class Voice(object):
     log.msg('Voice: {channel} : {msg}'.format(channel=channel, msg=msg.encode('utf-8')))
     call = '{exe} "{text}"'.format(exe=SWIFT, text=text)
     proc = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+    self.PROCS.append(proc)
 
   @staticmethod
   def filter_messages(text):
