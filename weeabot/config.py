@@ -16,8 +16,10 @@ class Config(object):
 	'''
 	TRIGGER = u':'
 	#currently limiting the bot to one channel
-	CHANNEL = u'#/jp/shows'
+	CHANNEL = u''
 	BOTNAME = u'weeabot'
+  WORKING_DIR = u'c:/Users/onthree/code/weeabot/'
+	AUTOHOTKEY = u'"c:/Program Files (x86)/AutoHotkey/AutoHotkey.exe"'
 	WHITELIST = [
     'on3',
 	]

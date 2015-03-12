@@ -20,6 +20,7 @@ import os
 
 #whitelist
 from config import is_mod
+from config import Config
 from irc import splitnick
 
 #plugin Hikari TV service
@@ -36,12 +37,11 @@ TUNER_LIST = [
   CABLE_CMD,
 ]
 
-autohotkey = u'/cygdrive/c/Program\ Files\ \(x86\)/AutoHotkey/AutoHotkey.exe'
-command_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/command.ahk'
-push_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/press.ahk'
-resize_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/size_window_480.ahk'
-ok_script = u'C\:/cygwin/home/onthree/code/weeabot/autohotkey/ok.ahk'
-
+autohotkey = Config.AUTOHOTKEY
+command_script = u'{dir}autohotkey/command.ahk'.format(dir=Config.WORKING_DIR)
+push_script = u'{dir}autohotkey/press.ahk'.format(dir=Config.WORKING_DIR)
+resize_script = u'{dir}autohotkey/size_window_480.ahk'.format(dir=Config.WORKING_DIR)
+ok_script = u'{dir}/autohotkey/ok.ahk'.format(dir=Config.WORKING_DIR)
 
 def get_current_channel():
   '''module level access to static current channel data

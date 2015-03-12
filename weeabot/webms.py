@@ -12,11 +12,12 @@ DATE: Friday, Oct 10th 2014
 import string
 import re
 import os
-import subprocess
+import psutil
 import signal
 from twisted.python import log
 
 from screen import Screen
+from util import kill_proc_tree
 
 DEFAULT_VIDEO_WIDTH = Screen.WIDTH/2
 DEFAULT_VIDEO_HEIGHT = Screen.HEIGHT/2
@@ -51,8 +52,7 @@ class ScreenPos(object):
     
   def wipe(self):
     if self._subprocess:
-      if self._subprocess.poll() is None:
-        os.killpg(self._subprocess.pid, signal.SIGTERM)
+      kill_proc_tree(self._subprocess.pid)
       self._subprocess = None
 
       
@@ -88,7 +88,7 @@ class Video(object):
     #call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
     call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     log.msg(call.encode('utf-8'))
-    pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+    pos._subprocess = psutil.Popen(call, shell=True)
     
   def play_fullscreen(self, url):
     pos = Video.FULLSCREEN_POS
@@ -98,7 +98,7 @@ class Video(object):
     #call = Webms.MPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=p.w, url=url)
     call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     log.msg(call.encode('utf-8'))
-    pos._subprocess = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+    pos._subprocess = psutil.Popen(call, shell=True)
 
 class Webms(object):
   '''
@@ -109,9 +109,10 @@ class Webms(object):
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
-  VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
-  MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
-  MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --ontop --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
+  #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
+  #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
+  #MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --ontop --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
+  MPV_COMMAND = u'mpv.exe --ontop --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
   def __init__(self, parent):
     '''
     constructor
