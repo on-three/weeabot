@@ -110,7 +110,7 @@ class WeeaBot(twisted_irc.IRCClient):
     #WeeaBot.plugins.append(Info(self))
     WeeaBot.plugins.append(Webms(self))
     WeeaBot.plugins.append(Youtube(self))
-    #WeeaBot.plugins.append(Livestreamer(self))
+    WeeaBot.plugins.append(Livestreamer(self))
     #WeeaBot.plugins.append(TextOverlay(self))
     #WeeaBot.plugins.append(Voice(self))
 

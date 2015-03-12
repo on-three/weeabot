@@ -12,16 +12,17 @@ DATE: Friday, Jan 16th 2015
 import string
 import re
 import os
-import subprocess
+import psutil
 import signal
 from twisted.python import log
-#import psutil
 
-LIVESTREAMER = u'"/cygdrive/c/Program Files (x86)/Livestreamer/livestreamer.exe"'
+from config import Config
+LIVESTREAMER = Config.LIVESTREAMER
 
 #allow "mod" like control
 from config import is_mod
 from irc import splitnick
+from util import kill_proc_tree
 
 class Livestreamer(object):
   '''
@@ -68,27 +69,12 @@ class Livestreamer(object):
       return
     call = Livestreamer.COMMAND.format(url=url)
     log.msg(call.encode('utf-8'))
-    Livestreamer.SUBPROCESS = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+    Livestreamer.SUBPROCESS = psutil.Popen(call, shell=True)
     
   def wipe(self):
     if Livestreamer.SUBPROCESS:
-      #kill_child_processes(Livestreamer.SUBPROCESS.pid)
-      log.msg('killing livestreamer process at ' + str(Livestreamer.SUBPROCESS.pid))
-      os.killpg(Livestreamer.SUBPROCESS.pid, signal.SIGTERM)
-      os.system('taskkill /f /im mpv.exe')
-    Livestreamer.SUBPROCESS = None
+      kill_proc_tree(Livestreamer.SUBPROCESS.pid)
+      Livestreamer.SUBPROCESS = None
 
-def kill_child_processes(parent_pid):
-  subprocess.Popen("TASKKILL /F /T /PID {pid}".format(pid=parent_pid), shell=True)
     
-'''    
-def kill_child_processes(parent_pid, sig=signal.SIGTERM):
-  try:
-    p = psutil.Process(parent_pid)
-  except psutil.error.NoSuchProcess:
-    return
-  child_pid = p.get_children(recursive=True)
-  for pid in child_pid:
-    os.kill(pid.pid, sig)     
-'''
 
