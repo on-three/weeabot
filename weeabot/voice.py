@@ -15,13 +15,13 @@ import string
 import re
 from twisted.python import log
 
-import subprocess
-import signal
+import psutil
 from irc import splitnick
+from config import Config
+from util import kill_proc_tree
 
 TRIGGER = u'.'
-
-SWIFT = '"/cygdrive/c/Program Files (x86)/Cepstral/bin/swift.exe"'
+SWIFT = Config.SWIFT
 
 class Voice(object):
   '''
@@ -90,7 +90,7 @@ class Voice(object):
   def wipe(self):
     for s in self.PROCS:
       if s.poll() is None:
-        os.killpg(s.pid, signal.SIGTERM)
+        kill_proc_tree(s.pid)
     self.PROCS = []
     
   def turn_on(self, channel, user):
@@ -100,6 +100,7 @@ class Voice(object):
   def turn_off(self, channel, user):
     if splitnick(user) in Config.MODS:
       self._on = False
+      self.wipe()
 
   def say_text(self, text, channel, user):
     '''
@@ -111,8 +112,8 @@ class Voice(object):
     #first clean up and filter our messages
     msg = Voice.filter_messages(text)
     log.msg('Voice: {channel} : {msg}'.format(channel=channel, msg=msg.encode('utf-8')))
-    call = '{exe} "{text}"'.format(exe=SWIFT, text=text)
-    proc = subprocess.Popen(call, shell=True, preexec_fn=os.setsid)
+    call = u'{exe} "{text}"'.format(exe=SWIFT, text=text)
+    proc = psutil.Popen(call.encode('utf-8'), shell=True)
     self.PROCS.append(proc)
 
   @staticmethod

@@ -13,7 +13,6 @@ import string
 import re
 import os
 import psutil
-import signal
 from twisted.python import log
 
 from config import Config
