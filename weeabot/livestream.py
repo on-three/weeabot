@@ -17,19 +17,34 @@ from twisted.python import log
 
 from config import Config
 LIVESTREAMER = Config.LIVESTREAMER
+MPV = Config.MPV
+
+from screen import Screen
 
 #allow "mod" like control
 from config import is_mod
 from irc import splitnick
 from util import kill_proc_tree
 
+
+class Layout(object):
+  def __init__(self, w, h, l, t):
+    self.WIDTH = w
+    self.HEIGHT = h
+    self.LEFT = l
+    self.TOP = t
+
+#pip pos at 512x288+1350+540
+FULLSCREEN = Layout(Screen.WIDTH, Screen.HEIGHT, Screen.LEFT, Screen.TOP)
+PIP = Layout( int(Screen.WIDTH*0.4), int(Screen.HEIGHT*0.4), int(Screen.LEFT+Screen.WIDTH*0.57), int(Screen.TOP+Screen.HEIGHT*0.57))
+
 class Livestreamer(object):
   '''
   play livestream via livestreamer
   '''
   SUBPROCESS = None
-  COMMAND = LIVESTREAMER + u' {url} best'
-  REGEX = ur'^\.(?:stream|s) (?P<url>http[s]?://[\S]+)'
+  COMMAND = LIVESTREAMER + u' -p "{player} --ontop --no-border -geometry {width}x{height}+{left}+{top}" {url} best'
+  REGEX = ur'^\.(?:stream|s) (?P<url>http[s]?://[\S]+)( (?P<full>(?:full|f)))?'
   WIPE_REGEX = ur'^\.(?:stream wipe|s wipe)'
   
   def __init__(self, parent):
@@ -60,13 +75,20 @@ class Livestreamer(object):
     m = re.search(Livestreamer.REGEX, msg)
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
-    self.play(url, channel)
+    if m.groupdict()['full']:
+      self.play(url, channel, fullscreen=True)
+    else:
+      self.play(url, channel)
 
-  def play(self, url, channel):
+  def play(self, url, channel, fullscreen=False):
     if Livestreamer.SUBPROCESS and Livestreamer.SUBPROCESS.poll() is None:
       log.msg('Cannot start new livestream. One already playing with pid ' + str(Livestreamer.SUBPROCESS.pid))
       return
-    call = Livestreamer.COMMAND.format(url=url)
+    layout = PIP
+    if fullscreen:
+      layout = FULLSCREEN
+    call = Livestreamer.COMMAND.format(player=MPV, width=layout.WIDTH, height=layout.HEIGHT,
+      left=layout.LEFT, top=layout.TOP, url=url)
     log.msg(call.encode('utf-8'))
     Livestreamer.SUBPROCESS = psutil.Popen(call, shell=True)
     
