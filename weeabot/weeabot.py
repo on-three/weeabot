@@ -100,7 +100,7 @@ class WeeaBot(twisted_irc.IRCClient):
     twisted_irc.IRCClient.connectionMade(self)
     #WeeaBot.plugins.append(Jisho(self))
     #WeeaBot.plugins.append(Moon(self))
-    #WeeaBot.plugins.append(Jikan(self))
+    WeeaBot.plugins.append(Jikan(self))
     #WeeaBot.plugins.append(Katakanize(self))
     #self.youkoso = Youkoso(self)
     WeeaBot.plugins.append(Slingbox(self))

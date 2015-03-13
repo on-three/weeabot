@@ -53,9 +53,13 @@ class Jikan(object):
     say the time in current channel.
     '''
     now = datetime.now(timezone('Asia/Tokyo'))
-    locale.setlocale(locale.LC_ALL, 'ja_JP.utf8')
+    #locale.setlocale(locale.LC_ALL, 'ja_JP.utf8')
+    locale.setlocale(locale.LC_ALL, "Japanese_Japan.20932")# for EUC
+    #setlocale(LC_ALL, "Japanese_Japan.932") for SJIS
+    #locale.setlocale(locale.LC_ALL, 'Japanese_Japan.UTF8')
     fmt = u'現在の東京時間 \u0002%c\u0002 %a' #\u0002 is IRC BOLD
-    current_time = now.strftime(fmt.encode('utf-8'))
+    current_time = now.strftime(fmt.encode('euc-jp')).decode('euc-jp').encode('utf-8')
+    #current_time = fmt.encode('utf-8')
     log.msg('{channel}-->{msg}'.format(channel=channel, msg=current_time))
     self._parent.say(channel, current_time)
 
