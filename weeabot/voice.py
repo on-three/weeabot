@@ -19,6 +19,8 @@ import psutil
 from irc import splitnick
 from config import Config
 from util import kill_proc_tree
+from whitelist import is_mod
+from whitelist import is_whitelisted
 
 TRIGGER = u'.'
 SWIFT = Config.SWIFT
@@ -67,7 +69,10 @@ class Voice(object):
     pass
 
   def process_messages(self, user, channel, msg):
-    #wipe?
+    #allow us to limit use at odd times
+    if not is_whitelisted(splitnick(user)):
+      return
+    
     m = re.match(Voice.WIPE_REGEX, msg, re.UNICODE)
     if m:
       return self.wipe()
@@ -83,7 +88,7 @@ class Voice(object):
       return self.turn_off(channel, user)
       
     m = re.match(Voice.VOICE_REGEX, msg, re.UNICODE)
-    if m and self._on:
+    if m and self._on and is_whitelisted(splitnick(user)):
       text = m.groupdict()['text']
       return self.say_text(text, channel, user)
       
@@ -94,11 +99,11 @@ class Voice(object):
     self.PROCS = []
     
   def turn_on(self, channel, user):
-    if splitnick(user) in Config.MODS:
+    if is_mod(splitnick(user)):
       self._on = True
   
   def turn_off(self, channel, user):
-    if splitnick(user) in Config.MODS:
+    if is_mod(splitnick(user)):
       self._on = False
       self.wipe()
 

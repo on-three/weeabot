@@ -17,7 +17,8 @@ from twisted.python import log
 from twisted.internet.task import LoopingCall
 
 #allow "mod" like control
-from config import is_mod
+from whitelist import is_mod
+from whitelist import is_whitelisted
 from irc import splitnick
 from util import kill_proc_tree
 
@@ -131,16 +132,19 @@ class Youtube(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
+    if not is_whitelisted(splitnick(user)):
+      return
+    
     if re.match(Youtube.ON_REGEX, msg) and is_mod(splitnick(user)):
       return self.on()
 
     if re.match(Youtube.OFF_REGEX, msg) and is_mod(splitnick(user)):
       return self.off()
 
-    if re.match(Youtube.WIPE_REGEX, msg):
+    if re.match(Youtube.WIPE_REGEX, msg) and is_whitelisted(splitnick(user)):
       return self.wipe()
       
-    if re.match(Youtube.NEXT_REGEX, msg):
+    if re.match(Youtube.NEXT_REGEX, msg) and is_whitelisted(splitnick(user)):
       return self.next()
 
     m = re.search(Youtube.REGEX, msg)

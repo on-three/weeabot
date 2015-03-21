@@ -22,7 +22,8 @@ MPV = Config.MPV
 from screen import Screen
 
 #allow "mod" like control
-from config import is_mod
+from whitelist import is_mod
+from whitelist import is_whitelisted
 from irc import splitnick
 from util import kill_proc_tree
 
@@ -69,6 +70,9 @@ class Livestreamer(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
+    if not is_whitelisted(splitnick(user)):
+      return
+    
     if re.match(Livestreamer.WIPE_REGEX, msg):
       return self.wipe()
 

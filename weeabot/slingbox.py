@@ -19,7 +19,8 @@ from twisted.python import log
 import os
 
 #whitelist
-from config import is_mod
+from whitelist import is_mod
+from whitelist import is_whitelisted
 from config import Config
 from irc import splitnick
 
@@ -370,7 +371,7 @@ COMMAND_TABLE = {
 }
 
 RESTRICTED_COMMANDS = [
-  #u'mute',
+  u'mute',
   u'reset',
   u'connect',
   u'position',
@@ -500,6 +501,10 @@ class Slingbox(object):
     PLUGIN API REQUIRED
     Handle message and return nothing
     '''
+    #allow us to limit use if whitelist turned on
+    if not is_whitelisted(user):
+      return
+    
     log.msg('{irc_channel} : {msg}'.format(irc_channel=irc_channel, msg=msg))
     m = re.match(Slingbox.COMMAND_REGEX, msg)
     if not m:

@@ -52,6 +52,7 @@ from config import Config
 from livestream import Livestreamer
 from textoverlay import TextOverlay
 from voice import Voice
+from whitelist import Whitelist
 
 from irc import splitnick
 
@@ -113,6 +114,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Livestreamer(self))
     WeeaBot.plugins.append(TextOverlay(self))
     WeeaBot.plugins.append(Voice(self))
+    WeeaBot.plugins.append(Whitelist(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')
