@@ -14,6 +14,7 @@ import os
 import string
 import re
 from twisted.python import log
+from twisted.internet.task import LoopingCall
 
 import psutil
 from irc import splitnick
@@ -21,9 +22,18 @@ from config import Config
 from util import kill_proc_tree
 from whitelist import is_mod
 from whitelist import is_whitelisted
+from volume import adjust_volume
 
 TRIGGER = u'.'
 SWIFT = Config.SWIFT
+
+#Remove procs that have completed.
+def service():
+  initial_voice_count = len(Voice.PROCS)
+  Voice.PROCS = [x for x in Voice.PROCS if x and x.poll() is None]
+  if not len(Voice.PROCS) and initial_voice_count:
+    adjust_volume('VOICE_OFF')
+    
 
 class Voice(object):
   '''
@@ -35,6 +45,7 @@ class Voice(object):
   WIPE_REGEX = ur'^(?P<command>{trigger}v wipe)$'.format(trigger=TRIGGER)
   
   PROCS = []
+  STARTER = None
 
   def __init__(self, parent):
     '''
@@ -42,6 +53,8 @@ class Voice(object):
     '''
     self._parent = parent
     self._on = True
+    Voice.STARTER = LoopingCall(service)
+    Voice.STARTER.start(0.5);
 
   def do_help(self, channel):
     '''
@@ -114,6 +127,8 @@ class Voice(object):
     if not text:
       return
 
+    adjust_volume('VOICE_ON')
+      
     #first clean up and filter our messages
     msg = Voice.filter_messages(text)
     log.msg('Voice: {channel} : {msg}'.format(channel=channel, msg=msg.encode('utf-8')))
