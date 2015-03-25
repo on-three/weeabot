@@ -22,7 +22,7 @@ import re
 from twisted.python import log
 import credentials
 
-COMMAND_REGEX_STR = ur'^(?P<command>\.i|\.info|\.streaminfo)( (?P<data>\S+)$)?'
+COMMAND_REGEX_STR = ur'^(?P<command>\.i|\.info|\.streaminfo)$'
 COMMAND_REGEX = re.compile(COMMAND_REGEX_STR, re.UNICODE)
 
 class Info(object):
@@ -58,7 +58,7 @@ class Info(object):
     '''
     show stream related info
     '''
-    for stream in credentials.STREAM_INFO:
-      self._parent.say(channel, str(stream))
+    #for stream in credentials.STREAM_INFO:
+    self._parent.say(channel, str(credentials.STREAM_INFO))
 
 
