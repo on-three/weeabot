@@ -17,6 +17,7 @@ from terebi_ookoku import scrape_tv_schedule
 from twisted.python import log
 from datetime import datetime, timedelta
 from pytz import timezone
+import time
 
 #don't like accessing other modules which may or may not be present
 #but the hell with it
@@ -47,7 +48,10 @@ TUNER_LOOKUP = {
 #workaround for formatting unicode times
 #after: http://stackoverflow.com/questions/2571515/using-a-unicode-format-for-pythons-time-strftime
 def ustrftime(t, format):
-  return t.strftime(format.encode('utf-8')).decode('utf-8')
+  return t.strftime(format).decode('utf-8')
+  #log.msg(u'ustrftime format: {format}'.format(format=format).encode('utf-8'))
+  #return t.strftime(format.encode('utf-8')).decode('utf-8')
+  #return time.strftime(format.encode('utf-8'), t).decode('utf-8')
 
 class Whatson(object):
   '''
@@ -186,7 +190,7 @@ class Whatson(object):
     print error
 
   def on_translation(self, response, text, **kwargs):
-    log.msg('on_translation: {response}'.format(response=response))
+    log.msg('on_translation: \'{response}\''.format(response=response))
     if not u'irc_channel' in kwargs:
       return;
     irc_channel = kwargs[u'irc_channel']
@@ -196,11 +200,12 @@ class Whatson(object):
       url = url.decode('utf-8')
     #blurb = u'{program}\x033{url}'.format(program=unicode(program), url=url)
     #blurb = u'{program}\x033{url}'.format(program=response, url=url)
+    #date = time.strftime(u'%m %d (%a)'.encode('utf-8'), program.start_time).decode('utf-8')
     blurb = u'{name} \x035|\u000f\x032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\x035 |\u000f \x033{url}' \
       .format(name=response.decode('utf-8'), \
-        date=ustrftime(program.start_time, u'%m/%d (%a)'), \
-        start_time=ustrftime(program.start_time, u'%H:%M'), \
-        end_time=ustrftime(program.end_time, u'%H:%M'), \
+        date=ustrftime(program.start_time, '%m/%d (%a)'), \
+        start_time=ustrftime(program.start_time, '%H:%M'), \
+        end_time=ustrftime(program.end_time, '%H:%M'), \
         running_time=unicode(program.running_time), \
         url=url)
     self._parent.say(irc_channel, blurb.encode('utf-8'))
