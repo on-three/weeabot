@@ -53,6 +53,7 @@ from livestream import Livestreamer
 from textoverlay import TextOverlay
 from voice import Voice
 from whitelist import Whitelist
+from screenshot import Screenshot
 
 from irc import splitnick
 
@@ -94,7 +95,7 @@ def irc_encode(bytes):
 
 class WeeaBot(twisted_irc.IRCClient):
   plugins = []
-  COMMAND_REGEX = r'^(?P<command>\.h(elp)?( )?)'
+  HELP_REGEX = r'^(?P<command>\.(?:h|help)$)'
 
   def connectionMade(self):
     log.msg('connection made')
@@ -115,6 +116,7 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(TextOverlay(self))
     WeeaBot.plugins.append(Voice(self))
     WeeaBot.plugins.append(Whitelist(self))
+    WeeaBot.plugins.append(Screenshot(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')
@@ -175,7 +177,7 @@ class WeeaBot(twisted_irc.IRCClient):
       self.join(Config.CHANNEL.encode('utf-8'))
     
     #msg = re.sub(' +',' ',msg)
-    if re.match(WeeaBot.COMMAND_REGEX, msg):
+    if re.match(WeeaBot.HELP_REGEX, msg):
       plugins = self.list_loaded_plugins()
       help = plugins + u'| source: https://github.com/on-three/weeabot'
       self.say(channel, help.encode('utf-8'))
