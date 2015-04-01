@@ -15,15 +15,24 @@ import os
 import psutil
 from twisted.python import log
 from twisted.internet.task import LoopingCall
+from twisted.internet.task import deferLater
+from twisted.internet import reactor
 
 #allow "mod" like control
 from whitelist import is_mod
 from whitelist import is_whitelisted
 from irc import splitnick
 from util import kill_proc_tree
+from util import activate_window_by_pid
 
 #save data via REST to website
 from web import Youtubes as yt
+
+#to kill subprocesses
+import win32api
+import win32gui
+import win32con
+import time
 
 #try to interact with sling to mute it when playing
 from slingbox import mute_sling
@@ -37,6 +46,7 @@ def play_video():
   #is there a video playing?
   if Video.SUBPROCESS and Video.SUBPROCESS.poll() is None:
     #video still playing. don't initiate a new one
+    #activate_window_by_pid(Video.SUBPROCESS.pid)
     return
   
   if len(Video.QUEUE) > 0:
@@ -53,6 +63,8 @@ def play_video():
       Youtube.SLING_MUTE_STATE = True
       mute_sling()
     Video.SUBPROCESS = psutil.Popen(call, shell=True)
+    #schedule a window activation for 2 seconds after we create it (fucking windows...)
+    deferLater(reactor, 2, activate_window_by_pid, pid=Video.SUBPROCESS.pid)
   else:
     #try to unmute sling if it needs it
     if Youtube.SLING_MUTE_STATE:
@@ -78,6 +90,7 @@ class Video(object):
     Video.SUBPROCESS = None
   
   def wipe(self):
+    log.msg('wiping...')
     del Video.QUEUE[:]
     if Video.SUBPROCESS:
       kill_proc_tree(Video.SUBPROCESS.pid)
@@ -93,10 +106,11 @@ class Youtube(object):
   '''
   #REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+)'
   REGEX = ur'^\.(?:youtube|y) +(?P<url>http[s]?://[\S]+)( +(?P<mute>(?:mute|m)))?'
-  ON_REGEX = ur'^\.(?:youtube on|y on)'
-  OFF_REGEX = ur'^\.(?:youtube off|y off)'
-  WIPE_REGEX = ur'^\.(?:youtube wipe|y wipe)'
-  NEXT_REGEX = ur'^\.(?:youtube wipe|y next)'
+  ON_REGEX = ur'^\.(?:youtube on|y on)$'
+  OFF_REGEX = ur'^\.(?:youtube off|y off)$'
+  WIPE_REGEX = ur'^\.(?:youtube wipe all|y wipe all)$'
+  NEXT_REGEX = ur'^\.(?:youtube next|y next|youtube wipe|y wipe)$'
+  KILL_REGEX = ur'^\.kill$'
   #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
   #SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
@@ -122,7 +136,7 @@ class Youtube(object):
     '''
     if re.search(Youtube.REGEX, msg) or re.match(Youtube.ON_REGEX, msg) or \
       re.match(Youtube.OFF_REGEX, msg) or re.match(Youtube.WIPE_REGEX, msg) or\
-      re.match(Youtube.NEXT_REGEX, msg):
+      re.match(Youtube.NEXT_REGEX, msg) or re.match(Youtube.KILL_REGEX, msg):
       return True
     else:
       return False
@@ -146,6 +160,9 @@ class Youtube(object):
       
     if re.match(Youtube.NEXT_REGEX, msg) and is_whitelisted(splitnick(user)):
       return self.next()
+      
+    if re.match(Youtube.KILL_REGEX, msg) and is_mod(splitnick(user)):
+      return self.kill()
 
     m = re.search(Youtube.REGEX, msg)
     #got a command along with the .c or .channel statement
@@ -167,7 +184,7 @@ class Youtube(object):
 
   def wipe(self):
     self._video.wipe()
-    
+  
   def next(self):
     self._video.next()
 
@@ -182,5 +199,11 @@ class Youtube(object):
       return
     yt.save_youtube(channel, nick, url)
     self._video.play(url, mute)
+    
+  def kill(self):
+    '''kill all mpv instances as a last resort
+    '''
+    log.msg("killing all instances of mpv")
+    os.system('taskkill /f /im mpv.exe')
 
 
