@@ -105,7 +105,7 @@ class Youtube(object):
   show a webm via simple system call
   '''
   #REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+)'
-  REGEX = ur'^\.(?:youtube|y) +(?P<url>http[s]?://[\S]+)( +(?P<mute>(?:mute|m)))?'
+  REGEX = ur'^\.(?:youtube|y) +(?P<url>http[s]?://[\S]+)( +(?P<param>(?:mute|m|nomute|n)))?'
   ON_REGEX = ur'^\.(?:youtube on|y on)$'
   OFF_REGEX = ur'^\.(?:youtube off|y off)$'
   WIPE_REGEX = ur'^\.(?:youtube wipe all|y wipe all)$'
@@ -167,9 +167,9 @@ class Youtube(object):
     m = re.search(Youtube.REGEX, msg)
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
-    mute = False
-    if m.groupdict()['mute']:
-      mute = True
+    mute = True
+    if m.groupdict()['param'] and (m.groupdict()['param']=='nomute' or m.groupdict()['param']=='n'):
+      mute = False
     self.show(channel, user, url, mute)
 
   def on(self):

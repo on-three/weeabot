@@ -14,6 +14,8 @@ import re
 import os
 import psutil
 from twisted.python import log
+from twisted.internet.task import deferLater
+from twisted.internet import reactor
 
 from config import Config
 LIVESTREAMER = Config.LIVESTREAMER
@@ -26,6 +28,7 @@ from whitelist import is_mod
 from whitelist import is_whitelisted
 from irc import splitnick
 from util import kill_proc_tree
+from util import activate_window_by_pid
 
 
 class Layout(object):
@@ -95,6 +98,8 @@ class Livestreamer(object):
       left=layout.LEFT, top=layout.TOP, url=url)
     log.msg(call.encode('utf-8'))
     Livestreamer.SUBPROCESS = psutil.Popen(call, shell=True)
+    #schedule a window activation for 2 seconds after we create it (fucking windows...)
+    deferLater(reactor, 2, activate_window_by_pid, pid=Livestreamer.SUBPROCESS.pid)
     
   def wipe(self):
     if Livestreamer.SUBPROCESS:

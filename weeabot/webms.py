@@ -15,9 +15,12 @@ import os
 import psutil
 import signal
 from twisted.python import log
+from twisted.internet.task import deferLater
+from twisted.internet import reactor
 
 from screen import Screen
 from util import kill_proc_tree
+from util import activate_window_by_pid
 
 DEFAULT_VIDEO_WIDTH = Screen.WIDTH/2
 DEFAULT_VIDEO_HEIGHT = Screen.HEIGHT/2
@@ -89,6 +92,8 @@ class Video(object):
     call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     log.msg(call.encode('utf-8'))
     pos._subprocess = psutil.Popen(call, shell=True)
+    #schedule a window activation for 2 seconds after we create it (fucking windows...)
+    deferLater(reactor, 2, activate_window_by_pid, pid=pos._subprocess.pid)
     
   def play_fullscreen(self, url):
     pos = Video.FULLSCREEN_POS
@@ -99,6 +104,8 @@ class Video(object):
     call = Webms.MPV_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     log.msg(call.encode('utf-8'))
     pos._subprocess = psutil.Popen(call, shell=True)
+    #schedule a window activation for 2 seconds after we create it (fucking windows...)
+    deferLater(reactor, 2, activate_window_by_pid, pid=pos._subprocess.pid)
 
 class Webms(object):
   '''
