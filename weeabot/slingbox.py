@@ -41,7 +41,7 @@ TUNER_LIST = [
 autohotkey = Config.AUTOHOTKEY
 command_script = u'{dir}autohotkey/command.ahk'.format(dir=Config.WORKING_DIR)
 push_script = u'{dir}autohotkey/press.ahk'.format(dir=Config.WORKING_DIR)
-resize_script = u'{dir}autohotkey/size_window_480.ahk'.format(dir=Config.WORKING_DIR)
+resize_script = u'{dir}autohotkey/size_window_720.ahk'.format(dir=Config.WORKING_DIR)
 ok_script = u'{dir}/autohotkey/ok.ahk'.format(dir=Config.WORKING_DIR)
 
 def get_current_channel():
@@ -305,7 +305,7 @@ class Position(object):
     
   @staticmethod
   def help():
-    return u'".c position" Reset the position of slingplayer if it has become corrupted (note: 480p only).'
+    return u'".c position" Reset the position of slingplayer if it has become corrupted.'
 
 class Sap(object):
   '''press supplementary audio button
