@@ -43,6 +43,7 @@ command_script = u'{dir}autohotkey/command.ahk'.format(dir=Config.WORKING_DIR)
 push_script = u'{dir}autohotkey/press.ahk'.format(dir=Config.WORKING_DIR)
 resize_script = u'{dir}autohotkey/size_window_720.ahk'.format(dir=Config.WORKING_DIR)
 ok_script = u'{dir}/autohotkey/ok.ahk'.format(dir=Config.WORKING_DIR)
+QUALITY_SCRIPT = u'{dir}/autohotkey/quality.ahk'.format(dir=Config.WORKING_DIR)
 
 def get_current_channel():
   '''module level access to static current channel data
@@ -285,6 +286,34 @@ class Mute(object):
     return u'".c mute" Toggle slingbox mute.'
 
     
+class Options(object):
+  '''open the options window
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    return open_sling_options()
+
+  @staticmethod
+  def help():
+    return u'".c options" open the sling options window.'
+    
+class Quality(object):
+  '''press esc key
+  '''
+  @staticmethod
+  def do(command=None, data=None):
+    if not data or data not in QUALITY_LEVELS:
+      return u'bakamon. pls provide quality from 720, 480, or auto'
+    args = u' '.join(QUALITY_LEVELS[data])
+    cmd = QUALITY_SCRIPT + u' ' + args
+    log.msg(cmd)
+    run_ahk_script(QUALITY_SCRIPT + u' ' + args)
+    return u'pressing esc'
+
+  @staticmethod
+  def help():
+    return u'".c quality [auto|720|480]" choose current sling quality. Can shake out grey patches. PLEASE USE WITH CAUTION.'
+    
 class Connect(object):
   '''reconnect to sling (only)
   '''
@@ -353,10 +382,10 @@ COMMAND_TABLE = {
   CABLE_CMD : Cable,
   u'up' : ChannelUp,
   u'down' : ChannelDown,
-  #u'ok' : Ok.do,
-  #u'return' : Return.do,
-  #u'esc' : Return.do,
-  #u'menu' : Menu.do,
+  #u'ok' : Ok,
+  #u'return' : Return,
+  #u'esc' : Escape,
+  #u'menu' : Menu,
   u'info' : Menu,
   u'list' : List,
   u'last' : Last,
@@ -368,6 +397,8 @@ COMMAND_TABLE = {
   u'position' : Position,
   u'mute' : Mute,
   u'sap' : Sap,
+  #u'options' : Options
+  u'quality' : Quality
 }
 
 RESTRICTED_COMMANDS = [
@@ -375,7 +406,20 @@ RESTRICTED_COMMANDS = [
   u'reset',
   u'connect',
   u'position',
+  u'options',
+  u'ok',
+  u'return',
+  u'esc',
+  u'menu',
+  u'quality',
 ]
+
+#screen positions used in setting quality
+QUALITY_LEVELS = {
+  'auto' : ['400', '135'],
+  '720' : ['400', '190'],
+  '480' : ['400', '200'],
+}
 
 def get_channel_name(n):
   '''returns the first alphabetic key match in the dict
@@ -415,6 +459,10 @@ def reset_sling():
 def mute_sling():
   keypresses_to_sling(u'\!m') #Alt+M
   return u'Toggling sling mute.'
+  
+def open_sling_options():
+  keypresses_to_sling(u'\!o') #Alt+o
+  return u'Opening sling options window.'
   
 def press_sap_button():
   press_sling_button(u'sap')
