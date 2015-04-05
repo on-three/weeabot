@@ -198,9 +198,14 @@ class Whatson(object):
     url = kwargs[u'url']
     if isinstance(url, str):
       url = url.decode('utf-8')
+    #log.msg("DEBUG response: " + response)
+    #log.msg("DEBUG start_time: " + str(program.start_time))
+    #log.msg("DEBUG end_time: " + str(program.end_time))
+    #log.msg("DEBUG running_time: " + str(program.running_time))
+    #log.msg("DEBUG url: " + url)
     #blurb = u'{program}\x033{url}'.format(program=unicode(program), url=url)
     #blurb = u'{program}\x033{url}'.format(program=response, url=url)
-    #date = time.strftime(u'%m %d (%a)'.encode('utf-8'), program.start_time).decode('utf-8')
+    #date = time.strftime(u'%m %d (%a)'.encode('utf-8'), program.start_time).decode('utf-8') 
     blurb = u'{name} \x035|\u000f\x032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\x035 |\u000f \x033{url}' \
       .format(name=response.decode('utf-8'), \
         date=ustrftime(program.start_time, '%m/%d (%a)'), \
