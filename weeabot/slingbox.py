@@ -308,7 +308,7 @@ class Quality(object):
     cmd = QUALITY_SCRIPT + u' ' + args
     log.msg(cmd)
     run_ahk_script(QUALITY_SCRIPT + u' ' + args)
-    return u'pressing esc'
+    return u'setting sling quality to {level}.'.format(level=data)
 
   @staticmethod
   def help():
