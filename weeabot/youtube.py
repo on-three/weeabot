@@ -64,7 +64,9 @@ def play_video():
       mute_sling()
     Video.SUBPROCESS = psutil.Popen(call, shell=True)
     #schedule a window activation for 2 seconds after we create it (fucking windows...)
-    deferLater(reactor, 2, activate_window_by_pid, pid=Video.SUBPROCESS.pid)
+    activate_window_by_pid(pid=Video.SUBPROCESS.pid)
+    #deferLater(reactor, 2.5, activate_window_by_pid, pid=Video.SUBPROCESS.pid)
+    #deferLater(reactor, 5, activate_window_by_pid, pid=Video.SUBPROCESS.pid)
   else:
     #try to unmute sling if it needs it
     if Youtube.SLING_MUTE_STATE:
@@ -104,13 +106,13 @@ class Youtube(object):
   '''
   show a webm via simple system call
   '''
-  #REGEX = ur'^\.(?:youtube|y) (?P<url>http[s]?://[\S]+)'
-  REGEX = ur'^\.(?:youtube|y) +(?P<url>http[s]?://[\S]+)( +(?P<param>(?:mute|m|nomute|n)))?'
-  ON_REGEX = ur'^\.(?:youtube on|y on)$'
-  OFF_REGEX = ur'^\.(?:youtube off|y off)$'
-  WIPE_REGEX = ur'^\.(?:youtube wipe all|y wipe all)$'
-  NEXT_REGEX = ur'^\.(?:youtube next|y next|youtube wipe|y wipe)$'
+  REGEX = ur'^\.(?:youtube|y|mpv) +(?P<url>http[s]?://[\S]+)( +(?P<param>(?:mute|m|nomute|n)))?'
+  ON_REGEX = ur'^\.(?:youtube|y|mpv) on$'
+  OFF_REGEX = ur'^\.(?:youtube|y|mpv) off$'
+  WIPE_REGEX = ur'^\.(?:youtube|y|mpv) wipe all$'
+  NEXT_REGEX = ur'^\.(?:youtube|y|mpv) (?:wipe|next)$'
   KILL_REGEX = ur'^\.kill$'
+  TOP_REGEX = ur'^\.(?:youtube|y|mpv)$'
   #VLC_COMMAND = u'"/cygdrive/c/Program Files (x86)/VideoLAN/VLC/vlc.exe" -I dummy --play-and-exit --no-video-deco --no-embedded-video --height={height} --video-x={x} --video-y={y} {url}'
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
   #SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
@@ -136,7 +138,8 @@ class Youtube(object):
     '''
     if re.search(Youtube.REGEX, msg) or re.match(Youtube.ON_REGEX, msg) or \
       re.match(Youtube.OFF_REGEX, msg) or re.match(Youtube.WIPE_REGEX, msg) or\
-      re.match(Youtube.NEXT_REGEX, msg) or re.match(Youtube.KILL_REGEX, msg):
+      re.match(Youtube.NEXT_REGEX, msg) or re.match(Youtube.KILL_REGEX, msg) or\
+      re.match(Youtube.TOP_REGEX, msg):
       return True
     else:
       return False
@@ -163,8 +166,12 @@ class Youtube(object):
       
     if re.match(Youtube.KILL_REGEX, msg) and is_mod(splitnick(user)):
       return self.kill()
+      
+    if re.match(Youtube.TOP_REGEX, msg):
+      self.top()
+      return
 
-    m = re.search(Youtube.REGEX, msg)
+    m = re.search(Youtube.REGEX, msg)    
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
     mute = True
@@ -205,5 +212,9 @@ class Youtube(object):
     '''
     log.msg("killing all instances of mpv")
     os.system('taskkill /f /im mpv.exe')
-
-
+    
+  def top(self):
+    '''if wer'e playing a video, select it bringing it to the top
+    '''
+    if Video.SUBPROCESS:
+      activate_window_by_pid(pid=Video.SUBPROCESS.pid)
