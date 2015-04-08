@@ -48,7 +48,8 @@ TUNER_LOOKUP = {
 #workaround for formatting unicode times
 #after: http://stackoverflow.com/questions/2571515/using-a-unicode-format-for-pythons-time-strftime
 def ustrftime(t, format):
-  return t.strftime(format).decode('utf-8')
+  #return t.strftime(format).decode('utf-8')
+  return t.strftime(format)
   #log.msg(u'ustrftime format: {format}'.format(format=format).encode('utf-8'))
   #return t.strftime(format.encode('utf-8')).decode('utf-8')
   #return time.strftime(format.encode('utf-8'), t).decode('utf-8')
@@ -196,22 +197,23 @@ class Whatson(object):
     irc_channel = kwargs[u'irc_channel']
     program = kwargs[u'program']
     url = kwargs[u'url']
-    if isinstance(url, str):
-      url = url.decode('utf-8')
+    url = url.encode('utf-8')
     #log.msg("DEBUG response: " + response)
     #log.msg("DEBUG start_time: " + str(program.start_time))
     #log.msg("DEBUG end_time: " + str(program.end_time))
     #log.msg("DEBUG running_time: " + str(program.running_time))
     #log.msg("DEBUG url: " + url)
-    #blurb = u'{program}\x033{url}'.format(program=unicode(program), url=url)
-    #blurb = u'{program}\x033{url}'.format(program=response, url=url)
-    #date = time.strftime(u'%m %d (%a)'.encode('utf-8'), program.start_time).decode('utf-8') 
-    blurb = u'{name} \x035|\u000f\x032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\x035 |\u000f \x033{url}' \
-      .format(name=response.decode('utf-8'), \
-        date=ustrftime(program.start_time, '%m/%d (%a)'), \
-        start_time=ustrftime(program.start_time, '%H:%M'), \
-        end_time=ustrftime(program.end_time, '%H:%M'), \
-        running_time=unicode(program.running_time), \
+    response_string = response.decode('utf-8')
+    date_string = ustrftime(program.start_time, '%m/%d (%a)')
+    start_string = ustrftime(program.start_time, '%m/%d (%a)')
+    end_string = ustrftime(program.end_time, '%H:%M')
+    running_string = unicode(program.running_time)
+    blurb = u'{name} \u00035|\u000f\u00032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\u00035 |\u000f \u00033{url}'\
+      .format( name=response_string, \
+        date=unicode(date_string), \
+        start_time=unicode(start_string), \
+        end_time=unicode(end_string), \
+        running_time=unicode(running_string), \
         url=url)
     self._parent.say(irc_channel, blurb.encode('utf-8'))
 
