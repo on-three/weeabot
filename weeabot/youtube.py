@@ -35,7 +35,7 @@ import win32con
 import time
 
 #try to interact with sling to mute it when playing
-from slingbox import mute_sling
+from volume import volume_event
 
 class Url(object):
   def __init__(self, url, mute):
@@ -61,7 +61,7 @@ def play_video():
     #also turn on mute if specified and needed
     if url._mute and not Youtube.SLING_MUTE_STATE:
       Youtube.SLING_MUTE_STATE = True
-      mute_sling()
+      volume_event("MUTE_SLING")
     Video.SUBPROCESS = psutil.Popen(call, shell=True)
     #schedule a window activation for 2 seconds after we create it (fucking windows...)
     activate_window_by_pid(pid=Video.SUBPROCESS.pid)
@@ -71,7 +71,7 @@ def play_video():
     #try to unmute sling if it needs it
     if Youtube.SLING_MUTE_STATE:
       Youtube.SLING_MUTE_STATE = False
-      mute_sling()
+      volume_event("UNMUTE_SLING")
     Video.SUBPROCESS = None
   
 class Video(object):
@@ -100,7 +100,7 @@ class Video(object):
     #try to unmute if it needs it
     if Youtube.SLING_MUTE_STATE:
       Youtube.SLING_MUTE_STATE = False
-      mute_sling()
+      volume_event("UNMUTE_SLING")
 
 class Youtube(object):
   '''

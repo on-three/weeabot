@@ -38,7 +38,7 @@ class VolumeEvent(object):
     for app in self._apps:
       app.do()
       
-class App(object):
+class SetAppVolume(object):
   def __init__(self, name, level):
     self._name = name
     self._level = level
@@ -46,14 +46,35 @@ class App(object):
     call = u'{nircmd} setappvolume {app} {level}'.format(nircmd=NIRCMD, app=self._name, level=self._level)
     log.msg(call)
     os.system(call.encode('utf-8'))
+    
+class MuteApp(object):
+  def __init__(self, name):
+    self._name = name
+  def do(self):
+    call = u'{nircmd} muteappvolume {app} 1'.format(nircmd=NIRCMD, app=self._name)
+    log.msg(call)
+    os.system(call.encode('utf-8'))
+    
+class UnMuteApp(object):
+  def __init__(self, name):
+    self._name = name
+  def do(self):
+    call = u'{nircmd} muteappvolume {app} 0'.format(nircmd=NIRCMD, app=self._name)
+    log.msg(call)
+    os.system(call.encode('utf-8'))
 
 #a mapping of events to applications whose sounds need to be adjusted
 VOLUME_EVENT_TABLE = {
-  'VOICE_ON'  : VolumeEvent( [App('Slingplayer.exe', VOLUME_LOW),
-                              App('mpv.exe', VOLUME_LOW)] ),
-  'VOICE_OFF' : VolumeEvent( [App('Slingplayer.exe', VOLUME_NORMAL),
-                              App('mpv.exe', VOLUME_NORMAL)] ),
+  'VOICE_ON'  : VolumeEvent( [SetAppVolume('Slingplayer.exe', VOLUME_LOW),
+                              SetAppVolume('mpv.exe', VOLUME_LOW)] ),
+  'VOICE_OFF' : VolumeEvent( [SetAppVolume('Slingplayer.exe', VOLUME_NORMAL),
+                              SetAppVolume('mpv.exe', VOLUME_NORMAL)] ),
+  'MUTE_SLING' : VolumeEvent( [MuteApp('Slingplayer.exe')] ),
+  'UNMUTE_SLING' : VolumeEvent( [UnMuteApp('Slingplayer.exe')] ),
 }
+
+def volume_event(event_name):
+  return adjust_volume(event_name)
 
 def adjust_volume(event_name):
   log.msg("event name: " + event_name)
