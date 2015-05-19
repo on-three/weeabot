@@ -21,7 +21,7 @@ class Jikan(object):
   '''
   print current japan time
   '''
-  COMMAND_REGEX = ur'^(?P<command>jikan|\.t|\.T|時間|じかん)( (?P<data>\S+)$)?'
+  COMMAND_REGEX = ur'^(?P<command>jikan|\.t|\.T|時間|じかん)$'
 
   def __init__(self, parent):
     '''
