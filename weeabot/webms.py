@@ -33,6 +33,17 @@ from irc import splitnick
 #save webms etc to remote database
 from web import Webms as WebInterface
 
+from irc import foreground
+from irc import background
+from irc import style
+
+
+def get_webms_status():
+  if Webms._enabled:
+    return foreground(u'white') + background(u'green') + u' ON ' + style(u'normal')
+  else:
+    return foreground(u'black') + background(u'red') + u' OFF ' + style(u'normal')
+
 class ScreenPos(object):
   def __init__(self, x, y, w=DEFAULT_VIDEO_WIDTH, h=DEFAULT_VIDEO_HEIGHT):
     self.x = x
@@ -120,13 +131,16 @@ class Webms(object):
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
   #MPV_COMMAND = u'/home/onthree/mpv/mpv.exe --ontop --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
   MPV_COMMAND = u'mpv.exe --ontop --no-border -autofit={width}x{height} --geometry {x}:{y} {url}'
+  
+  _enabled = False
+  
   def __init__(self, parent):
     '''
     constructor
     '''
     self._parent = parent
     
-    self._enabled = True
+    Webms._enabled = True
     self._video = Video()
 
   def is_msg_of_interest(self, user, channel, msg):
@@ -168,11 +182,11 @@ class Webms(object):
       self.show_webm(url, channel)
 
   def webms_on(self):
-    self._enabled = True
+    Webms._enabled = True
     log.msg('webms_on')
 
   def webms_off(self):
-    self._enabled = False
+    Webms._enabled = False
     #also wipe all webms
     self.webms_wipe()
     log.msg('webms_off')
@@ -189,7 +203,7 @@ class Webms(object):
     '''
     #hack to show https as http
     url = url.replace(u'https://', u'http://')
-    if not self._enabled:
+    if not Webms._enabled:
       log.msg('Not showing webm as they are turned off.')
       return
     self._video.play(url)
@@ -200,7 +214,7 @@ class Webms(object):
     '''
     #hack to show https as http
     url = url.replace(u'https://', u'http://')
-    if not self._enabled:
+    if not Webms._enabled:
       log.msg('Not showing webm as they are turned off.')
       return
     self._video.play_fullscreen(url)

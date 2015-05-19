@@ -24,15 +24,25 @@ from whitelist import is_mod
 from whitelist import is_whitelisted
 from volume import adjust_volume
 
+from irc import foreground
+from irc import background
+from irc import style
+
 TRIGGER = u'.'
 SWIFT = Config.SWIFT
+
+def get_voice_status():
+  if Voice._on:
+    return foreground(u'white') + background(u'green') + u' ON ' + style(u'normal')
+  else:
+    return foreground(u'black') + background(u'red') + u' OFF ' + style(u'normal')
 
 #Remove procs that have completed.
 def service():
   initial_voice_count = len(Voice.PROCS)
   Voice.PROCS = [x for x in Voice.PROCS if x and x.poll() is None]
-  if not len(Voice.PROCS) and initial_voice_count:
-    adjust_volume('VOICE_OFF')
+  #if not len(Voice.PROCS) and initial_voice_count:
+  #  adjust_volume('VOICE_OFF')
     
 
 class Voice(object):
@@ -46,13 +56,14 @@ class Voice(object):
   
   PROCS = []
   STARTER = None
+  _on = True
 
   def __init__(self, parent):
     '''
     constructor
     '''
     self._parent = parent
-    self._on = True
+    Voice._on = True
     Voice.STARTER = LoopingCall(service)
     Voice.STARTER.start(0.5);
 
@@ -101,7 +112,7 @@ class Voice(object):
       return self.turn_off(channel, user)
       
     m = re.match(Voice.VOICE_REGEX, msg, re.UNICODE)
-    if m and self._on and is_whitelisted(splitnick(user)):
+    if m and Voice._on and is_whitelisted(splitnick(user)):
       text = m.groupdict()['text']
       return self.say_text(text, channel, user)
       
@@ -113,11 +124,11 @@ class Voice(object):
     
   def turn_on(self, channel, user):
     if is_mod(splitnick(user)):
-      self._on = True
+      Voice._on = True
   
   def turn_off(self, channel, user):
     if is_mod(splitnick(user)):
-      self._on = False
+      Voice._on = False
       self.wipe()
 
   def say_text(self, text, channel, user):
@@ -127,7 +138,7 @@ class Voice(object):
     if not text:
       return
 
-    adjust_volume('VOICE_ON')
+    #adjust_volume('VOICE_ON')
       
     #first clean up and filter our messages
     msg = Voice.filter_messages(text)
