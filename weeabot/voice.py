@@ -49,10 +49,10 @@ class Voice(object):
   '''
   just say selected strings via text to speech.
   '''
-  VOICE_REGEX = ur'^(?P<command>{trigger}v )(?P<text>.+)'.format(trigger=TRIGGER)
-  ON_REGEX = ur'^(?P<command>{trigger}v on)$'.format(trigger=TRIGGER)
-  OFF_REGEX = ur'^(?P<command>{trigger}v off)$'.format(trigger=TRIGGER)
-  WIPE_REGEX = ur'^(?P<command>{trigger}v wipe)$'.format(trigger=TRIGGER)
+  VOICE_REGEX = ur'^(?P<command>\.v )(?P<text>.+)'.format(trigger=TRIGGER)
+  ON_REGEX = ur'^(?P<command>\.v on)$'.format(trigger=TRIGGER)
+  OFF_REGEX = ur'^(?P<command>\.v off)$'.format(trigger=TRIGGER)
+  WIPE_REGEX = ur'^(?P<command>\.v wipe)$'.format(trigger=TRIGGER)
   
   PROCS = []
   STARTER = None
