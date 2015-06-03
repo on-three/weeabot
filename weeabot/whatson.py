@@ -49,7 +49,14 @@ TUNER_LOOKUP = {
 #after: http://stackoverflow.com/questions/2571515/using-a-unicode-format-for-pythons-time-strftime
 def ustrftime(t, format):
   #return t.strftime(format).decode('utf-8')
-  return t.strftime(format)
+  formatted_time = t.strftime(format)
+  try:
+    formatted_time.encode('utf-8')
+  except UnicodeDecodeError:
+    return 'XXX'
+  return formatted_time
+    
+  return t.strftime(format).decode('utf8')
   #log.msg(u'ustrftime format: {format}'.format(format=format).encode('utf-8'))
   #return t.strftime(format.encode('utf-8')).decode('utf-8')
   #return time.strftime(format.encode('utf-8'), t).decode('utf-8')
@@ -198,23 +205,55 @@ class Whatson(object):
     program = kwargs[u'program']
     url = kwargs[u'url']
     url = url.encode('utf-8')
-    #log.msg("DEBUG response: " + response)
-    #log.msg("DEBUG start_time: " + str(program.start_time))
-    #log.msg("DEBUG end_time: " + str(program.end_time))
-    #log.msg("DEBUG running_time: " + str(program.running_time))
-    #log.msg("DEBUG url: " + url)
+    log.msg("DEBUG response: " + response)
+    log.msg("DEBUG start_time: " + str(program.start_time))
+    log.msg("DEBUG end_time: " + str(program.end_time))
+    log.msg("DEBUG running_time: " + str(program.running_time))
+    log.msg("DEBUG url: " + url)
+    
     response_string = response.decode('utf-8')
-    date_string = ustrftime(program.start_time, '%m/%d (%a)')
-    start_string = ustrftime(program.start_time, '%m/%d (%a)')
+    try:
+      x = response_string.encode('utf-8')
+    except UnicodeDecodeError:
+      print "Failure to decode response_string"
+    
+    #ustrftime gets corrupted for this date format for some reason
+    #and can't recover. So i'm dropping the date.
+    #date_string = ustrftime(program.start_time, '%m/%d %a')
+    #try:
+    #  x = date_string.encode('utf-8')
+    #except UnicodeDecodeError:
+    #  print "Failure to decode date_string"
+    
+    start_string = ustrftime(program.start_time, '%H:%M')
+    try:
+      x = start_string.encode('utf-8')
+    except UnicodeDecodeError:
+      print "Failure to decode start_string"
+    
     end_string = ustrftime(program.end_time, '%H:%M')
+    try:
+      x = end_string.encode('utf-8')
+    except UnicodeDecodeError:
+      print "Failure to decode end_string"
+    
     running_string = unicode(program.running_time)
-    blurb = u'{name} \u00035|\u000f\u00032 {date} {start_time} ~ {end_time} ({running_time}分)\u000f\u00035 |\u000f \u00033{url}'\
-      .format( name=response_string, \
-        date=unicode(date_string), \
-        start_time=unicode(start_string), \
-        end_time=unicode(end_string), \
-        running_time=unicode(running_string), \
-        url=url)
+    try:
+      x = running_string.encode('utf-8')
+    except UnicodeDecodeError:
+      print "Failure to decode running_string"
+    
+    #blurb = u'{name} \u00035|\u000f\u00032 {start_time} ~ {end_time} ({running_time}分)\u000f\u00035 |\u000f \u00033{url}'\
+    try:
+      blurb = u'{name} | {start_time} ~ {end_time} ({running_time}m) | {url}'\
+        .format( name=response_string, \
+          start_time=unicode(start_string), \
+          end_time=unicode(end_string), \
+          running_time=unicode(running_string), \
+          url=url)
+    except UnicodeDecodeError:
+      self._parent.say(irc_channel, "Weeabot experienced a unicode decoding error while formatting the Bing Translate response. We are working on this problem.")
+      return
     self._parent.say(irc_channel, blurb.encode('utf-8'))
 
   def on_translation_error(self, response, text, **kwargs):
