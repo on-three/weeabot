@@ -47,8 +47,8 @@ class Livestreamer(object):
   play livestream via livestreamer
   '''
   SUBPROCESS = None
-  COMMAND = LIVESTREAMER + u' -p "{player} --ontop --no-border -geometry {width}x{height}+{left}+{top}" {url} best'
-  REGEX = ur'^\.(?:stream|s) (?P<url>http[s]?://[\S]+)( (?P<full>(?:full|f)))?'
+  COMMAND = LIVESTREAMER + u' -p "{player} --cache=4096 --ontop --no-border -geometry {width}x{height}+{left}+{top}" {url} best'
+  REGEX = ur'^\.(?:stream|s) (?P<url>http[s]?://[\S]+)( (?P<pip>(?:pip|p|mini)))?'
   WIPE_REGEX = ur'^\.(?:stream wipe|s wipe)'
   
   def __init__(self, parent):
@@ -82,12 +82,12 @@ class Livestreamer(object):
     m = re.search(Livestreamer.REGEX, msg)
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
-    if m.groupdict()['full']:
-      self.play(url, channel, fullscreen=True)
+    if m.groupdict()['pip']:
+      self.play(url, channel, fullscreen=False)
     else:
       self.play(url, channel)
 
-  def play(self, url, channel, fullscreen=False):
+  def play(self, url, channel, fullscreen=True):
     if Livestreamer.SUBPROCESS and Livestreamer.SUBPROCESS.poll() is None:
       log.msg('Cannot start new livestream. One already playing with pid ' + str(Livestreamer.SUBPROCESS.pid))
       return

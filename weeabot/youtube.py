@@ -52,9 +52,10 @@ def get_youtubes_status():
     return foreground(u'black') + background(u'red') + u' OFF ' + style(u'normal')
 
 class Url(object):
-  def __init__(self, url, mute):
+  def __init__(self, url, mute, pip):
     self._url = url
     self._mute = mute
+    self._pip = pip
 
 def play_video():
   #is there a video playing?
@@ -71,6 +72,8 @@ def play_video():
     #call = Youtube.SMPLAYER_COMMAND.format(x=pos.x, y=pos.y, width=pos.w, height=pos.h, url=url)
     #call = Youtube.MPSYT_COMMAND.format(url=url._url);
     call = Youtube.MPV_COMMAND.format(url=url._url)
+    if url._pip:
+      call = Youtube.MPV_PIP_COMMAND.format(url=url._url)
     log.msg(call.encode('utf-8'))
     #also turn on mute if specified and needed
     if url._mute and not Youtube.SLING_MUTE_STATE:
@@ -97,8 +100,8 @@ class Video(object):
     Video.STARTER = LoopingCall(play_video)
     Video.STARTER.start(1.0);
   
-  def play(self, url, mute=False):
-    Video.QUEUE.append(Url(url, mute))
+  def play(self, url, mute=False, pip=False):
+    Video.QUEUE.append(Url(url, mute, pip))
     
   def next(self):
     if Video.SUBPROCESS:
@@ -120,7 +123,7 @@ class Youtube(object):
   '''
   show a webm via simple system call
   '''
-  REGEX = ur'^\.(?:youtube|y|mpv) +(?P<url>http[s]?://[\S]+)( +(?P<param>(?:mute|m|nomute|n)))?'
+  REGEX = ur'^\.(?:youtube|y|mpv) +(?P<url>http[s]?://[\S]+)( +(?P<param>(?:mute|m|nomute|n|pip|mini)))?'
   ON_REGEX = ur'^\.(?:youtube|y|mpv) on$'
   OFF_REGEX = ur'^\.(?:youtube|y|mpv) off$'
   WIPE_REGEX = ur'^\.(?:youtube|y|mpv) wipe all$'
@@ -131,7 +134,9 @@ class Youtube(object):
   #MPLAYER_COMMAND = u' ~/mplayer-svn-37292-x86_64/mplayer.exe -cache-min 50 -noborder -xy {width} -geometry {x}:{y} {url}'
   #SMPLAYER_COMMAND = u'"/cygdrive/c/Program Files (x86)/SMPlayer/smplayer.exe" −ontop -close-at-end -size {width} {height} -pos {x} {y} {url}'
   #MPSYT_COMMAND = u'/usr/bin/mpsyt playurl {url}';
-  MPV_COMMAND = u'mpv.exe --ontop --no-border --geometry=1280x720+600+120 {url}'
+  MPV_COMMAND = u'mpv.exe --cache=4096 --ontop --no-border --geometry=1280x720+600+120 {url}'
+  #pip pos at 512x288+1350+540
+  MPV_PIP_COMMAND = u'mpv.exe --ontop --no-border --geometry=512x288+650+540 {url}'
   
   #Try to keep track whether we should mute/unmute the sling
   #Better to keep track here as it's bound to be fucked anyway
@@ -190,9 +195,12 @@ class Youtube(object):
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
     mute = True
+    pip = False
     if m.groupdict()['param'] and (m.groupdict()['param']=='nomute' or m.groupdict()['param']=='n'):
       mute = False
-    self.show(channel, user, url, mute)
+    if m.groupdict()['param'] and (m.groupdict()['param']=='pip' or m.groupdict()['param']=='mini'):
+      pip = True
+    self.show(channel, user, url, mute, pip)
 
   def on(self):
     Youtube._enabled = True
@@ -210,7 +218,7 @@ class Youtube(object):
   def next(self):
     self._video.next()
 
-  def show(self, channel, nick, url, mute):
+  def show(self, channel, nick, url, mute, pip):
     '''
     show video at given URL.
     '''
@@ -220,7 +228,7 @@ class Youtube(object):
       log.msg('Not showing webm as they are turned off.')
       return
     yt.save_youtube(channel, nick, url)
-    self._video.play(url, mute)
+    self._video.play(url, mute, pip)
     
   def kill(self):
     '''kill all mpv instances as a last resort
