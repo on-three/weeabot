@@ -61,7 +61,7 @@ CHANNELS = [
   Channel(u'neco' , u'633', u'チャンネルＮＥＣＯ', u'Movie channel', u'cable'),
   Channel(u'animax' , u'670', u'アニマックス', u'Anime.', u'cable'),
   Channel(u'kids' , u'669', u'キッズステーション', u'Movie channel', u'cable'),
-  Channel(u'cn' , u'352', u'カートゥーン ネットワークHD', u'Movie channel', u'cable'),
+  Channel(u'cn' , u'668', u'カートゥーン ネットワークHD', u'Movie channel', u'cable'),
   Channel(u'disney' , u'620', u'ディズニー･チャンネルHD', u'Movie channel', u'cable'),
   Channel(u'disneyjr' , u'672', u'ディズニージュニア', u'Movie channel', u'cable'),
   Channel(u'fox' , u'651', u'FOX HD', u'Movie channel', u'cable'),
