@@ -45,5 +45,14 @@ def activate_window_by_pid(pid, retries_remaining=10):
   for h in hwnds:
     try:
       win32gui.SetForegroundWindow(h)
+      #hack to always have our overlay atop any activated window.
+      activate_window_by_name('weeabot_overlay')
     except:
       pass
+      
+def activate_window_by_name(name):
+  log.msg('activate_window_by_name ' + name)
+  window = win32gui.FindWindow(None, name)
+  if window:
+    win32gui.SetForegroundWindow(window)
+  

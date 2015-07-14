@@ -30,6 +30,7 @@ from irc import style
 
 TRIGGER = u'.'
 SWIFT = Config.SWIFT
+CHANNEL = Config.CHANNEL
 
 def get_voice_status():
   if Voice._on:
@@ -123,10 +124,14 @@ class Voice(object):
     self.PROCS = []
     
   def turn_on(self, channel, user):
+    if channel != CHANNEL:
+      return
     if is_mod(splitnick(user)):
       Voice._on = True
   
   def turn_off(self, channel, user):
+    if channel != CHANNEL:
+      return
     if is_mod(splitnick(user)):
       Voice._on = False
       self.wipe()
@@ -142,7 +147,7 @@ class Voice(object):
       
     #first clean up and filter our messages
     msg = Voice.filter_messages(text)
-    log.msg('Voice: {channel} : {msg}'.format(channel=channel, msg=msg.encode('utf-8')))
+    log.msg('Voice: {channel} {user}: {msg}'.format(channel=channel, user=user, msg=msg.encode('utf-8')))
     call = u'{exe} "{text}"'.format(exe=SWIFT, text=text)
     proc = psutil.Popen(call.encode('utf-8'), shell=True)
     self.PROCS.append(proc)

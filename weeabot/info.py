@@ -26,6 +26,8 @@ from webms import get_webms_status
 from voice import get_voice_status
 from youtube import get_youtubes_status
 from torrent import get_torrrents_status
+from livestream import get_status as get_livestreamer_status
+from ytdl import get_ytdl_status
 
 COMMAND_REGEX_STR = ur'^(?P<command>\.i|\.info|\.streaminfo)$'
 COMMAND_REGEX = re.compile(COMMAND_REGEX_STR, re.UNICODE)
@@ -79,12 +81,14 @@ class Info(object):
     '''
     show stream plugin status
     '''
-    status = u'weeabot status: '
+    status = u''
     status += u'Whitelist: ' + get_whitelist_status() + u' | '
     status += u'webms: ' + get_webms_status() + u' | '
     status += u'youtubes: ' + get_youtubes_status() + u' | '
     status += u'voice: ' + get_voice_status() + u' | '
     status += u'torrents: ' + get_torrrents_status() + u' | '
+    status += u'livestreamer: ' + get_livestreamer_status() + u' | '
+    status += u'ytdl: ' + get_ytdl_status()
     self._parent.say(channel, status.encode('utf-8'))
 
 

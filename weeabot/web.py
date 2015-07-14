@@ -16,6 +16,8 @@ import argparse
 from credentials import WeeabotDotCom
 from credentials import STREAM_INFO
 
+from twisted.python import log
+
 class Jisho(object):
   '''Send a definition via JSON to our web interface
   '''
@@ -46,6 +48,7 @@ class Webms(object):
   '''
   @staticmethod
   def save_webm(channel, nick, url):
+    log.msg("saving webm url " + url + " to web site...")
     rest_api = WeeabotDotCom.HOSTNAME + 'webms/new/'
     user = WeeabotDotCom.USERNAME
     password = WeeabotDotCom.PASSWORD

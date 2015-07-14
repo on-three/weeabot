@@ -19,7 +19,9 @@ from twisted.internet import reactor
 
 from config import Config
 LIVESTREAMER = Config.LIVESTREAMER
-MPV = Config.MPV
+#MPV = Config.MPV
+MPV = u'C:\\Users\\onthree\\mpv-x86_64-20150505\\mpv.exe'
+BUFFER_SIZE = 16384
 
 from screen import Screen
 
@@ -29,6 +31,16 @@ from whitelist import is_whitelisted
 from irc import splitnick
 from util import kill_proc_tree
 from util import activate_window_by_pid
+
+from irc import foreground
+from irc import background
+from irc import style
+
+def get_status():
+  if Livestreamer.SUBPROCESS and Livestreamer.SUBPROCESS.poll() is None:
+    return foreground(u'yellow') + background(u'green') + u' PLAYING ' + style(u'normal')
+  else:
+    return foreground(u'white') + background(u'green') + u' ON ' + style(u'normal')
 
 
 class Layout(object):
@@ -47,7 +59,7 @@ class Livestreamer(object):
   play livestream via livestreamer
   '''
   SUBPROCESS = None
-  COMMAND = LIVESTREAMER + u' -p "{player} --cache=4096 --ontop --no-border -geometry {width}x{height}+{left}+{top}" {url} best'
+  COMMAND = LIVESTREAMER + u' -p "{player} --cache=4096 --hr-seek=no --ontop --no-border -geometry {width}x{height}+{left}+{top}" {url} best'
   REGEX = ur'^\.(?:stream|s) (?P<url>http[s]?://[\S]+)( (?P<pip>(?:pip|p|mini)))?'
   WIPE_REGEX = ur'^\.(?:stream wipe|s wipe)'
   
@@ -94,7 +106,7 @@ class Livestreamer(object):
     layout = PIP
     if fullscreen:
       layout = FULLSCREEN
-    call = Livestreamer.COMMAND.format(player=MPV, width=layout.WIDTH, height=layout.HEIGHT,
+    call = Livestreamer.COMMAND.format(player=MPV, cache=str(BUFFER_SIZE),width=layout.WIDTH, height=layout.HEIGHT,
       left=layout.LEFT, top=layout.TOP, url=url)
     log.msg(call.encode('utf-8'))
     Livestreamer.SUBPROCESS = psutil.Popen(call, shell=True)
