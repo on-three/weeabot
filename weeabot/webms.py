@@ -37,6 +37,10 @@ from irc import foreground
 from irc import background
 from irc import style
 
+#drive the images display on our overlay
+import pyjsonrpc
+from config import Config
+
 
 def get_webms_status():
   if Webms._enabled:
@@ -123,7 +127,9 @@ class Webms(object):
   show a webm via simple system call
   '''
   #REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|png))'
-  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|jpeg|png))( +(?P<full>(?:full|f|fullscreen)))?'
+  #REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4|jpg|jpeg|png))( +(?P<full>(?:full|f|fullscreen)))?'
+  REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:webm|gif|mp3|mp4))( +(?P<full>(?:full|f|fullscreen)))?'
+  IMG_REGEX = ur'(?P<url>http[s]?://[\S]+\.(?:png|jpg|jpeg))'
   ON_REGEX = ur'^\.webms on'
   OFF_REGEX = ur'^\.webms off'
   WIPE_REGEX = ur'^\.wipe'
@@ -149,7 +155,8 @@ class Webms(object):
     Is the rx'd irc message of interest to this plugin?
     '''
     if re.search(Webms.REGEX, msg) or re.match(Webms.ON_REGEX, msg) or \
-      re.match(Webms.OFF_REGEX, msg) or re.match(Webms.WIPE_REGEX, msg):
+      re.match(Webms.OFF_REGEX, msg) or re.match(Webms.WIPE_REGEX, msg) or \
+			re.search(Webms.IMG_REGEX, msg):
       return True
     else:
       return False
@@ -165,17 +172,27 @@ class Webms(object):
       self.webms_off()
     elif re.match(Webms.WIPE_REGEX, msg) and is_mod(splitnick(user)):
       self.webms_wipe()
-    
+			
+    i = re.search(Webms.IMG_REGEX, msg)
+    if i:
+      url = i.groupdict()['url']
+      log.msg('URL IS: ' + url)
+      #send to remote host for possible saving
+      WebInterface.save_webm(channel, user, url)
+      self.show_image(url, channel)
+      return
+
     m = re.search(Webms.REGEX, msg)
     if not m:
       return
     #got a command along with the .c or .channel statement
     url = m.groupdict()['url']
+    log.msg('URL IS: ' + url)
     #send to remote host for possible saving
     WebInterface.save_webm(channel, user, url)
     
     #did we get a 'full' 'f' or 'fullscreen' tag as well?
-    log.msg('URL IS: ' + msg)
+    #log.msg('URL IS: ' + msg)
     if m.groupdict()['full']:
       self.show_webm_fullscreen(url, channel)
     else:
@@ -218,5 +235,13 @@ class Webms(object):
       log.msg('Not showing webm as they are turned off.')
       return
     self._video.play_fullscreen(url)
+		
+  def show_image(self, url, channel):
+    http_client = pyjsonrpc.HttpClient(
+      Config.TextOverlay.HOSTNAME.encode('utf-8'),
+        #username = 'Username',
+        #password = 'Password',
+      )
+    response = http_client.showImage(url=url)
 
 

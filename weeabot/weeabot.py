@@ -55,6 +55,7 @@ from voice import Voice
 from whitelist import Whitelist
 from screenshot import Screenshot
 from torrent import Torrent
+from ytdl import YTDL
 
 from irc import splitnick
 
@@ -111,14 +112,15 @@ class WeeaBot(twisted_irc.IRCClient):
     WeeaBot.plugins.append(Translate(self))
     WeeaBot.plugins.append(Whatson(self))
     WeeaBot.plugins.append(Info(self))
-    WeeaBot.plugins.append(Webms(self))
     WeeaBot.plugins.append(Youtube(self))
+    WeeaBot.plugins.append(Webms(self))
     WeeaBot.plugins.append(Livestreamer(self))
     WeeaBot.plugins.append(TextOverlay(self))
     WeeaBot.plugins.append(Voice(self))
     WeeaBot.plugins.append(Whitelist(self))
     WeeaBot.plugins.append(Screenshot(self))
     WeeaBot.plugins.append(Torrent(self))
+    WeeaBot.plugins.append(YTDL(self))
 
   def connectionLost(self, reason):
     log.msg('connection lost')
